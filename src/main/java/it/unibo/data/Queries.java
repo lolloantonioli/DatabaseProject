@@ -78,11 +78,39 @@ public class Queries {
         JOIN applicazione a ON o.codice_ordine = a.codice_ordine
         ORDER BY o.codice_ordine;
         """;
+
     public static final String ORDINI_BY_RISTORANTE = """
         SELECT codice_ordine, codice_pagamento, codice_stato, prezzo_totale, piva
         FROM ordini
         WHERE piva = ?
         ORDER BY codice_ordine
+        """;
+    
+    // Ordini che un rider deve consegnare
+    public static final String ORDINI_DA_CONSEGNARE_BY_RIDER = """
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        FROM ordini o
+        JOIN stati_ordini s ON o.codice_stato = s.codice_stato
+        WHERE s.codice_rider = ? AND s.consegnato = FALSE
+        ORDER BY o.codice_ordine
+        """;
+
+
+
+public static final String ORDINI_IN_ATTESA_BY_RIDER = """
+"""
+        
+        """;
+
+
+
+        // Ordini già consegnati da un rider
+    public static final String ORDINI_CONSEGNATI_BY_RIDER = """
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        FROM ordini o
+        JOIN stati_ordini s ON o.codice_stato = s.codice_stato
+        WHERE s.codice_rider = ? AND s.consegnato = TRUE
+        ORDER BY o.codice_ordine
         """;
 
 
