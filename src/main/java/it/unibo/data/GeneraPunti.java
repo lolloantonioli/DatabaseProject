@@ -45,7 +45,6 @@ public class GeneraPunti {
     public static final class DAO {
         public Optional<GeneraPunti> findByOrdine(Connection connection, int codiceOrdine){
             try (PreparedStatement ps = DAOUtils.prepare(connection, Queries.PUNTI_GENERATI_BY_ORDINE, codiceOrdine)) {
-                ps.setInt(1, codiceOrdine);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         int punti = rs.getInt("punti_generati");
