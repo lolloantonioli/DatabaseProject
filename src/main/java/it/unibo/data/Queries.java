@@ -72,6 +72,13 @@ public class Queries {
         ORDER BY p.data DESC
         """;
 
+    public static final String ORDINI_CON_PROMOZIONE = """
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva, a.sconto_applicato
+        FROM ordini o
+        JOIN applicazione a ON o.codice_ordine = a.codice_ordine
+        ORDER BY o.codice_ordine;
+    """;
+
     // Dettagli ordini
     public static final String DETTAGLI_ORDINE = """
         SELECT do.codice_piatto, do.numero_linea, do.quantita, do.prezzo_unitario,
