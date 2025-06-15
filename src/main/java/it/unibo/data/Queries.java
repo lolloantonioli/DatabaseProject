@@ -212,6 +212,4 @@ public class Queries {
         ORDER BY codice_mezzo
         """;
 
-
-
 }
