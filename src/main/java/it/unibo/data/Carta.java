@@ -1,9 +1,6 @@
 package it.unibo.data;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,15 +79,15 @@ public class Carta {
         /**
          * Restituisce gli ordini effettuati con una specifica carta
          */
-        public List<Integer> listOrdiniByCarta(int codiceCliente, String numeroCarta) throws SQLException {
+        public List<Integer> listOrdiniByCarta(Connection connection, int codiceCliente, String numeroCarta) {
             List<Integer> result = new ArrayList<>();
-            try (PreparedStatement ps = conn.prepareStatement(Queries.ORDINI_BY_CARTA)) {
-                ps.setInt(1, codiceCliente);
-                ps.setString(2, numeroCarta);
-                ResultSet rs = ps.executeQuery();
+            try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_BY_CARTA, codiceCliente);
+                 var rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     result.add(rs.getInt("codice_ordine"));
                 }
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il recupero degli ordini per la carta " + numeroCarta + " del cliente " + codiceCliente, e);
             }
             return result;
         }
