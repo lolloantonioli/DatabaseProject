@@ -1,7 +1,9 @@
 package it.unibo.data;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +51,26 @@ public class Pagamento {
         ));
     }
 
-    public static final class DAO {}
+    public static final class DAO {
+        /**
+         * Restituisce tutti i pagamenti effettuati da un cliente
+         */
+        public List<Pagamento> listByCliente(Connection connection, int codiceCliente) {
+            List<Pagamento> result = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.PAGAMENTI_BY_CLIENTE, codiceCliente);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int codice = rs.getInt("codice_pagamento");
+                    var date = rs.getTimestamp("data").toLocalDateTime();
+                    BigDecimal imp = rs.getBigDecimal("importo");
+                    String metodo = rs.getString("metodo");
+                    result.add(new Pagamento(codice, date, imp, codiceCliente, metodo));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Error while retrieving payments for client " + codiceCliente, e);
+            }
+            return result;
+        }
+    }
 
 }
