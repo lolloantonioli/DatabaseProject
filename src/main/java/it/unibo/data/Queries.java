@@ -21,11 +21,24 @@ public static final String INSERT_CLIENTE = """
     VALUES (?, ?, ?, ?, ?, ?, ?)
     """;
 
-// Inserisce un metodo di pagamento per il cliente
+// Inserimento metodo di pagamento
 public static final String INSERT_METODO_PAGAMENTO = """
     INSERT INTO metodi_pagamento (codice_cliente, nome)
     VALUES (?, ?)
     """;
+
+// Inserimento contratto
+public static final String INSERT_CONTRATTO = """
+    INSERT INTO contratti (codice_rider, paga_oraria, testo)
+    VALUES (?, ?, ?)
+    """;
+
+// Inserimento carta
+public static final String INSERT_CARTA = """
+    INSERT INTO carte (codice_cliente, nome, numero, titolare, data_scadenza, cvv)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
 
 // Inserisce un indirizzo
 public static final String INSERT_INDIRIZZO = """
