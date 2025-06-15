@@ -57,7 +57,7 @@ public class Pagamento {
          */
         public List<Pagamento> listByCliente(Connection connection, int codiceCliente) {
             List<Pagamento> result = new ArrayList<>();
-            try (var stmt = DAOUtils.prepare(connection, Queries., codiceCliente);
+            try (var stmt = DAOUtils.prepare(connection, Queries.PAGAMENTI_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int codice = rs.getInt("codice_pagamento");
