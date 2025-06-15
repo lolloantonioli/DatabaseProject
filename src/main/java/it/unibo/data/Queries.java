@@ -141,6 +141,12 @@ public class Queries {
         WHERE codice_cliente = ?
         """;
 
+    public static final String PUNTI_GENERATI_BY_ORDINE = """
+        SELECT punti_generati
+        FROM genera_punti
+        WHERE codice_ordine = ?
+        """;
+
     public static final String TOP10_RISTORANTI = """
         SELECT piva, AVG(numero_stelle) AS media
         FROM recensioni
