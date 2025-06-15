@@ -1,7 +1,12 @@
 package it.unibo.data;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +55,27 @@ public class Applicazione {
     }
 
     public static final class DAO {
+<<<<<<< HEAD
         
+=======
+        public List<Applicazione> listAllWithPromozione(Connection connection) {
+            List<Applicazione> result = new ArrayList<>();
+            try (PreparedStatement ps = DAOUtils.prepare(connection, Queries.ORDINI_CON_PROMOZIONE)) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int codiceOrdine = rs.getInt("codice_ordine");
+                    BigDecimal sconto = rs.getBigDecimal("sconto_applicato");
+                    String piva = rs.getString("piva");
+                    LocalDate inizio = rs.getDate("data_inizio").toLocalDate();
+                    LocalDate fine = rs.getDate("data_fine").toLocalDate();
+                    result.add(new Applicazione(codiceOrdine, sconto, piva, inizio, fine));
+                }
+            } catch( Exception e) {
+                throw new DAOException( "Errore durante il recupero delle applicazioni con promozione", e);
+            }
+            return result;
+        }
+>>>>>>> 2ebca0ef2e2b394717acf8e3ab2b4fe3facc39a8
     }
 
 }
