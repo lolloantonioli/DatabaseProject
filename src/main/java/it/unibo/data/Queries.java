@@ -77,7 +77,7 @@ public class Queries {
         FROM ordini o
         JOIN applicazione a ON o.codice_ordine = a.codice_ordine
         ORDER BY o.codice_ordine;
-    """;
+        """;
 
     // Dettagli ordini
     public static final String DETTAGLI_ORDINE = """
@@ -157,4 +157,19 @@ public class Queries {
         ORDER BY totale DESC
         LIMIT 1
         """;
+    public static final String CARTE_BY_CLIENTE = """
+        SELECT numero, titolare, data_scadenza
+        FROM carte
+        WHERE codice_cliente = ?
+        ORDER BY numero
+        """;
+
+    public static final String ORDINI_BY_CARTA = """
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        FROM ordini o
+        JOIN pagamenti p ON o.codice_pagamento = p.codice_pagamento
+        WHERE p.codice_cliente = ? AND p.id_carta = ?
+        ORDER BY o.codice_ordine
+        """;
+
 }
