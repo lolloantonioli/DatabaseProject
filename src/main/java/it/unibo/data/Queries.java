@@ -34,6 +34,12 @@ public class Queries {
         ORDER BY r.nome
         """;
 
+     public static final String INSERT_RISTORANTE = """
+        INSERT INTO ristoranti (piva, nome, indirizzo, orario, codice_zona)
+        VALUES (?, ?, ?, ?, ?)
+        """;
+
+
     // Piatti
     public static final String PIATTI_BY_RISTORANTE = """
         SELECT p.codice_piatto, p.nome, p.prezzo, p.descrizione
@@ -42,6 +48,12 @@ public class Queries {
         WHERE o.piva = ?
         ORDER BY p.nome
         """;
+
+    public static final String UPDATE_PIATTO = """
+    UPDATE piatti
+    SET nome = ?, prezzo = ?, descrizione = ?
+    WHERE codice_piatto = ?
+    """;
 
     // Ordini
     public static final String FIND_ORDINE = """
@@ -76,6 +88,12 @@ public class Queries {
         FROM zone_geografiche
         ORDER BY nome
         """;
+    
+    public static final String RIDER_BY_ZONA = """
+        SELECT codice_rider, nome, cognome
+        FROM rider
+        WHERE codice_zona = ?
+        """;
 
     // Recensioni
     public static final String RECENSIONI_BY_RISTORANTE = """
@@ -87,4 +105,49 @@ public class Queries {
         ORDER BY r.data DESC
         """;
 
+          public static final String INSERT_RECENSIONE = """
+        INSERT INTO recensioni (codice_cliente, piva, numero_stelle, descrizione, titolo, data)
+        VALUES (?, ?, ?, ?, ?, NOW())
+        """;
+
+    // Promozioni
+    public static final String PROMOZIONI_ATTIVE = """
+        SELECT * FROM promozioni
+        WHERE piva = ? AND CURDATE() BETWEEN data_inizio AND data_fine
+        """;
+
+    public static final String APPLICA_PROMOZIONE = """
+        UPDATE ordini
+        SET sconto_applicato = ?, codice_promozione = ?
+        WHERE codice_ordine = ?
+        """;
+
+    // Raccolta Punti
+    public static final String USA_PUNTI = """
+        INSERT INTO utilizza_punti (codice_raccolta, codice_ordine, punti_usati, sconto_applicato)
+        VALUES (?, ?, ?, ?)
+        """;
+
+    public static final String AGGIORNA_PUNTI = """
+        UPDATE raccolte_punti
+        SET punti_totali = punti_totali - ?
+        WHERE codice_cliente = ?
+        """;
+
+    public static final String TOP10_RISTORANTI = """
+        SELECT piva, AVG(numero_stelle) AS media
+        FROM recensioni
+        GROUP BY piva
+        ORDER BY media DESC
+        LIMIT 10
+        """;
+
+    public static final String RIDER_TOP_CONSEGNE = """
+        SELECT codice_rider, COUNT(*) AS totale
+        FROM stati_ordini
+        WHERE consegnato IS NOT NULL
+        GROUP BY codice_rider
+        ORDER BY totale DESC
+        LIMIT 1
+        """;
 }
