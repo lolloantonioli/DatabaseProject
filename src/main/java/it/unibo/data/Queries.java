@@ -115,20 +115,13 @@ public class Queries {
         """;
 
 
-
-<<<<<<< HEAD
-public static final String ORDINI_IN_ATTESA_BY_RIDER = """
-"""
-        
-        ;
-=======
     public static final String PAGAMENTI_BY_CLIENTE = """
         SELECT codice_pagamento, data, importo, metodo
         FROM pagamenti
         WHERE codice_cliente = ?
         ORDER BY data DESC
         """;
->>>>>>> 018e6930d0d5e268aa96424a8db2f6537db64a38
+
 
         // Ordini già consegnati da un rider
     public static final String ORDINI_CONSEGNATI_BY_RIDER = """
