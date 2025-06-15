@@ -55,6 +55,25 @@ public class Queries {
     WHERE codice_piatto = ?
     """;
 
+    // Ordini che contengono un dato piatto
+    public static final String ORDINI_BY_PIATTO = """
+        SELECT DISTINCT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        FROM ordini o
+        JOIN dettagli_ordini d ON o.codice_ordine = d.codice_ordine
+        WHERE d.codice_piatto = ?
+        ORDER BY o.codice_ordine
+        """;
+
+    // Classifica dei 10 piatti più ordinati in assoluto
+    public static final String TOP10_PIATTI = """
+        SELECT d.codice_piatto, p.nome, SUM(d.quantita) AS totale_piatti
+        FROM dettagli_ordini d
+        JOIN piatti p ON d.codice_piatto = p.codice_piatto
+        GROUP BY d.codice_piatto, p.nome
+        ORDER BY totale_piatti DESC
+        LIMIT 10
+        """;
+
     // Ordini
     public static final String FIND_ORDINE = """
         SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, 
