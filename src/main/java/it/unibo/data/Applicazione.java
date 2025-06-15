@@ -54,7 +54,10 @@ public class Applicazione {
     }
 
     public static final class DAO {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7109036ee59174fca5bd6bf1629a5bf6b97a143b
         public List<Applicazione> listAllWithPromozione(Connection connection) {
             List<Applicazione> result = new ArrayList<>();
             try (PreparedStatement ps = DAOUtils.prepare(connection, Queries.ORDINI_CON_PROMOZIONE)) {
