@@ -100,7 +100,7 @@ public class Queries {
 public static final String ORDINI_IN_ATTESA_BY_RIDER = """
 """
         
-        """;
+        ;
 
 
 
