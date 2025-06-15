@@ -63,6 +63,12 @@ public static final String SELECT_PROMOZIONI_ATTIVE_BY_RISTORANTE = """
     ORDER BY data_inizio
     """;
 
+public static final String SELECT_RACCOLTA_BY_CLIENTE = """
+    SELECT punti_totali, soglia_punti, percentuale_sconto
+    FROM raccolte_punti
+    WHERE codice_cliente = ?
+    """;
+
 // Associa un indirizzo a un cliente
 public static final String INSERT_RESIDENZA = """
     INSERT INTO residenza (codice_cliente, codice_indirizzo)
