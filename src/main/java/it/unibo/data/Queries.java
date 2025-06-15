@@ -38,7 +38,13 @@ public static final String INSERT_CARTA = """
     INSERT INTO carte (codice_cliente, nome, numero, titolare, data_scadenza, cvv)
     VALUES (?, ?, ?, ?, ?, ?)
     """;
+// Inserimento di un nuovo mezzo
+public static final String INSERT_MEZZO = """
+    INSERT INTO mezzi (codice_rider, codice_mezzo, tipo, targa, modello)
+    VALUES (?, ?, ?, ?, ?)
+    """;
 
+    //VAFFANCULO
 
 // Inserisce un indirizzo
 public static final String INSERT_INDIRIZZO = """
