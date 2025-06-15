@@ -3,6 +3,7 @@ package it.unibo.data;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Objects;
 
 public class DettaglioOrdine {
     public final int codicePiatto;
@@ -17,9 +18,9 @@ public class DettaglioOrdine {
         this.codicePiatto = codicePiatto;
         this.numeroLinea = numeroLinea;
         this.quantita = quantita;
-        this.prezzoUnitario = prezzoUnitario == null ? BigDecimal.ZERO : prezzoUnitario;
-        this.nomePiatto = nomePiatto == null ? "" : nomePiatto;
-        this.descrizionePiatto = descrizionePiatto == null ? "" : descrizionePiatto;
+        this.prezzoUnitario = prezzoUnitario;
+        this.nomePiatto = nomePiatto;
+        this.descrizionePiatto = descrizionePiatto;
     }
 
     @Override

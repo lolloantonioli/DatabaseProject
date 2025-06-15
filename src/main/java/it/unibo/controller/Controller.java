@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.swing.text.View;
 
 import it.unibo.data.Cliente;
+import it.unibo.data.DAOException;
 import it.unibo.data.Ristorante;
 import it.unibo.model.Model;
 

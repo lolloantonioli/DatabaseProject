@@ -19,12 +19,12 @@ public class Cliente {
     public Cliente(int codiceCliente, String nome, String cognome, String email, 
                    String telefono, LocalDate dataNascita, String username) {
         this.codiceCliente = codiceCliente;
-        this.nome = nome == null ? "" : nome;
-        this.cognome = cognome == null ? "" : cognome;
-        this.email = email == null ? "" : email;
-        this.telefono = telefono == null ? "" : telefono;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.telefono = telefono;
         this.dataNascita = dataNascita;
-        this.username = username == null ? "" : username;
+        this.username = username;
     }
 
     @Override

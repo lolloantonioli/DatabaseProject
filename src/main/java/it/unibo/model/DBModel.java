@@ -11,6 +11,7 @@ import it.unibo.data.Piatto;
 import it.unibo.data.Ristorante;
 
 public class DBModel implements Model {
+    
     private final Connection connection;
 
     public DBModel(Connection connection) {

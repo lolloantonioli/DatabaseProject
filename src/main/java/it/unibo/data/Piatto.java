@@ -13,8 +13,8 @@ public class Piatto {
 
     public Piatto(int codicePiatto, String nome, BigDecimal prezzo, String descrizione) {
         this.codicePiatto = codicePiatto;
-        this.nome = nome == null ? "" : nome;
-        this.prezzo = prezzo == null ? BigDecimal.ZERO : prezzo;
+        this.nome = nome;
+        this.prezzo = prezzo;
         this.descrizione = descrizione == null ? "" : descrizione;
     }
 

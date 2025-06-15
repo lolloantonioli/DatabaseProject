@@ -2,6 +2,8 @@ package it.unibo.data;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Ristorante {
 
@@ -12,10 +14,10 @@ public class Ristorante {
     public final int codiceZona;
 
     public Ristorante(String piva, String nome, String indirizzo, String orario, int codiceZona) {
-        this.piva = piva == null ? "" : piva;
-        this.nome = nome == null ? "" : nome;
-        this.indirizzo = indirizzo == null ? "" : indirizzo;
-        this.orario = orario == null ? "" : orario;
+        this.piva = piva;
+        this.nome = nome;
+        this.indirizzo = indirizzo;
+        this.orario = orario;
         this.codiceZona = codiceZona;
     }
 
