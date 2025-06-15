@@ -2,6 +2,7 @@ package it.unibo.data;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -100,6 +101,57 @@ public class Ordine {
                 
             } catch (Exception e) {
                 throw new DAOException("Errore durante il caricamento degli ordini del cliente", e);
+            }
+        }
+        /**
+         * Restituisce gli ordini che un rider deve consegnare
+         */
+        public static List<Ordine> daConsegnareByRider(Connection connection, int codiceRider) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_DA_CONSEGNARE_BY_RIDER, codiceRider);
+                 var rs = stmt.executeQuery()) {
+                
+                var ordini = new ArrayList<Ordine>();
+                while (rs.next()) {
+                    var codiceOrdine = rs.getInt("codice_ordine");
+                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
+                    ordini.add(new Ordine(
+                        codiceOrdine,
+                        rs.getInt("codice_pagamento"),
+                        rs.getInt("codice_stato"),
+                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getString("piva"),
+                        dettagli
+                    ));
+                }
+                return ordini;
+            } catch (Exception e) {
+                throw new DAOException("Error loading to-deliver orders for rider " + codiceRider, e);
+            }
+        }
+
+        /**
+         * Restituisce gli ordini già consegnati da un rider
+         */
+        public static List<Ordine> consegnatiByRider(Connection connection, int codiceRider) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_CONSEGNATI_BY_RIDER, codiceRider);
+                 var rs = stmt.executeQuery()) {
+                
+                var ordini = new ArrayList<Ordine>();
+                while (rs.next()) {
+                    var codiceOrdine = rs.getInt("codice_ordine");
+                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
+                    ordini.add(new Ordine(
+                        codiceOrdine,
+                        rs.getInt("codice_pagamento"),
+                        rs.getInt("codice_stato"),
+                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getString("piva"),
+                        dettagli
+                    ));
+                }
+                return ordini;
+            } catch (Exception e) {
+                throw new DAOException("Error loading delivered orders for rider " + codiceRider, e);
             }
         }
     }
