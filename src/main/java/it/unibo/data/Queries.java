@@ -15,10 +15,36 @@ public class Queries {
         ORDER BY cognome, nome
         """;
 
-    public static final String INSERT_CLIENTE = """
-        INSERT INTO clienti (codice_cliente, nome, cognome, email, telefono, data_nascita, username)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """;
+// già presente
+public static final String INSERT_CLIENTE = """
+    INSERT INTO clienti (codice_cliente, nome, cognome, email, telefono, data_nascita, username)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    """;
+
+// Inserisce un metodo di pagamento per il cliente
+public static final String INSERT_METODO_PAGAMENTO = """
+    INSERT INTO metodi_pagamento (codice_cliente, nome)
+    VALUES (?, ?)
+    """;
+
+// Inserisce un indirizzo
+public static final String INSERT_INDIRIZZO = """
+    INSERT INTO indirizzi (via, numero_civico, cap, interno, scala, codice_zona)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
+// Associa un indirizzo a un cliente
+public static final String INSERT_RESIDENZA = """
+    INSERT INTO residenza (codice_cliente, codice_indirizzo)
+    VALUES (?, ?)
+    """;
+
+// Inizializza la raccolta punti per un nuovo cliente
+public static final String INSERT_RACCOLTA_PUNTI = """
+    INSERT INTO raccolte_punti (codice_cliente, punti_totali, soglia_punti, percentuale_sconto)
+    VALUES (?, 0, ?, ?)
+    """;
+
 
     // Ristoranti
     public static final String FIND_RISTORANTE = """
@@ -114,13 +140,6 @@ public class Queries {
         ORDER BY o.codice_ordine
         """;
 
-
-
-
-public static final String ORDINI_IN_ATTESA_BY_RIDER = """
-"""
-        
-        ;
 
     public static final String PAGAMENTI_BY_CLIENTE = """
         SELECT codice_pagamento, data, importo, metodo
@@ -272,5 +291,9 @@ public static final String ORDINI_IN_ATTESA_BY_RIDER = """
         WHERE id_rider = ?
         ORDER BY codice_mezzo
         """;
+
+    // Ordini con promozione applicata
+
+
 
 }
