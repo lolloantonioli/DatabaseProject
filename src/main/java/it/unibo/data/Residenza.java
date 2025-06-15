@@ -1,5 +1,7 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +37,22 @@ public class Residenza {
     }
 
     public static final class DAO {
-        // Implement DAO methods here if needed
+        /**
+         * Restituisce le associazioni Residenza per un dato cliente
+         */
+        public List<Residenza> listByCliente(Connection connection, int codiceCliente) {
+            List<Residenza> result = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.RESIDENZA_BY_CLIENTE, codiceCliente);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idCliente = rs.getInt("codice_cliente");
+                    int idIndirizzo = rs.getInt("codice_indirizzo");
+                    result.add(new Residenza(idCliente, idIndirizzo));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il recupero delle residenze per il cliente " + codiceCliente, e);
+            }
+            return result;
+        }
     }
 }
