@@ -1,6 +1,11 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +57,43 @@ public class Carta {
         ));
     }
 
-    public static final class DAO {}
+    public static final class DAO {
+        /**
+         * Restituisce tutte le carte possedute da un cliente
+         */
+        public List<Carta> listCarteByCliente(Connection connection, int codiceCliente) {
+            List<Carta> result = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.CARTE_BY_CLIENTE, codiceCliente);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String nome = rs.getString("nome");
+                    String numero = rs.getString("numero");
+                    String titolare = rs.getString("titolare");
+                    LocalDate scadenza = rs.getDate("data_scadenza").toLocalDate();
+                    String cvv = rs.getString("cvv");
+                    result.add(new Carta(codiceCliente, nome, numero, titolare, scadenza, cvv));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il recupero delle carte del cliente " + codiceCliente, e);
+            }
+            return result;
+        }
+
+        /**
+         * Restituisce gli ordini effettuati con una specifica carta
+         */
+        public List<Integer> listOrdiniByCarta(int codiceCliente, String numeroCarta) throws SQLException {
+            List<Integer> result = new ArrayList<>();
+            try (PreparedStatement ps = conn.prepareStatement(Queries.ORDINI_BY_CARTA)) {
+                ps.setInt(1, codiceCliente);
+                ps.setString(2, numeroCarta);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    result.add(rs.getInt("codice_ordine"));
+                }
+            }
+            return result;
+        }
+    }
 
 }
