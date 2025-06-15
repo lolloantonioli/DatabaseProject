@@ -398,4 +398,36 @@ public static final String RESIDENZA_BY_CLIENTE = """
     """;
 //vbjkjkbvjckxbv
 //dbfisdbvuidfsviufubfdiuvb
+// Inserisce un nuovo rider
+public static final String INSERT_RIDER = """
+    INSERT INTO riders
+        (codice_rider, nome, cognome, data_nascita, email, telefono,
+         iban, cf, patente, disponibile, codice_zona)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """;
+
+// Trova un rider per ID
+public static final String FIND_RIDER = """
+    SELECT codice_rider, nome, cognome, data_nascita, email, telefono,
+           iban, cf, patente, disponibile, codice_zona
+    FROM riders
+    WHERE codice_rider = ?
+    """;
+
+// Riders per zona
+public static final String RIDERS_BY_ZONA = """
+    SELECT codice_rider, nome, cognome, data_nascita, email, telefono,
+           iban, cf, patente, disponibile, codice_zona
+    FROM riders
+    WHERE codice_zona = ?
+    """;
+
+// Riders disponibili per zona
+public static final String AVAILABLE_RIDERS_BY_ZONA = """
+    SELECT codice_rider, nome, cognome, data_nascita, email, telefono,
+           iban, cf, patente, disponibile, codice_zona
+    FROM riders
+    WHERE codice_zona = ? AND disponibile = TRUE
+    """;
+
 }
