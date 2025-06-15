@@ -97,12 +97,12 @@ public class Queries {
 
 
 
-public static final String ORDINI_IN_ATTESA_BY_RIDER = """
-"""
-        
+    public static final String PAGAMENTI_BY_CLIENTE = """
+        SELECT codice_pagamento, data, importo, metodo
+        FROM pagamenti
+        WHERE codice_cliente = ?
+        ORDER BY data DESC
         """;
-
-
 
         // Ordini già consegnati da un rider
     public static final String ORDINI_CONSEGNATI_BY_RIDER = """
