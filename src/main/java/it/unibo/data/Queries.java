@@ -205,6 +205,13 @@ public class Queries {
         WHERE codice_cliente = ?
         ORDER BY nome
         """;
+      public static final String MEZZI_BY_RIDER = """
+        SELECT codice_mezzo, tipo, targa, modello
+        FROM mezzi
+        WHERE id_rider = ?
+        ORDER BY codice_mezzo
+        """;
+
 
 
 }
