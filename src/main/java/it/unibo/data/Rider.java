@@ -161,5 +161,27 @@ public class Rider {
                 throw new DAOException("Errore durante il caricamento dei riders disponibili", e);
             }
         }
+        /**
+         * Inserisce un nuovo rider
+         */
+        public void insertRider(Connection conn, Rider r) {
+            try (var ps = DAOUtils.prepare(conn,
+                                        Queries.INSERT_RIDER,
+                                        r.codiceRider,
+                                        r.nome,
+                                        r.cognome,
+                                        java.sql.Date.valueOf(r.dataNascita),
+                                        r.email,
+                                        r.telefono,
+                                        r.iban,
+                                        r.cf,
+                                        r.patente,
+                                        r.disponibile,
+                                        r.codiceZona)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento rider " + r.codiceRider, e);
+            }
+        }
     }
 }
