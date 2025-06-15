@@ -1,6 +1,9 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +55,47 @@ public class Promozione {
         ));
     }
 
-    public static final class DAO {}
+    public static final class DAO {
+        /**
+         * Inserisce una nuova promozione per un ristorante
+         */
+        public void insertPromozione(Connection connection, Promozione promo) {
+            try (var ps = DAOUtils.prepare(connection,
+                                           Queries.INSERT_PROMOZIONE,
+                                           promo.pIva,
+                                           Date.valueOf(promo.dataInizio),
+                                           Date.valueOf(promo.dataFine),
+                                           promo.nome,
+                                           promo.descrizione,
+                                           promo.percentualeSconto)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento promozione per ristorante " + promo.pIva, e);
+            }
+        }
+
+        /**
+         * Restituisce le promozioni attive di un ristorante
+         */
+        public List<Promozione> listActiveByRistorante(Connection connection, String piva) {
+            List<Promozione> result = new ArrayList<>();
+            try (var ps = DAOUtils.prepare(connection,
+                                           Queries.SELECT_PROMOZIONI_ATTIVE_BY_RISTORANTE,
+                                           piva);
+                 var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    LocalDate inizio = rs.getDate("data_inizio").toLocalDate();
+                    LocalDate fine = rs.getDate("data_fine").toLocalDate();
+                    String nome = rs.getString("nome");
+                    String desc = rs.getString("descrizione");
+                    int perc = rs.getInt("percentuale_sconto");
+                    result.add(new Promozione(piva, inizio, fine, nome, desc, perc));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore recupero promozioni attive per ristorante " + piva, e);
+            }
+            return result;
+        }
+    }
 
 }
