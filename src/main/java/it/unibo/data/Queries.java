@@ -51,6 +51,17 @@ public static final String INSERT_INDIRIZZO = """
     INSERT INTO indirizzi (via, numero_civico, cap, interno, scala, codice_zona)
     VALUES (?, ?, ?, ?, ?, ?)
     """;
+public static final String INSERT_PROMOZIONE = """
+    INSERT INTO promozioni (piva, data_inizio, data_fine, nome, descrizione, percentuale_sconto)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
+public static final String SELECT_PROMOZIONI_ATTIVE_BY_RISTORANTE = """
+    SELECT data_inizio, data_fine, nome, descrizione, percentuale_sconto
+    FROM promozioni
+    WHERE piva = ? AND CURRENT_DATE BETWEEN data_inizio AND data_fine
+    ORDER BY data_inizio
+    """;
 
 // Associa un indirizzo a un cliente
 public static final String INSERT_RESIDENZA = """
