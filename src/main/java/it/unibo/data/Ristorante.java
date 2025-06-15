@@ -1,6 +1,7 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,7 +76,7 @@ public class Ristorante {
             try (var stmt = DAOUtils.prepare(connection, Queries.RISTORANTI_BY_ZONA, codiceZona);
                  var rs = stmt.executeQuery()) {
                 
-                var ristoranti = new java.util.ArrayList<Ristorante>();
+                var ristoranti = new ArrayList<Ristorante>();
                 while (rs.next()) {
                     ristoranti.add(new Ristorante(
                         rs.getString("piva"),
