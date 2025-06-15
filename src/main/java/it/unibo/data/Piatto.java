@@ -107,5 +107,19 @@ public class Piatto {
             }
             return result;
         }
+        /**
+         * Inserisce un nuovo piatto per un ristorante
+         */
+        public static void insertPiatto(Connection connection, Piatto p, String piva) {
+            try (var stmt = DAOUtils.prepare(
+                    connection,
+                    Queries.INSERT_PIATTO, // definire questa costante in Queries
+                    p.codicePiatto, p.nome, p.prezzo, p.descrizione, piva
+                )) {
+                stmt.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento piatto per ristorante " + piva, e);
+            }
+        }
     }
 }

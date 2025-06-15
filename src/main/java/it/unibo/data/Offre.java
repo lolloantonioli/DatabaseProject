@@ -55,6 +55,17 @@ public class Offre {
             }
             return result;
         }
+        public void insertOffre(Connection connection, Offre offre) {
+    try (var stmt = DAOUtils.prepare(connection,
+                                     Queries.INSERT_OFFRE,
+                                     offre.piva,
+                                     offre.codicePiatto)) {
+        stmt.executeUpdate();
+    } catch (Exception e) {
+        throw new DAOException("Error while inserting offer for ristorante " + offre.piva, e);
+    }
+}
+
     }
 
 }
