@@ -154,5 +154,45 @@ public class Ordine {
                 throw new DAOException("Error loading delivered orders for rider " + codiceRider, e);
             }
         }
+
+        public int insertFullOrder(Connection conn,
+                                   int codicePagamento,
+                                   BigDecimal prezzoTotale,
+                                   String piva,
+                                   List<DettaglioOrdine> cart) {
+            try {
+                conn.setAutoCommit(false);
+                // 1) crea ordine con stato=1 (In preparazione)
+                int orderId;
+                try (var ps = DAOUtils.prepare(conn, Queries.INSERT_ORDINE,
+                                               codicePagamento, 1, prezzoTotale, piva)) {
+                    ps.executeUpdate();
+                    try (var rs = ps.getGeneratedKeys()) {
+                        if (!rs.next()) throw new DAOException("Nessun ID ordine");
+                        orderId = rs.getInt(1);
+                    }
+                }
+                // 2) inserisci dettagli
+                try (var psDet = DAOUtils.prepare(conn, Queries.INSERT_DETTAGLIO_ORDINE)) {
+                    int line = 1;
+                    for (var d : cart) {
+                        psDet.setInt(1, orderId);
+                        psDet.setInt(2, d.codicePiatto);
+                        psDet.setInt(3, line++);
+                        psDet.setInt(4, d.quantita);
+                        psDet.setBigDecimal(5, d.prezzoUnitario);
+                        psDet.addBatch();
+                    }
+                    psDet.executeBatch();
+                }
+                conn.commit();
+                return orderId;
+            } catch (Exception e) {
+                try { conn.rollback(); } catch (Exception ign) {}
+                throw new DAOException("Errore creazione ordine completo", e);
+            } finally {
+                try { conn.setAutoCommit(true); } catch (Exception ign) {}
+            }
+        }
     }
 }

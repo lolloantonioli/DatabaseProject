@@ -71,6 +71,19 @@ public class Pagamento {
             }
             return result;
         }
+        
+        public int insert(Connection conn, int codiceCliente, String metodo, BigDecimal importo) {
+            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_PAGAMENTO,
+                                           codiceCliente, metodo, importo)) {
+                ps.executeUpdate();
+                try (var rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) return rs.getInt(1);
+                }
+                throw new DAOException("Nessun ID generato per il pagamento");
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento pagamento", e);
+            }
+        }
     }
 
 }
