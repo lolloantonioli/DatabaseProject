@@ -53,19 +53,7 @@ public class MetodoPagamento {
             }
             return result;
         }
-        /**
-         * Inserisce un nuovo metodo di pagamento per un cliente
-         */
-        public void insertMetodo(Connection connection, MetodoPagamento metodo) {
-            try (var stmt = DAOUtils.prepare(connection,
-                                             Queries.INSERT_METODO_PAGAMENTO,
-                                             metodo.codiceCliente,
-                                             metodo.nome)) {
-                stmt.executeUpdate();
-            } catch (Exception e) {
-                throw new DAOException("Error while inserting payment method for client " + metodo.codiceCliente, e);
-            }
-        }
+        
     }
 
 }

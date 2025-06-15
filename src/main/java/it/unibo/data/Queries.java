@@ -66,6 +66,18 @@ public static final String INSERT_RACCOLTA_PUNTI = """
         """;
 
 
+// Inserisce un nuovo piatto
+public static final String INSERT_PIATTO = """
+    INSERT INTO piatti (codice_piatto, nome, prezzo, descrizione)
+    VALUES (?, ?, ?, ?)
+    """;
+
+// Associa il piatto appena creato al ristorante
+public static final String INSERT_OFFRE = """
+    INSERT INTO offre (piva, codice_piatto)
+    VALUES (?, ?)
+    """;
+
     // Piatti
     public static final String PIATTI_BY_RISTORANTE = """
         SELECT p.codice_piatto, p.nome, p.prezzo, p.descrizione
