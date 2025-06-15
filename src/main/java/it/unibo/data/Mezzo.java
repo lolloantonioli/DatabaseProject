@@ -1,5 +1,9 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +56,23 @@ public class Mezzo {
     }
 
     public static final class DAO {
-
+        public List<Mezzo> listByRider(Connection connection,int codiceRider) {
+            List<Mezzo> result = new ArrayList<>();
+            try (var ps = DAOUtils.prepare(connection, Queries.MEZZI_BY_RIDER, codiceRider)) {
+                var rs = ps.executeQuery();
+                    while (rs.next()) {
+                        int idMezzo = rs.getInt("codice_mezzo");
+                        String tipoStr = rs.getString("tipo");
+                        TipoMezzo tipo = TipoMezzo.valueOf(tipoStr.toUpperCase());
+                        String targa = rs.getString("targa");
+                        String modello = rs.getString("modello");
+                        result.add(new Mezzo(codiceRider, idMezzo, tipo, targa, modello));
+                    }
+                
+            } catch ( Exception e) {
+                throw new DAOException("Errore durante la ricerca dei mezzi per il rider con codice " + codiceRider, e);
+            }
+            return result;
+        }
     }
 }
