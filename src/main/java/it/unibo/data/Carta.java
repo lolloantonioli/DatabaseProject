@@ -81,7 +81,7 @@ public class Carta {
          */
         public List<Integer> listOrdiniByCarta(Connection connection, int codiceCliente, String numeroCarta) {
             List<Integer> result = new ArrayList<>();
-            try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_BY_CARTA, codiceCliente);
+            try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_BY_CARTA, codiceCliente, numeroCarta);
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     result.add(rs.getInt("codice_ordine"));
