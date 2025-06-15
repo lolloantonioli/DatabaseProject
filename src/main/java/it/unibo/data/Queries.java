@@ -172,4 +172,10 @@ public class Queries {
         ORDER BY o.codice_ordine
         """;
 
+    public static final String MOSTRA_CONTRATTO= """
+        SELECT cod_contratto, codice_rider, paga_oraria, testo
+        FROM contratti
+        WHERE codice_rider = ?
+        """;
+
 }
