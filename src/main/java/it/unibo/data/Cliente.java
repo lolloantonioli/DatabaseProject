@@ -2,6 +2,7 @@ package it.unibo.data;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -88,7 +89,7 @@ public class Cliente {
             try (var stmt = DAOUtils.prepare(connection, Queries.LIST_CLIENTI);
                  var rs = stmt.executeQuery()) {
                 
-                var clienti = new java.util.ArrayList<Cliente>();
+                var clienti = new ArrayList<Cliente>();
                 while (rs.next()) {
                     clienti.add(new Cliente(
                         rs.getInt("codice_cliente"),
