@@ -1,6 +1,11 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> e4838a496e543e6215c34053756ddc8d64265d45
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

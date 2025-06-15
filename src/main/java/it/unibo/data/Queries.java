@@ -199,5 +199,12 @@ public class Queries {
         WHERE i.codice_indirizzo = ?
         """;
 
+        public static final String METODI_PAGAMENTO_BY_CLIENTE = """
+        SELECT nome
+        FROM metodi_pagamento
+        WHERE codice_cliente = ?
+        ORDER BY nome
+        """;
+
 
 }
