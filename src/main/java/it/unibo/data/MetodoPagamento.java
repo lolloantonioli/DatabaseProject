@@ -1,5 +1,7 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +36,23 @@ public class MetodoPagamento {
         ));
     }
 
-    public static final class DAO {}
+    public static final class DAO {
+        /**
+         * Restituisce tutti i metodi di pagamento di un cliente
+         */
+        public List<MetodoPagamento> listByCliente(Connection connection, int codiceCliente) {
+            List<MetodoPagamento> result = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.METODI_PAGAMENTO_BY_CLIENTE, codiceCliente);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String nome = rs.getString("nome");
+                    result.add(new MetodoPagamento(codiceCliente, nome));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Error while retrieving payment methods for client " + codiceCliente, e);
+            }
+            return result;
+        }
+    }
 
 }
