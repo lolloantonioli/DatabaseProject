@@ -50,7 +50,7 @@ public class Applicazione {
     }
 
     public static final class DAO {
-
+        
     }
 
 }
