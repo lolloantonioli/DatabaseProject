@@ -91,6 +91,16 @@ public class Carta {
             }
             return result;
         }
+
+        public void insertCarta(Connection conn, Carta c) {
+            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_CARTA,
+                                        c.codiceCliente, c.nome, c.numero,
+                                        c.titolare, java.sql.Date.valueOf(c.dataScadenza), c.cvv)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento carta per cliente " + c.codiceCliente, e);
+            }
+}
     }
 
 }

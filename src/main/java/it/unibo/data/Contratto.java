@@ -60,5 +60,14 @@ public class Contratto {
                 throw new DAOException("Errore durante la ricerca del contratto per il rider con codice " + codiceRider, e);
             }
         }
+
+        public void insertContratto(Connection conn, Contratto c) {
+            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_CONTRATTO,
+                                        c.codiceRider, c.pagaOraria, c.testo)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento contratto per rider " + c.codiceRider, e);
+            }
+        }
     }
 }

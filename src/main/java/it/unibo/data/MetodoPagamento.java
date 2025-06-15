@@ -53,6 +53,15 @@ public class MetodoPagamento {
             }
             return result;
         }
+
+        public void insertMetodo(Connection conn, MetodoPagamento m) {
+            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_METODO_PAGAMENTO,
+                                        m.codiceCliente, m.nome)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento metodo di pagamento per cliente " + m.codiceCliente, e);
+            }
+        }
         
     }
 
