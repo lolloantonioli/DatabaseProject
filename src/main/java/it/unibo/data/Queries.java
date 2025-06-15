@@ -78,6 +78,13 @@ public class Queries {
         JOIN applicazione a ON o.codice_ordine = a.codice_ordine
         ORDER BY o.codice_ordine;
         """;
+    public static final String ORDINI_BY_RISTORANTE = """
+        SELECT codice_ordine, codice_pagamento, codice_stato, prezzo_totale, piva
+        FROM ordini
+        WHERE piva = ?
+        ORDER BY codice_ordine
+        """;
+
 
     // Dettagli ordini
     public static final String DETTAGLI_ORDINE = """
