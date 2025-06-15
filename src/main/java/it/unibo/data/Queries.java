@@ -152,6 +152,41 @@ public static final String INSERT_OFFRE = """
         ORDER BY o.codice_ordine
         """;
 
+    // Login cliente: verifica esistenza
+    public static final String FIND_CLIENTE_BY_ID = """
+        SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
+        FROM clienti
+        WHERE codice_cliente = ?
+        """;
+
+    // Lista ristoranti per zona
+    public static final String LIST_RISTORANTI = """
+        SELECT piva, nome, indirizzo, orario
+        FROM ristoranti
+        ORDER BY nome
+        """;
+
+    // Piatti per ristorante
+    // già presente: PIATTI_BY_RISTORANTE
+
+    // Inserimento pagamento
+    public static final String INSERT_PAGAMENTO = """
+        INSERT INTO pagamenti (codice_cliente, metodo, data, importo)
+        VALUES (?, ?, CURRENT_TIMESTAMP, ?)
+        """;
+
+    // Inserimento ordine
+    public static final String INSERT_ORDINE = """
+        INSERT INTO ordini (codice_pagamento, codice_stato, prezzo_totale, piva)
+        VALUES (?, ?, ?, ?)
+        """;
+
+    // Inserimento dettaglio ordine
+    public static final String INSERT_DETTAGLIO_ORDINE = """
+        INSERT INTO dettagli_ordini (codice_ordine, codice_piatto, numero_linea, quantita, prezzo_unitario)
+        VALUES (?, ?, ?, ?, ?)
+        """;
+
 
     public static final String PAGAMENTI_BY_CLIENTE = """
         SELECT codice_pagamento, data, importo, metodo
