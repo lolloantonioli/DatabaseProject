@@ -1,12 +1,6 @@
 package it.unibo.data;
 
 import java.sql.Connection;
-<<<<<<< HEAD
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-=======
->>>>>>> 3e54bf10720f374e7df872fff18693aa72e69b7a
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

@@ -1,7 +1,10 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Indirizzo {
 
@@ -56,7 +59,46 @@ public class Indirizzo {
     }
 
     public static final class DAO {
+        /**
+         * Restituisce tutti gli indirizzi di un cliente
+         */
+        public static List<Indirizzo> listByCliente(Connection connection, int codiceCliente) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.INDIRIZZI_BY_CLIENTE, codiceCliente);
+                 var rs = stmt.executeQuery()) {
+                
+                var list = new ArrayList<Indirizzo>();
+                while (rs.next()) {
+                    int id = rs.getInt("codice_indirizzo");
+                    String via = rs.getString("via");
+                    String numero = rs.getString("numero_civico");
+                    String cap = rs.getString("cap");
+                    int interno = rs.getInt("interno");
+                    int scala = rs.getInt("scala");
+                    int zona = rs.getInt("codice_zona");
+                    list.add(new Indirizzo(id, via, numero, cap, interno, scala, zona));
+                }
+                return list;
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il caricamento dei ristoranti per zona", e);
+            }
+        }
 
+        /**
+         * Restituisce la zona geografica corrispondente a un indirizzo
+         */
+        public Optional<ZonaGeografica> findZonaByIndirizzo(Connection connection, int codiceIndirizzo) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.ZONA_BY_INDIRIZZO, codiceIndirizzo);
+                 var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int idZona = rs.getInt("codice_zona");
+                    String nome = rs.getString("nome");
+                    return Optional.of(new ZonaGeografica(idZona, nome));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il caricamento della zona geografica per l'indirizzo", e);
+            }
+            return Optional.empty();
+        }
         
     }
 
