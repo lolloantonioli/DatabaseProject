@@ -430,4 +430,45 @@ public static final String AVAILABLE_RIDERS_BY_ZONA = """
     WHERE codice_zona = ? AND disponibile = TRUE
     """;
 
+public static final String INSERT_STATO_ORDINE = """
+    INSERT INTO stati_ordini
+        (codice_ordine, data, in_preparazione, in_consegna, consegnato, codice_rider)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
+public static final String UPDATE_STATO_ORDINE = """
+    UPDATE stati_ordini
+    SET in_preparazione = ?, in_consegna = ?, consegnato = ?
+    WHERE codice_ordine = ? AND codice_rider = ?
+    """;
+
+public static final String SELECT_STATO_BY_ORDINE = """
+    SELECT codice_ordine, data, in_preparazione, in_consegna, consegnato, codice_rider
+    FROM stati_ordini
+    WHERE codice_ordine = ?
+    ORDER BY data DESC
+    LIMIT 1
+    """;
+
+// Ordini in cui sono stati utilizzati punti
+public static final String ORDINI_WITH_POINTS = """
+    SELECT DISTINCT codice_ordine
+    FROM utilizza_punti
+    """;
+public static final String VISUALIZZAZIONI_BY_CLIENTE_ON_DATE = """
+    SELECT codice_cliente, piva
+    FROM visualizzazioni
+    WHERE codice_cliente = ? AND DATE(data) = ?
+    """;
+
+public static final String COUNT_VISUALIZZAZIONI_BY_RISTORANTE = """
+    SELECT COUNT(*) AS total
+    FROM visualizzazioni
+    WHERE piva = ?
+    """;
+public static final String INSERT_ZONA = """
+    INSERT INTO zone_geografiche (codice_zona, nome)
+    VALUES (?, ?)
+    """;
+
 }

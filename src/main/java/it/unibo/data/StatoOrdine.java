@@ -1,8 +1,11 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class StatoOrdine {
 
@@ -53,6 +56,61 @@ public class StatoOrdine {
         ));
     }
 
-    public static final class DAO {}
+    public static final class DAO {
+            /**
+         * Inserisce un nuovo stato ordine
+         */
+        public void insertState(Connection conn, StatoOrdine s) {
+            try (var ps = DAOUtils.prepare(conn,
+                                           Queries.INSERT_STATO_ORDINE,
+                                           s.codiceOrdine,
+                                           Timestamp.valueOf(s.data),
+                                           Timestamp.valueOf(s.inPreparazione),
+                                           Timestamp.valueOf(s.inConsegna),
+                                           Timestamp.valueOf(s.consegnato),
+                                           s.codiceRider)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento stato ordine " + s.codiceOrdine, e);
+            }
+        }
+
+        /**
+         * Aggiorna uno stato ordine esistente (modifica timestamp campi)
+         */
+        public void updateState(Connection conn, StatoOrdine s) {
+            try (var ps = DAOUtils.prepare(conn,
+                                           Queries.UPDATE_STATO_ORDINE,
+                                           Timestamp.valueOf(s.inPreparazione),
+                                           Timestamp.valueOf(s.inConsegna),
+                                           Timestamp.valueOf(s.consegnato),
+                                           s.codiceOrdine,
+                                           s.codiceRider)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore aggiornamento stato ordine " + s.codiceOrdine, e);
+            }
+        }
+
+        /**
+         * Recupera l'ultimo stato di un ordine
+         */
+        public Optional<StatoOrdine> findByOrder(Connection conn, int codiceOrdine) {
+            try (var ps = DAOUtils.prepare(conn, Queries.SELECT_STATO_BY_ORDINE, codiceOrdine);
+                 var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    var data    = rs.getTimestamp("data").toLocalDateTime();
+                    var prep    = rs.getTimestamp("in_preparazione").toLocalDateTime();
+                    var conseg  = rs.getTimestamp("in_consegna").toLocalDateTime();
+                    var cons    = rs.getTimestamp("consegnato").toLocalDateTime();
+                    int rider   = rs.getInt("codice_rider");
+                    return Optional.of(new StatoOrdine(codiceOrdine, data, prep, conseg, cons, rider));
+                }
+                return Optional.empty();
+            } catch (Exception e) {
+                throw new DAOException("Errore recupero stato ordine " + codiceOrdine, e);
+            }
+        }
+    }
 
 }

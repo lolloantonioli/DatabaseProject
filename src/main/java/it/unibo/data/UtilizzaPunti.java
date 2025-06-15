@@ -1,5 +1,7 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +45,20 @@ public class UtilizzaPunti {
     }
 
     public static final class DAO {
-        // Implement DAO methods here if needed
+        /**
+         * Restituisce gli ordini in cui sono stati utilizzati punti
+         */
+        public List<Integer> listOrdersWithPoints(Connection conn) {
+            var result = new ArrayList<Integer>();
+            try (var ps = DAOUtils.prepare(conn, Queries.ORDINI_WITH_POINTS);
+                 var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(rs.getInt("codice_ordine"));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore caricamento ordini con utilizzo punti", e);
+            }
+            return result;
+        }
     }
 }
