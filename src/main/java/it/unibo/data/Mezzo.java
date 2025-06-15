@@ -72,5 +72,21 @@ public class Mezzo {
             }
             return result;
         }
+        /**
+         * Inserisce un nuovo mezzo per un rider
+         */
+        public void insertMezzo(Connection conn, Mezzo m) {
+            try (var ps = DAOUtils.prepare(conn,
+                                        Queries.INSERT_MEZZO,
+                                        m.codiceRider,
+                                        m.codiceMezzo,
+                                        m.tipo.name(),
+                                        m.targa,
+                                        m.modello)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento mezzo per rider " + m.codiceRider, e);
+            }
+        }
     }
 }
