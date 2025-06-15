@@ -99,7 +99,30 @@ public class Indirizzo {
             }
             return Optional.empty();
         }
-        
+        /**
+         * Inserisce un nuovo indirizzo e lo associa al cliente
+         * @return il codice identificativo generato per l'indirizzo
+         */
+        public int insertIndirizzo(Connection connection, int codiceCliente, Indirizzo ind) {
+            try (var psInd = DAOUtils.prepare(connection, Queries.INSERT_INDIRIZZO,
+                                             ind.via, ind.numeroCivico, ind.cap,
+                                             ind.interno, ind.scala, ind.codiceZona)) {
+                psInd.executeUpdate();
+                try (var keys = psInd.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        int id = keys.getInt(1);
+                        try (var psRes = DAOUtils.prepare(connection, Queries.INSERT_RESIDENZA,
+                                                         codiceCliente, id)) {
+                            psRes.executeUpdate();
+                        }
+                        return id;
+                    }
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore durante l'inserimento dell'indirizzo per il cliente " + codiceCliente, e);
+            }
+            throw new DAOException("Nessun ID generato per il nuovo indirizzo");
+        }
     }
 
 }
