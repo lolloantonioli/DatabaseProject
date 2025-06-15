@@ -1,5 +1,7 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +38,23 @@ public class Offre {
     }
 
     public static final class DAO {
-
+        /**
+         * Restituisce tutte le associazioni Offre per un dato ristorante
+         */
+        public List<Offre> listByRistorante(Connection connection, String piva) {
+            List<Offre> result = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.PIATTI_BY_RISTORANTE, piva);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int codicePiatto = rs.getInt("codice_piatto");
+                    String partIva = rs.getString("piva");
+                    result.add(new Offre(partIva, codicePiatto));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Error while retrieving offers for ristorante " + piva, e);
+            }
+            return result;
+        }
     }
 
 }
