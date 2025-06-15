@@ -1,6 +1,8 @@
 package it.unibo.data;
 
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +54,83 @@ public class Recensione {
     }
 
     public static final class DAO {
+        /**
+         * Inserisce una nuova recensione
+         */
+        public void insertRecensione(Connection conn, Recensione rec) {
+            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_RECENSIONE,
+                                           rec.codiceCliente,
+                                           rec.piva,
+                                           rec.numeroStelle,
+                                           rec.descrizione,
+                                           rec.titolo,
+                                           java.sql.Date.valueOf(rec.data))) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento recensione per cliente " + rec.codiceCliente, e);
+            }
+        }
 
+        /**
+         * Visualizza tutte le recensioni fatte da un cliente
+         */
+        public List<Recensione> listByCliente(Connection conn, int codiceCliente) {
+            var result = new ArrayList<Recensione>();
+            try (var ps = DAOUtils.prepare(conn, Queries.SELECT_RECENSIONI_BY_CLIENTE, codiceCliente);
+                 var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(new Recensione(
+                        rs.getInt("codice_cliente"),
+                        rs.getString("piva"),
+                        rs.getInt("numero_stelle"),
+                        rs.getString("descrizione"),
+                        rs.getString("titolo"),
+                        rs.getDate("data").toLocalDate()
+                    ));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore recupero recensioni per cliente " + codiceCliente, e);
+            }
+            return result;
+        }
+
+        /**
+         * Visualizza le recensioni di un ristorante ordinate per stelle
+         */
+        public List<Recensione> listByRistorante(Connection conn, String piva) {
+            var result = new ArrayList<Recensione>();
+            try (var ps = DAOUtils.prepare(conn, Queries.SELECT_RECENSIONI_BY_RISTORANTE, piva);
+                 var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(new Recensione(
+                        rs.getInt("codice_cliente"),
+                        rs.getString("piva"),
+                        rs.getInt("numero_stelle"),
+                        rs.getString("descrizione"),
+                        rs.getString("titolo"),
+                        rs.getDate("data").toLocalDate()
+                    ));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore recupero recensioni per ristorante " + piva, e);
+            }
+            return result;
+        }
+        /**
+         * Top 10 ristoranti per media stelle
+         */
+        public List<String> top10Ristoranti(Connection conn) {
+            var result = new ArrayList<String>();
+            try (var ps = DAOUtils.prepare(conn, Queries.TOP10_RISTORANTI);
+                 var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String pivaTop = rs.getString("piva");
+                    result.add(pivaTop);
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore recupero top10 ristoranti", e);
+            }
+            return result;
+        }
     }
 }
