@@ -391,5 +391,11 @@ public static final String SELECT_RECENSIONI_BY_RISTORANTE = """
     ORDER BY numero_stelle DESC, data DESC
     """;
 
-
+public static final String RESIDENZA_BY_CLIENTE = """
+    SELECT codice_cliente, codice_indirizzo
+    FROM residenza
+    WHERE codice_cliente = ?
+    """;
+//vbjkjkbvjckxbv
+//dbfisdbvuidfsviufubfdiuvb
 }
