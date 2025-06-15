@@ -184,4 +184,20 @@ public class Queries {
         WHERE codice_rider = ?
         """;
 
+    public static final String INDIRIZZI_BY_CLIENTE = """
+        SELECT i.codice_indirizzo, i.via, i.numero_civico, i.cap, i.interno, i.scala, i.codice_zona
+        FROM indirizzi i
+        JOIN residenza r ON i.codice_indirizzo = r.codice_indirizzo
+        WHERE r.codice_cliente = ?
+        ORDER BY i.codice_indirizzo
+        """;
+
+    public static final String ZONA_BY_INDIRIZZO = """
+        SELECT z.codice_zona, z.nome
+        FROM zone_geografiche z
+        JOIN indirizzi i ON z.codice_zona = i.codice_zona
+        WHERE i.codice_indirizzo = ?
+        """;
+
+
 }
