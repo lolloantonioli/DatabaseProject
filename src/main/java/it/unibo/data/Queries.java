@@ -141,13 +141,6 @@ public static final String INSERT_RACCOLTA_PUNTI = """
         """;
 
 
-
-<<<<<<< HEAD
-public static final String ORDINI_IN_ATTESA_BY_RIDER = """
-"""
-        
-        ;
-=======
     public static final String PAGAMENTI_BY_CLIENTE = """
         SELECT codice_pagamento, data, importo, metodo
         FROM pagamenti
