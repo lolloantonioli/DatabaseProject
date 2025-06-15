@@ -2,6 +2,7 @@ package it.unibo.data;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +51,7 @@ public class Piatto {
             try (var stmt = DAOUtils.prepare(connection, Queries.PIATTI_BY_RISTORANTE, piva);
                  var rs = stmt.executeQuery()) {
                 
-                var piatti = new java.util.ArrayList<Piatto>();
+                var piatti = new ArrayList<Piatto>();
                 while (rs.next()) {
                     piatti.add(new Piatto(
                         rs.getInt("codice_piatto"),
