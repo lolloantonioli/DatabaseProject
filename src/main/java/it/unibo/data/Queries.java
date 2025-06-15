@@ -377,6 +377,19 @@ public static final String INSERT_OFFRE = """
 
     // Ordini con promozione applicata
 
+public static final String SELECT_RECENSIONI_BY_CLIENTE = """
+    SELECT codice_cliente, piva, numero_stelle, descrizione, titolo, data
+    FROM recensioni
+    WHERE codice_cliente = ?
+    ORDER BY data DESC
+    """;
+//DFVJHDFIOHVBOUIDF
+public static final String SELECT_RECENSIONI_BY_RISTORANTE = """
+    SELECT codice_cliente, piva, numero_stelle, descrizione, titolo, data
+    FROM recensioni
+    WHERE piva = ?
+    ORDER BY numero_stelle DESC, data DESC
+    """;
 
 
 }
