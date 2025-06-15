@@ -1,7 +1,12 @@
 package it.unibo.data;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class GeneraPunti {
     public final int codiceOrdine;
@@ -39,6 +44,20 @@ public class GeneraPunti {
     }
 
     public static final class DAO {
-        // Implement DAO methods here if needed
+        public Optional<GeneraPunti> findByOrdine(Connection connection, int codiceOrdine){
+            try (PreparedStatement ps = DAOUtils.prepare(connection, Queries.PUNTI_GENERATI_BY_ORDINE, codiceOrdine)) {
+                ps.setInt(1, codiceOrdine);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        int punti = rs.getInt("punti_generati");
+                        int raccolta = rs.getInt("codice_raccolta");
+                        return Optional.of(new GeneraPunti(codiceOrdine, punti, raccolta));
+                    }
+                }
+            }catch( Exception e) {
+                throw new DAOException("Errore durante la ricerca dei punti generati per l'ordine con codice " + codiceOrdine, e);
+            }
+            return Optional.empty();
+        }
     }
 }
