@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class Ristorante {
 
@@ -12,13 +13,15 @@ public class Ristorante {
     public final String indirizzo;
     public final String orario;
     public final int codiceZona;
+    public final Set<Piatto> piatti;
 
-    public Ristorante(String piva, String nome, String indirizzo, String orario, int codiceZona) {
+    public Ristorante(String piva, String nome, String indirizzo, String orario, int codiceZona, Set<Piatto> piatti) {
         this.piva = piva;
         this.nome = nome;
         this.indirizzo = indirizzo;
         this.orario = orario;
         this.codiceZona = codiceZona;
+        this.piatti = piatti == null ? Set.of() : Set.copyOf(piatti);
     }
 
     @Override
@@ -30,12 +33,13 @@ public class Ristorante {
                r.nome.equals(this.nome) &&
                r.indirizzo.equals(this.indirizzo) &&
                r.orario.equals(this.orario) &&
-               r.codiceZona == this.codiceZona;
+               r.codiceZona == this.codiceZona &&
+               r.piatti.equals(this.piatti);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(piva, nome, indirizzo, orario, codiceZona);
+        return Objects.hash(piva, nome, indirizzo, orario, codiceZona, piatti);
     }
 
     @Override
@@ -45,7 +49,8 @@ public class Ristorante {
             Printer.field("nome", nome),
             Printer.field("indirizzo", indirizzo),
             Printer.field("orario", orario),
-            Printer.field("codiceZona", codiceZona)
+            Printer.field("codiceZona", codiceZona),
+            Printer.field("piatti", piatti.stream().map(Piatto::toString).toList())
         ));
     }
 
