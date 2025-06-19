@@ -1,7 +1,9 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -110,7 +112,7 @@ public class Rider {
             try (var stmt = DAOUtils.prepare(connection, Queries.RIDERS_BY_ZONA, codiceZona);
                  var rs = stmt.executeQuery()) {
                 
-                var riders = new java.util.ArrayList<Rider>();
+                var riders = new ArrayList<Rider>();
                 while (rs.next()) {
                     riders.add(new Rider(
                         rs.getInt("codice_rider"),
@@ -138,7 +140,7 @@ public class Rider {
             try (var stmt = DAOUtils.prepare(connection, Queries.AVAILABLE_RIDERS_BY_ZONA, codiceZona);
                  var rs = stmt.executeQuery()) {
                 
-                var riders = new java.util.ArrayList<Rider>();
+                var riders = new ArrayList<Rider>();
                 while (rs.next()) {
                     riders.add(new Rider(
                         rs.getInt("codice_rider"),
@@ -170,7 +172,7 @@ public class Rider {
                                         r.codiceRider,
                                         r.nome,
                                         r.cognome,
-                                        java.sql.Date.valueOf(r.dataNascita),
+                                        Date.valueOf(r.dataNascita),
                                         r.email,
                                         r.telefono,
                                         r.iban,

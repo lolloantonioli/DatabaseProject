@@ -37,7 +37,7 @@ public class ZonaGeografica {
     }
 
     public static final class DAO {
- /**
+        /**
          * Inserisce una nuova zona geografica
          */
         public void insertZona(Connection conn, ZonaGeografica z) {
@@ -49,22 +49,6 @@ public class ZonaGeografica {
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento zona geografica " + z.codiceZona, e);
             }
-        }
-
-        /**
-         * Restituisce i ristoranti in una zona geografica
-         */
-        public List<Ristorante> listRistoranti(Connection conn, int codiceZona) {
-            // utilizza Ristorante.DAO.findByZona
-            return Ristorante.DAO.findByZona(conn, codiceZona);
-        }
-
-        /**
-         * Restituisce i rider in una zona geografica
-         */
-        public List<Rider> listRider(Connection conn, int codiceZona) {
-            // utilizza Rider.DAO.findByZona
-            return Rider.DAO.findByZona(conn, codiceZona);
         }
         
     }

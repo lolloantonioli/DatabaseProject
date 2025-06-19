@@ -6,6 +6,7 @@ import javax.swing.text.View;
 
 import it.unibo.data.Cliente;
 import it.unibo.data.DAOException;
+import it.unibo.data.DAOUtils;
 import it.unibo.data.Ristorante;
 import it.unibo.model.DBModel;
 import it.unibo.model.Model;
@@ -18,7 +19,7 @@ public final class Controller {
     private final MainFrame view;
 
     public Controller() {
-        this.model = new DBModel(null);
+        this.model = new DBModel(DAOUtils.localMySQLConnection("root", ""));
         this.view = new MainFrame(this);
     }
 

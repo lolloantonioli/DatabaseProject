@@ -72,9 +72,9 @@ public class Pagamento {
             return result;
         }
         
-        public int insert(Connection conn, int codiceCliente, String metodo, BigDecimal importo) {
+        public int insertPagamento(Connection conn, Pagamento p) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_PAGAMENTO,
-                                           codiceCliente, metodo, importo)) {
+                                           p.codiceCliente, p.nomeMetodo, p.data, p.importo)) {
                 ps.executeUpdate();
                 try (var rs = ps.getGeneratedKeys()) {
                     if (rs.next()) return rs.getInt(1);

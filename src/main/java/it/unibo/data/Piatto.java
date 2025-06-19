@@ -110,15 +110,15 @@ public class Piatto {
         /**
          * Inserisce un nuovo piatto per un ristorante
          */
-        public static void insertPiatto(Connection connection, Piatto p, String piva) {
+        public static void insertPiatto(Connection connection, Piatto p) {
             try (var stmt = DAOUtils.prepare(
                     connection,
-                    Queries.INSERT_PIATTO, // definire questa costante in Queries
-                    p.codicePiatto, p.nome, p.prezzo, p.descrizione, piva
+                    Queries.INSERT_PIATTO,
+                    p.codicePiatto, p.nome, p.prezzo, p.descrizione
                 )) {
                 stmt.executeUpdate();
             } catch (Exception e) {
-                throw new DAOException("Errore inserimento piatto per ristorante " + piva, e);
+                throw new DAOException("Errore inserimento piatto", e);
             }
         }
     }

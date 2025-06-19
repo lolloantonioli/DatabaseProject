@@ -93,21 +93,21 @@ public class Ristorante {
             }
         }
         /**
- * Inserisce un nuovo ristorante
- */
-public void insertRistorante(Connection conn, Ristorante r) {
-    try (var ps = DAOUtils.prepare(conn,
-                                   Queries.INSERT_RISTORANTE,
-                                   r.piva,
-                                   r.nome,
-                                   r.indirizzo,
-                                   r.orario,
-                                   r.codiceZona)) {
-        ps.executeUpdate();
-    } catch (Exception e) {
-        throw new DAOException("Errore inserimento ristorante " + r.piva, e);
-    }
-}
+         * Inserisce un nuovo ristorante
+         */
+        public void insertRistorante(Connection conn, Ristorante r) {
+            try (var ps = DAOUtils.prepare(conn,
+                                        Queries.INSERT_RISTORANTE,
+                                        r.piva,
+                                        r.nome,
+                                        r.indirizzo,
+                                        r.orario,
+                                        r.codiceZona)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento ristorante " + r.piva, e);
+            }
+        }
 
     }
 

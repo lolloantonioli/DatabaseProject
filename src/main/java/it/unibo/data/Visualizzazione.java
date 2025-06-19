@@ -1,6 +1,8 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,11 +42,11 @@ public class Visualizzazione {
         /**
          * Restituisce le visualizzazioni fatte da un cliente in una data specifica
          */
-        public List<Visualizzazione> listByClienteOnDate(Connection conn, int codiceCliente, java.time.LocalDate date) {
+        public List<Visualizzazione> listByClienteOnDate(Connection conn, int codiceCliente, LocalDate date) {
             List<Visualizzazione> result = new ArrayList<>();
             try (var ps = DAOUtils.prepare(conn, Queries.VISUALIZZAZIONI_BY_CLIENTE_ON_DATE,
                                            codiceCliente,
-                                           java.sql.Date.valueOf(date));
+                                           Date.valueOf(date));
                  var rs = ps.executeQuery()) {
                 while (rs.next()) {
                     result.add(new Visualizzazione(
