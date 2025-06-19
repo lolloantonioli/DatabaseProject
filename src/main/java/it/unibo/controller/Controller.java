@@ -61,6 +61,34 @@ public final class Controller {
         view.show(CardName.CHECKOUT);
     }
 
+    /**
+     * Restituisce l'ID del cliente attualmente loggato
+     * @return l'ID del cliente corrente
+     * @throws IllegalStateException se nessun cliente è loggato
+     */
+    public int getCurrentClienteId() {
+        if (currentClienteId.isEmpty()) {
+            throw new IllegalStateException("Nessun cliente attualmente loggato");
+        }
+        return currentClienteId.get();
+    }
+
+    /**
+     * Restituisce il model per permettere l'accesso ai dati
+     * @return il model
+     */
+    public Model getModel() {
+        return this.model;
+    }
+
+    /**
+     * Verifica se un cliente è attualmente loggato
+     * @return true se un cliente è loggato, false altrimenti
+     */
+    public boolean isClienteLoggato() {
+        return currentClienteId.isPresent();
+    }
+
     /*public void userClickedCliente(Cliente cliente) {
         try {
             this.view.loadingClienteDetail();
