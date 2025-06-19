@@ -7,18 +7,39 @@ import javax.swing.text.View;
 import it.unibo.data.Cliente;
 import it.unibo.data.DAOException;
 import it.unibo.data.Ristorante;
+import it.unibo.model.DBModel;
 import it.unibo.model.Model;
+import it.unibo.view.CardName;
+import it.unibo.view.MainFrame;
 
 public final class Controller {
 
     private final Model model;
-    private final View view;
+    private final MainFrame view;
 
-    public Controller(Model model, View view) {
-        Objects.requireNonNull(model, "Controller created with null model");
-        Objects.requireNonNull(view, "Controller created with null view");
-        this.model = model;
-        this.view = view;
+    public Controller() {
+        this.model = new DBModel(null);
+        this.view = new MainFrame(this);
+    }
+
+    public void goToCliente() {
+        view.show(CardName.CLIENTE);
+    }
+
+    public void goToAmministratore() {
+        view.show(CardName.AMMINISTRATORE);
+    }
+
+    public void goToRider() {
+        view.show(CardName.RIDER);
+    }
+
+    public void goToRistorante() {
+        view.show(CardName.RISTORANTE);
+    }
+
+    public void goToMenu() {
+        view.show(CardName.MENU);
     }
 
     public void userRequestedInitialPage() {

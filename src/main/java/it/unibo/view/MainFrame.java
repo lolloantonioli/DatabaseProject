@@ -2,7 +2,7 @@ package it.unibo.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.ModuleLayer.Controller;
+import it.unibo.controller.Controller;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MainFrame extends JFrame {

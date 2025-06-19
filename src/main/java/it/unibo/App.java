@@ -1,16 +1,9 @@
 package it.unibo;
 
-import javax.swing.SwingUtilities;
-
-
-import it.unibo.view.MainFrame;
+import it.unibo.controller.Controller;
 
 public class App {
     public static void main(String[] args) {
-        
-        SwingUtilities.invokeLater(() -> {
-        new MainFrame().setVisible(true);
-        });
-    
+        new Controller().goToMenu();
     }
 }

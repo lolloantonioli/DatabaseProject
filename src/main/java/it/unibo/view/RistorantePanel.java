@@ -1,6 +1,6 @@
 package it.unibo.view;
 
-import java.lang.ModuleLayer.Controller;
+import it.unibo.controller.Controller;
 
 import javax.swing.JPanel;
 
