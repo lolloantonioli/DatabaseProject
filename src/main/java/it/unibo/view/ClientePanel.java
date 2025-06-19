@@ -24,9 +24,9 @@ public class ClientePanel extends JPanel {
         this.carrelloPanel = new CarrelloPanel(controller);
         this.profiloPanel = new ProfiloPanel();
         setLayout(layout);
-        tabbedPane.addTab("Trova Ristoranti", tabbedPane);
-        tabbedPane.addTab("Carrello", tabbedPane);
-        tabbedPane.addTab("Profilo", tabbedPane);
+        tabbedPane.addTab("Trova Ristoranti", trovaRistorantiPanel);
+        tabbedPane.addTab("Carrello", carrelloPanel);
+        tabbedPane.addTab("Profilo", profiloPanel);
     }
 
 }

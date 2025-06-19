@@ -1,7 +1,9 @@
 package it.unibo.controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
+import javax.swing.JOptionPane;
 import javax.swing.text.View;
 
 import it.unibo.data.Cliente;
@@ -17,13 +19,25 @@ public final class Controller {
 
     private final Model model;
     private final MainFrame view;
+    private Optional<Integer> currentClienteId;
 
     public Controller() {
         this.model = new DBModel(DAOUtils.localMySQLConnection("root", ""));
         this.view = new MainFrame(this);
+        this.currentClienteId = Optional.empty();
     }
 
     public void goToCliente() {
+        final String input = JOptionPane.showInputDialog(null, "Inserisci il tuo ID cliente: ", "Login Cliente", JOptionPane.QUESTION_MESSAGE);
+        if (input != null && !input.isBlank()) {
+            try {
+                final int id = Integer.parseInt(input.trim());
+                currentClienteId = Optional.of(id);
+                view.show(CardName.CLIENTE);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "ID non valido!", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         view.show(CardName.CLIENTE);
     }
 
