@@ -42,7 +42,7 @@ public class Visualizzazione {
         /**
          * Restituisce le visualizzazioni fatte da un cliente in una data specifica
          */
-        public List<Visualizzazione> listByClienteOnDate(Connection conn, int codiceCliente, LocalDate date) {
+        public static List<Visualizzazione> listByClienteOnDate(Connection conn, int codiceCliente, LocalDate date) {
             List<Visualizzazione> result = new ArrayList<>();
             try (var ps = DAOUtils.prepare(conn, Queries.VISUALIZZAZIONI_BY_CLIENTE_ON_DATE,
                                            codiceCliente,
@@ -63,7 +63,7 @@ public class Visualizzazione {
         /**
          * Restituisce il numero di visualizzazioni ricevute da un ristorante
          */
-        public int countByRistorante(Connection conn, String piva) {
+        public static int countByRistorante(Connection conn, String piva) {
             try (var ps = DAOUtils.prepare(conn, Queries.COUNT_VISUALIZZAZIONI_BY_RISTORANTE, piva);
                  var rs = ps.executeQuery()) {
                 if (rs.next()) {

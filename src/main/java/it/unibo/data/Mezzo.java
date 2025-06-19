@@ -54,7 +54,8 @@ public class Mezzo {
     }
 
     public static final class DAO {
-        public List<Mezzo> listByRider(Connection connection,int codiceRider) {
+
+        public static List<Mezzo> listByRider(Connection connection,int codiceRider) {
             List<Mezzo> result = new ArrayList<>();
             try (var ps = DAOUtils.prepare(connection, Queries.MEZZI_BY_RIDER, codiceRider)) {
                 var rs = ps.executeQuery();
@@ -75,7 +76,7 @@ public class Mezzo {
         /**
          * Inserisce un nuovo mezzo per un rider
          */
-        public void insertMezzo(Connection conn, Mezzo m) {
+        public static void insertMezzo(Connection conn, Mezzo m) {
             try (var ps = DAOUtils.prepare(conn,
                                         Queries.INSERT_MEZZO,
                                         m.codiceRider,

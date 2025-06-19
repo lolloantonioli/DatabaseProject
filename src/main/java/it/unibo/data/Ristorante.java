@@ -95,7 +95,7 @@ public class Ristorante {
         /**
          * Inserisce un nuovo ristorante
          */
-        public void insertRistorante(Connection conn, Ristorante r) {
+        public static void insertRistorante(Connection conn, Ristorante r) {
             try (var ps = DAOUtils.prepare(conn,
                                         Queries.INSERT_RISTORANTE,
                                         r.piva,

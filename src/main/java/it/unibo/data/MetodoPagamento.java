@@ -40,7 +40,7 @@ public class MetodoPagamento {
         /**
          * Restituisce tutti i metodi di pagamento di un cliente
          */
-        public List<MetodoPagamento> listByCliente(Connection connection, int codiceCliente) {
+        public static List<MetodoPagamento> listByCliente(Connection connection, int codiceCliente) {
             List<MetodoPagamento> result = new ArrayList<>();
             try (var stmt = DAOUtils.prepare(connection, Queries.METODI_PAGAMENTO_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
@@ -54,7 +54,7 @@ public class MetodoPagamento {
             return result;
         }
 
-        public void insertMetodo(Connection conn, MetodoPagamento m) {
+        public static void insertMetodo(Connection conn, MetodoPagamento m) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_METODO_PAGAMENTO,
                                         m.codiceCliente, m.nome)) {
                 ps.executeUpdate();

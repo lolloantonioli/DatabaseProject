@@ -57,7 +57,7 @@ public class Recensione {
         /**
          * Inserisce una nuova recensione
          */
-        public void insertRecensione(Connection conn, Recensione rec) {
+        public static void insertRecensione(Connection conn, Recensione rec) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_RECENSIONE,
                                            rec.codiceCliente,
                                            rec.piva,
@@ -74,7 +74,7 @@ public class Recensione {
         /**
          * Visualizza tutte le recensioni fatte da un cliente
          */
-        public List<Recensione> listByCliente(Connection conn, int codiceCliente) {
+        public static List<Recensione> listByCliente(Connection conn, int codiceCliente) {
             var result = new ArrayList<Recensione>();
             try (var ps = DAOUtils.prepare(conn, Queries.SELECT_RECENSIONI_BY_CLIENTE, codiceCliente);
                  var rs = ps.executeQuery()) {
@@ -97,7 +97,7 @@ public class Recensione {
         /**
          * Visualizza le recensioni di un ristorante ordinate per stelle
          */
-        public List<Recensione> listByRistorante(Connection conn, String piva) {
+        public static List<Recensione> listByRistorante(Connection conn, String piva) {
             var result = new ArrayList<Recensione>();
             try (var ps = DAOUtils.prepare(conn, Queries.SELECT_RECENSIONI_BY_RISTORANTE, piva);
                  var rs = ps.executeQuery()) {
@@ -119,7 +119,7 @@ public class Recensione {
         /**
          * Top 10 ristoranti per media stelle
          */
-        public List<String> top10Ristoranti(Connection conn) {
+        public static List<String> top10Ristoranti(Connection conn) {
             var result = new ArrayList<String>();
             try (var ps = DAOUtils.prepare(conn, Queries.TOP10_RISTORANTI);
                  var rs = ps.executeQuery()) {

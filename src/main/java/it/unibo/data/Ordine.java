@@ -155,7 +155,7 @@ public class Ordine {
             }
         }
 
-        public int insertFullOrder(Connection conn,
+        public static int insertFullOrder(Connection conn,
                                    int codicePagamento,
                                    BigDecimal prezzoTotale,
                                    String piva,

@@ -48,7 +48,7 @@ public class UtilizzaPunti {
         /**
          * Restituisce gli ordini in cui sono stati utilizzati punti
          */
-        public List<Integer> listOrdersWithPoints(Connection conn) {
+        public static List<Integer> listOrdersWithPoints(Connection conn) {
             var result = new ArrayList<Integer>();
             try (var ps = DAOUtils.prepare(conn, Queries.ORDINI_WITH_POINTS);
                  var rs = ps.executeQuery()) {

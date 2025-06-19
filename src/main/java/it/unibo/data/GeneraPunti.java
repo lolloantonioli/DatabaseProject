@@ -41,7 +41,7 @@ public class GeneraPunti {
     }
 
     public static final class DAO {
-        public Optional<GeneraPunti> findByOrdine(Connection connection, int codiceOrdine){
+        public static Optional<GeneraPunti> findByOrdine(Connection connection, int codiceOrdine){
             try (var stmt = DAOUtils.prepare(connection, Queries.PUNTI_GENERATI_BY_ORDINE, codiceOrdine);
                  var rs = stmt.executeQuery()) {
                 if (rs.next()) {

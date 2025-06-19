@@ -46,7 +46,7 @@ public class Contratto {
         /**
          * Restituisce il contratto associato a un dato rider, se esistente
          */
-        public Optional<Contratto> findByRider(Connection connection, int codiceRider) {
+        public static Optional<Contratto> findByRider(Connection connection, int codiceRider) {
             try (var stmt = DAOUtils.prepare(connection, Queries.MOSTRA_CONTRATTO, codiceRider);
                  var rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -61,7 +61,7 @@ public class Contratto {
             }
         }
 
-        public void insertContratto(Connection conn, Contratto c) {
+        public static void insertContratto(Connection conn, Contratto c) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_CONTRATTO,
                                         c.codiceRider, c.pagaOraria, c.testo)) {
                 ps.executeUpdate();

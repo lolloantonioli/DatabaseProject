@@ -59,7 +59,7 @@ public class Promozione {
         /**
          * Inserisce una nuova promozione per un ristorante
          */
-        public void insertPromozione(Connection connection, Promozione promo) {
+        public static void insertPromozione(Connection connection, Promozione promo) {
             try (var ps = DAOUtils.prepare(connection,
                                            Queries.INSERT_PROMOZIONE,
                                            promo.pIva,
@@ -77,7 +77,7 @@ public class Promozione {
         /**
          * Restituisce le promozioni attive di un ristorante
          */
-        public List<Promozione> listActiveByRistorante(Connection connection, String piva) {
+        public static List<Promozione> listActiveByRistorante(Connection connection, String piva) {
             List<Promozione> result = new ArrayList<>();
             try (var ps = DAOUtils.prepare(connection,
                                            Queries.SELECT_PROMOZIONI_ATTIVE_BY_RISTORANTE,

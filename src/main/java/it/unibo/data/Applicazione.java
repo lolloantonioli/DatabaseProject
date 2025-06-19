@@ -54,7 +54,7 @@ public class Applicazione {
     }
 
     public static final class DAO {
-        public List<Applicazione> listAllWithPromozione(Connection connection) {
+        public static List<Applicazione> listAllWithPromozione(Connection connection) {
             List<Applicazione> result = new ArrayList<>();
             try (PreparedStatement ps = DAOUtils.prepare(connection, Queries.ORDINI_CON_PROMOZIONE)) {
                 ResultSet rs = ps.executeQuery();

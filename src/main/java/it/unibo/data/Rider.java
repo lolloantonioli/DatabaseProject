@@ -166,7 +166,7 @@ public class Rider {
         /**
          * Inserisce un nuovo rider
          */
-        public void insertRider(Connection conn, Rider r) {
+        public static void insertRider(Connection conn, Rider r) {
             try (var ps = DAOUtils.prepare(conn,
                                         Queries.INSERT_RIDER,
                                         r.codiceRider,

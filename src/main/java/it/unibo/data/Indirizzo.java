@@ -86,7 +86,7 @@ public class Indirizzo {
         /**
          * Restituisce la zona geografica corrispondente a un indirizzo
          */
-        public Optional<ZonaGeografica> findZonaByIndirizzo(Connection connection, int codiceIndirizzo) {
+        public static Optional<ZonaGeografica> findZonaByIndirizzo(Connection connection, int codiceIndirizzo) {
             try (var stmt = DAOUtils.prepare(connection, Queries.ZONA_BY_INDIRIZZO, codiceIndirizzo);
                  var rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -103,7 +103,7 @@ public class Indirizzo {
          * Inserisce un nuovo indirizzo e lo associa al cliente
          * @return il codice identificativo generato per l'indirizzo
          */
-        public int insertIndirizzo(Connection connection, int codiceCliente, Indirizzo ind) {
+        public static void insertIndirizzoEAssociaResidenza(Connection connection, Indirizzo ind, int codiceCliente) {
             try (var psInd = DAOUtils.prepare(connection, Queries.INSERT_INDIRIZZO,
                                              ind.via, ind.numeroCivico, ind.cap,
                                              ind.interno, ind.scala, ind.codiceZona)) {
@@ -115,13 +115,13 @@ public class Indirizzo {
                                                          codiceCliente, id)) {
                             psRes.executeUpdate();
                         }
-                        return id;
+                    } else {
+                        throw new DAOException("Nessun ID generato per il nuovo indirizzo");
                     }
                 }
             } catch (Exception e) {
-                throw new DAOException("Errore durante l'inserimento dell'indirizzo per il cliente " + codiceCliente, e);
+                throw new DAOException("Errore durante l'inserimento dell'indirizzo e della residenza", e);
             }
-            throw new DAOException("Nessun ID generato per il nuovo indirizzo");
         }
     }
 

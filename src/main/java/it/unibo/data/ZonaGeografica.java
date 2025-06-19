@@ -40,7 +40,7 @@ public class ZonaGeografica {
         /**
          * Inserisce una nuova zona geografica
          */
-        public void insertZona(Connection conn, ZonaGeografica z) {
+        public static void insertZona(Connection conn, ZonaGeografica z) {
             try (var ps = DAOUtils.prepare(conn,
                                            Queries.INSERT_ZONA,
                                            z.codiceZona,

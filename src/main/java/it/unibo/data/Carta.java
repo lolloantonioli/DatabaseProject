@@ -58,7 +58,7 @@ public class Carta {
         /**
          * Restituisce tutte le carte possedute da un cliente
          */
-        public List<Carta> listCarteByCliente(Connection connection, int codiceCliente) {
+        public static List<Carta> listCarteByCliente(Connection connection, int codiceCliente) {
             List<Carta> result = new ArrayList<>();
             try (var stmt = DAOUtils.prepare(connection, Queries.CARTE_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
@@ -79,7 +79,7 @@ public class Carta {
         /**
          * Restituisce gli ordini effettuati con una specifica carta
          */
-        public List<Integer> listOrdiniByCarta(Connection connection, int codiceCliente, String numeroCarta) {
+        public static List<Integer> listOrdiniByCarta(Connection connection, int codiceCliente, String numeroCarta) {
             List<Integer> result = new ArrayList<>();
             try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_BY_CARTA, codiceCliente, numeroCarta);
                  var rs = stmt.executeQuery()) {
@@ -92,7 +92,7 @@ public class Carta {
             return result;
         }
 
-        public void insertCarta(Connection conn, Carta c) {
+        public static void insertCarta(Connection conn, Carta c) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_CARTA,
                                         c.codiceCliente, c.nome, c.numero,
                                         c.titolare, java.sql.Date.valueOf(c.dataScadenza), c.cvv)) {

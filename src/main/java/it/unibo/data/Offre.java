@@ -41,7 +41,7 @@ public class Offre {
         /**
          * Restituisce tutte le associazioni Offre per un dato ristorante
          */
-        public List<Offre> listByRistorante(Connection connection, String piva) {
+        public static List<Offre> listByRistorante(Connection connection, String piva) {
             List<Offre> result = new ArrayList<>();
             try (var stmt = DAOUtils.prepare(connection, Queries.PIATTI_BY_RISTORANTE, piva);
                  var rs = stmt.executeQuery()) {
@@ -55,7 +55,8 @@ public class Offre {
             }
             return result;
         }
-        public void insertOffre(Connection connection, Offre offre) {
+
+        public static void insertOffre(Connection connection, Offre offre) {
             try (var stmt = DAOUtils.prepare(connection,
                                          Queries.INSERT_OFFRE,
                                          offre.piva,
@@ -64,7 +65,7 @@ public class Offre {
             }catch (Exception e) {
                 throw new DAOException("Error while inserting offer for ristorante " + offre.piva, e);
             }
-    }
+        }
 
     }
 

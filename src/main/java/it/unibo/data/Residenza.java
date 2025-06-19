@@ -40,7 +40,7 @@ public class Residenza {
         /**
          * Restituisce le associazioni Residenza per un dato cliente
          */
-        public List<Residenza> listByCliente(Connection connection, int codiceCliente) {
+        public static List<Residenza> listByCliente(Connection connection, int codiceCliente) {
             List<Residenza> result = new ArrayList<>();
             try (var stmt = DAOUtils.prepare(connection, Queries.RESIDENZA_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
@@ -53,6 +53,17 @@ public class Residenza {
                 throw new DAOException("Errore durante il recupero delle residenze per il cliente " + codiceCliente, e);
             }
             return result;
+        }
+
+        public static void insertResidenza(Connection conn, Residenza r) {
+            try (var ps = DAOUtils.prepare(conn,
+                                        Queries.INSERT_RIDER,
+                                        r.codiceCliente,
+                                        r.codiceIndirizzo)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore inserimento residenza ", e);
+            }
         }
     }
 }

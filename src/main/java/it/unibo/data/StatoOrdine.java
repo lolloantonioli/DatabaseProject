@@ -60,7 +60,7 @@ public class StatoOrdine {
             /**
          * Inserisce un nuovo stato ordine
          */
-        public void insertState(Connection conn, StatoOrdine s) {
+        public static void insertState(Connection conn, StatoOrdine s) {
             try (var ps = DAOUtils.prepare(conn,
                                            Queries.INSERT_STATO_ORDINE,
                                            s.codiceOrdine,
@@ -78,7 +78,7 @@ public class StatoOrdine {
         /**
          * Aggiorna uno stato ordine esistente (modifica timestamp campi)
          */
-        public void updateState(Connection conn, StatoOrdine s) {
+        public static void updateState(Connection conn, StatoOrdine s) {
             try (var ps = DAOUtils.prepare(conn,
                                            Queries.UPDATE_STATO_ORDINE,
                                            Timestamp.valueOf(s.inPreparazione),
@@ -95,7 +95,7 @@ public class StatoOrdine {
         /**
          * Recupera l'ultimo stato di un ordine
          */
-        public Optional<StatoOrdine> findByOrder(Connection conn, int codiceOrdine) {
+        public static Optional<StatoOrdine> findByOrder(Connection conn, int codiceOrdine) {
             try (var ps = DAOUtils.prepare(conn, Queries.SELECT_STATO_BY_ORDINE, codiceOrdine);
                  var rs = ps.executeQuery()) {
                 if (rs.next()) {

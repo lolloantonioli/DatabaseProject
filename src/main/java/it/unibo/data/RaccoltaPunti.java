@@ -49,7 +49,7 @@ public class RaccoltaPunti {
         /**
          * Inserisce una nuova raccolta punti per un cliente (punti totali iniziali = 0)
          */
-        public void insertRaccolta(Connection conn, RaccoltaPunti r) {
+        public static void insertRaccolta(Connection conn, RaccoltaPunti r) {
             try (var ps = DAOUtils.prepare(conn,
                                            Queries.INSERT_RACCOLTA_PUNTI,
                                            r.codiceCliente,
@@ -64,7 +64,7 @@ public class RaccoltaPunti {
         /**
          * Recupera la raccolta punti di un cliente
          */
-        public Optional<RaccoltaPunti> findByCliente(Connection conn, int codiceCliente) {
+        public static Optional<RaccoltaPunti> findByCliente(Connection conn, int codiceCliente) {
             try (var ps = DAOUtils.prepare(conn,
                                            Queries.SELECT_RACCOLTA_BY_CLIENTE,
                                            codiceCliente);

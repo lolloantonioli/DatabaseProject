@@ -55,7 +55,7 @@ public class Pagamento {
         /**
          * Restituisce tutti i pagamenti effettuati da un cliente
          */
-        public List<Pagamento> listByCliente(Connection connection, int codiceCliente) {
+        public static List<Pagamento> listByCliente(Connection connection, int codiceCliente) {
             List<Pagamento> result = new ArrayList<>();
             try (var stmt = DAOUtils.prepare(connection, Queries.PAGAMENTI_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
@@ -72,7 +72,7 @@ public class Pagamento {
             return result;
         }
         
-        public int insertPagamento(Connection conn, Pagamento p) {
+        public static int insertPagamento(Connection conn, Pagamento p) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_PAGAMENTO,
                                            p.codiceCliente, p.nomeMetodo, p.data, p.importo)) {
                 ps.executeUpdate();

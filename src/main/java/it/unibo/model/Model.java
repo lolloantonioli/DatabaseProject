@@ -51,7 +51,7 @@ public interface Model {
     Optional<Ordine> findOrdine(int codiceOrdine);
     List<Ordine> loadOrdiniByCliente(int codiceCliente);
     List<Ordine> loadOrdiniDaConsegnareByRider(int codiceRider);
-    List<Ordine> loadOrdiniCOnsegnatiByRider(int codiceRider);
+    List<Ordine> loadOrdiniConsegnatiByRider(int codiceRider);
     
     // Gestione zona geografica
     void insertZona(ZonaGeografica zonaGeografica);
@@ -108,9 +108,9 @@ public interface Model {
     List<MetodoPagamento> loadMetodiPagamentoByCliente(int codiceCliente);
 
     // Gestione indirizzi
-    void insertIndirizzo(Indirizzo indirizzo);
+    void insertIndirizzo(Indirizzo indirizzo, int codiceCliente);
     List<Indirizzo> loadIndirizziByCliente(int codiceCliente);
-    Optional<Indirizzo> findZonaByIndirizzo(int codiceIndirizzo);
+    Optional<ZonaGeografica> findZonaByIndirizzo(int codiceIndirizzo);
 
     // Gestione generazione punti
     Optional<GeneraPunti> findGenerazionePuntiByOrder(int codiceOrdine);
