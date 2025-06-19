@@ -43,11 +43,11 @@ public final class Controller {
         view.show(CardName.MENU);
     }
 
-    public void userRequestedInitialPage() {
-        this.loadClientList();
+    public void goToCheckout(){
+        view.show(CardName.CHECKOUT);
     }
 
-    public void userClickedCliente(Cliente cliente) {
+    /*public void userClickedCliente(Cliente cliente) {
         try {
             this.view.loadingClienteDetail();
             var ordini = this.model.loadOrdiniByCliente(cliente.codiceCliente);
@@ -84,6 +84,6 @@ public final class Controller {
             e.printStackTrace();
             this.view.failedToLoadClients();
         }
-    }
+    }*/
 
 }

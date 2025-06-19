@@ -14,6 +14,7 @@ public class MainFrame extends JFrame {
     private final AmministratorePanel amministratorePanel;
     private final RiderPanel riderPanel;
     private final RistorantePanel ristorantePanel;
+    private final CheckoutPanel checkoutPanel;
 
     private static final String FRAME_NAME = "PL8";
     private static final String MSG = "CardName cannot be null";
@@ -28,6 +29,7 @@ public class MainFrame extends JFrame {
         this.amministratorePanel = new AmministratorePanel(controller);
         this.riderPanel = new RiderPanel(controller);
         this.ristorantePanel = new RistorantePanel(controller);
+        this.checkoutPanel = new CheckoutPanel(layout, checkoutPanel);
 
         this.setTitle(FRAME_NAME);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -37,6 +39,7 @@ public class MainFrame extends JFrame {
         root.add((Component) amministratorePanel, CardName.AMMINISTRATORE.toString());
         root.add((Component) riderPanel, CardName.RIDER.toString());
         root.add((Component) ristorantePanel, CardName.RISTORANTE.toString());
+        root.add((Component) checkoutPanel, CardName.CHECKOUT);
         this.add(root);
         this.pack();
         this.setLocationRelativeTo(null);
