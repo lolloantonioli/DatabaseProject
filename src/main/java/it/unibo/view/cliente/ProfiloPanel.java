@@ -1,4 +1,4 @@
-package it.unibo.view;
+package it.unibo.view.cliente;
 
 import java.awt.BorderLayout;
 import java.awt.Font;

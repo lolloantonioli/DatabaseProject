@@ -3,6 +3,9 @@ package it.unibo.view;
 import javax.swing.*;
 import java.awt.*;
 import it.unibo.controller.Controller;
+import it.unibo.view.cliente.CheckoutPanel;
+import it.unibo.view.cliente.ClientePanel;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MainFrame extends JFrame {

@@ -1,4 +1,4 @@
-package it.unibo.view;
+package it.unibo.view.cliente;
 
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
