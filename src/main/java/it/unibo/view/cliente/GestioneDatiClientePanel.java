@@ -187,7 +187,7 @@ public class GestioneDatiClientePanel extends JPanel {
             int res = JOptionPane.showConfirmDialog(this, panelForm, "Aggiungi Indirizzo", JOptionPane.OK_CANCEL_OPTION);
             if (res == JOptionPane.OK_OPTION) {
                 try {
-                    controller.getModel().aggiungiIndirizzo(
+                    controller.getModel().insertIndirizzo(new Indirizzo(res, TOOL_TIP_TEXT_KEY, TOOL_TIP_TEXT_KEY, TOOL_TIP_TEXT_KEY, null, null, res), controller.getCurrentClienteId());(
                         controller.getCurrentClienteId(),
                         via.getText(),
                         Integer.parseInt(numeroCivico.getText()),
