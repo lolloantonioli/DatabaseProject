@@ -7,3 +7,4 @@ public class App {
         new Controller().goToMenu();
     }
 }
+// BISOGNA MODIFICARE LE QUERY E I DAO PERCHE I NOMI DEI CAMPI NON SONO QUELLI DDELLE TABELLE
