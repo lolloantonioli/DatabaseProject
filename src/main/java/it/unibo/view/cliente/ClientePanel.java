@@ -9,7 +9,6 @@ import javax.swing.JTabbedPane;
 
 public class ClientePanel extends JPanel {
 
-    private final Controller controller;
     private final BorderLayout layout;
     private final JTabbedPane tabbedPane;
     private final TrovaRistorantiPanel trovaRistorantiPanel;
@@ -17,7 +16,6 @@ public class ClientePanel extends JPanel {
     private final ProfiloPanel profiloPanel;
 
     public ClientePanel(final Controller controller) {
-        this.controller = controller;
         this.layout = new BorderLayout();
         this.tabbedPane = new JTabbedPane();
         this.trovaRistorantiPanel = new TrovaRistorantiPanel();

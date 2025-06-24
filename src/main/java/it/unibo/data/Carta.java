@@ -1,7 +1,7 @@
 package it.unibo.data;
 
 import java.sql.Connection;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,10 +12,10 @@ public class Carta {
     public final String nome;
     public final String numero;
     public final String titolare;
-    public final LocalDate dataScadenza;
+    public final Date dataScadenza;
     public final String cvv;
 
-    public Carta(int codiceCliente, String nome, String numero, String titolare, LocalDate dataScadenza, String cvv) {
+    public Carta(int codiceCliente, String nome, String numero, String titolare, Date dataScadenza, String cvv) {
         this.codiceCliente = codiceCliente;
         this.nome = nome;
         this.numero = numero;
@@ -66,7 +66,7 @@ public class Carta {
                     String nome = rs.getString("nome");
                     String numero = rs.getString("numero");
                     String titolare = rs.getString("titolare");
-                    LocalDate scadenza = rs.getDate("data_scadenza").toLocalDate();
+                    Date scadenza = rs.getDate("data_scadenza");
                     String cvv = rs.getString("cvv");
                     result.add(new Carta(codiceCliente, nome, numero, titolare, scadenza, cvv));
                 }
@@ -95,7 +95,7 @@ public class Carta {
         public static void insertCarta(Connection conn, Carta c) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_CARTA,
                                         c.codiceCliente, c.nome, c.numero,
-                                        c.titolare, java.sql.Date.valueOf(c.dataScadenza), c.cvv)) {
+                                        c.titolare, c.dataScadenza, c.cvv)) {
                 ps.executeUpdate();
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento carta per cliente " + c.codiceCliente, e);

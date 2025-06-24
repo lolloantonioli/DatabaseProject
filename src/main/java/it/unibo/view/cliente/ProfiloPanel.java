@@ -47,7 +47,7 @@ public class ProfiloPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         
         // Pannello dei pulsanti
-        buttonPanel = new JPanel(new GridLayout(2, 3, 10, 10));
+        buttonPanel = new JPanel(new GridLayout(2, 4, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
         // Creazione pulsanti
@@ -57,6 +57,9 @@ public class ProfiloPanel extends JPanel {
         JButton btnIndirizzi = new JButton("I Miei Indirizzi");
         JButton btnCarte = new JButton("Le Mie Carte");
         JButton btnPagamenti = new JButton("Storico Pagamenti");
+        JButton btnRaccoltaPunti = new JButton("Raccolta Punti");
+        JButton btnMieiDati = new JButton("I miei Dati");
+
         
         // Aggiunta dei listener
         btnRecensioni.addActionListener(e -> visualizzaRecensioni());
@@ -65,6 +68,9 @@ public class ProfiloPanel extends JPanel {
         btnIndirizzi.addActionListener(e -> visualizzaIndirizzi());
         btnCarte.addActionListener(e -> visualizzaCarte());
         btnPagamenti.addActionListener(e -> visualizzaPagamenti());
+        btnRaccoltaPunti.addActionListener(e -> visualizzaRaccoltaPunti());
+        btnMieiDati.addActionListener(e -> visualizzaMieiDati());
+
         
         // Aggiunta pulsanti al pannello
         buttonPanel.add(btnRecensioni);
@@ -73,6 +79,8 @@ public class ProfiloPanel extends JPanel {
         buttonPanel.add(btnIndirizzi);
         buttonPanel.add(btnCarte);
         buttonPanel.add(btnPagamenti);
+        buttonPanel.add(btnRaccoltaPunti);
+        buttonPanel.add(btnMieiDati);
         
         // Creazione tabella
         tableModel = new DefaultTableModel();
@@ -290,7 +298,59 @@ public class ProfiloPanel extends JPanel {
             mostraErrore("Errore nel caricamento dei pagamenti: " + e.getMessage());
         }
     }
-    
+
+    private void visualizzaRaccoltaPunti() {
+        try {
+            int clienteId = controller.getCurrentClienteId();
+            var raccolta = controller.getModel().loadRaccoltePuntiByCliente(clienteId);
+            if (!raccolta.isPresent()) {
+                tableModel.setColumnCount(0);
+                tableModel.setRowCount(0);
+                tableModel.addColumn("Info");
+                tableModel.addRow(new Object[]{"Nessuna raccolta punti trovata."});
+                return;
+            }
+            tableModel.setColumnCount(0);
+            tableModel.setRowCount(0);
+            List<String> colonne = List.of("Punti Totali", "Soglia Punti", "Percentuale Sconto");
+            colonne.forEach(tableModel::addColumn);
+            tableModel.addRow(new Object[]{
+                raccolta.get().puntiTotali,
+                raccolta.get().sogliaPunti,
+                raccolta.get().percentualeSconto + " %"
+            });
+        } catch (Exception e) {
+            mostraErrore("Errore nel caricamento della raccolta punti: " + e.getMessage());
+        }
+    }
+
+    private void visualizzaMieiDati() {
+        try {
+            var cliente = controller.getModel().findClienteById(controller.getCurrentClienteId());
+            if (!cliente.isPresent()) {
+                tableModel.setColumnCount(0);
+                tableModel.setRowCount(0);
+                tableModel.addColumn("Info");
+                tableModel.addRow(new Object[]{"Cliente non trovato"});
+                return;
+            }
+            tableModel.setColumnCount(0);
+            tableModel.setRowCount(0);
+            List<String> colonne = List.of("Nome", "Cognome", "Email", "Telefono", "Data di Nascita", "Username");
+            colonne.forEach(tableModel::addColumn);
+            tableModel.addRow(new Object[]{
+                cliente.get().nome,
+                cliente.get().cognome,
+                cliente.get().email,
+                cliente.get().telefono,
+                cliente.get().dataNascita != null ? cliente.get().dataNascita.toString() : "",
+                cliente.get().username
+            });
+        } catch (Exception e) {
+            mostraErrore("Errore nel caricamento dati cliente: " + e.getMessage());
+        }
+    }
+
     private String getDescrizioneStato(int codiceOrdine) {
         Optional<StatoOrdine> statoOpt = controller.getModel().findStateByOrder(codiceOrdine);
         if (statoOpt.isEmpty()) {

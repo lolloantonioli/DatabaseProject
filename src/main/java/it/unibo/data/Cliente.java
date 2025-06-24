@@ -70,16 +70,16 @@ public class Cliente {
     public static final class DAO {
 
         public static Optional<Cliente> find(Connection connection, int codiceCliente) {
-        try (var stmt = DAOUtils.prepare(connection, Queries.FIND_CLIENTE, codiceCliente);
+        try (var stmt = DAOUtils.prepare(connection, Queries.FIND_CLIENTE_BY_ID, codiceCliente);
              var rs   = stmt.executeQuery()) {
             if (rs.next()) {
                 Cliente c = new Cliente(
                     rs.getString("nome"),
                     rs.getString("cognome"),
-                    rs.getString("email"),
+                    rs.getString("e_mail"),
                     rs.getString("telefono"),
-                    rs.getDate("data_nascita") != null 
-                        ? rs.getDate("data_nascita") 
+                    rs.getDate("data_di_nascita") != null 
+                        ? rs.getDate("data_di_nascita") 
                         : null,
                     rs.getString("username")
                 );
@@ -123,9 +123,9 @@ public class Cliente {
                     Cliente c = new Cliente(
                         rs.getString("nome"),
                         rs.getString("cognome"),
-                        rs.getString("email"),
+                        rs.getString("e_mail"),
                         rs.getString("telefono"),
-                        rs.getDate("data_nascita") != null 
+                        rs.getDate("data_di_nascita") != null 
                             ? rs.getDate("data_nascita")
                             : null,
                         rs.getString("username")

@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 
 import it.unibo.controller.Controller;
 import it.unibo.data.Cliente;
+import it.unibo.data.RaccoltaPunti;
 
 public class ClienteAccessPanel extends JPanel {
 
@@ -96,7 +97,9 @@ public class ClienteAccessPanel extends JPanel {
 
         try {
             Date dataNascita = Date.valueOf(data); // Deve essere nel formato yyyy-MM-dd
-            controller.getModel().insertCliente(new Cliente(nome, cognome, email, tel, dataNascita, username));
+            Cliente c = new Cliente(nome, cognome, email, tel, dataNascita, username);
+            controller.getModel().insertCliente(c);
+            controller.getModel().insertRaccoltaPunti(new RaccoltaPunti(c.codiceCliente, 0, 100, 10));
             JOptionPane.showMessageDialog(this, "Registrazione avvenuta! Il tuo username è: " + username);
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, "Data di nascita non valida. Usa il formato yyyy-MM-dd (es: 2000-12-31).");

@@ -205,7 +205,7 @@ public static final String INSERT_OFFRE = """
 
     // Login cliente: verifica esistenza
     public static final String FIND_CLIENTE_BY_ID = """
-        SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
+        SELECT codice_cliente, nome, cognome, e_mail, telefono, data_di_nascita, username
         FROM clienti
         WHERE codice_cliente = ?
         """;
