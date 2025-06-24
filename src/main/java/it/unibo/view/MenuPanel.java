@@ -30,7 +30,7 @@ public class MenuPanel extends JPanel {
         final JButton btnRider = new JButton(RIDER);
         final JButton btnAmministratore = new JButton(AMMINISTRATORE);
 
-        btnCliente.addActionListener(e -> controller.goToCliente());
+        btnCliente.addActionListener(e -> controller.goToClienteAccess());
         btnRistorante.addActionListener(e -> controller.goToRistorante());
         btnRider.addActionListener(e -> controller.goToRider());
         btnAmministratore.addActionListener(e -> controller.goToAmministratore());

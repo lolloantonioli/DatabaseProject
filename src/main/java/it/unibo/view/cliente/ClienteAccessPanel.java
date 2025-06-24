@@ -4,6 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.sql.Date;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,7 +18,7 @@ import it.unibo.data.Cliente;
 
 public class ClienteAccessPanel extends JPanel {
 
-    private JTextField txtIdLogin;
+    private JTextField txtUsernameLogin;
     private JTextField txtNome, txtCognome, txtEmail, txtTelefono, txtDataNasc, txtUsername;
     private final Controller controller;
 
@@ -70,10 +72,10 @@ public class ClienteAccessPanel extends JPanel {
         gbc2.insets = new Insets(5, 5, 5, 5);
         gbc2.fill = GridBagConstraints.HORIZONTAL;
         gbc2.gridx = 0; gbc2.gridy = 0;
-        pnlLogin.add(new JLabel("Codice Cliente:"), gbc2);
+        pnlLogin.add(new JLabel("Username:"), gbc2);
         gbc2.gridx = 1;
-        txtIdLogin = new JTextField(10);
-        pnlLogin.add(txtIdLogin, gbc2);
+        txtUsernameLogin = new JTextField(10);
+        pnlLogin.add(txtUsernameLogin, gbc2);
         gbc2.gridx = 0; gbc2.gridy++;
         gbc2.gridwidth = 2;
         JButton btnLogin = new JButton("Accedi");
@@ -91,23 +93,16 @@ public class ClienteAccessPanel extends JPanel {
         String tel = txtTelefono.getText();
         String data = txtDataNasc.getText();
         String username = txtUsername.getText();
-        // Call service to register, returns new client ID
-        controller.getModel().insertCliente(new Cliente(ABORT, nome, cognome, email, tel, null, username));
-        Long newId = Service.registerCliente(nome, cognome, email, tel, data);
-        JOptionPane.showMessageDialog(this, "Registrazione avvenuta! Il tuo codice cliente è: " + newId);
-        cardLayout.show(cards, "main");
+        controller.getModel().insertCliente(new Cliente(nome, cognome, email, tel, Date.valueOf(data), username));
+        JOptionPane.showMessageDialog(this, "Registrazione avvenuta! Il tuo username è: " + username);
     }
 
     private void onLogin() {
-        try {
-            Long id = Long.parseLong(txtIdLogin.getText());
-            if (Service.loginCliente(id)) {
-                cardLayout.show(cards, "main");
-            } else {
-                JOptionPane.showMessageDialog(this, "Codice cliente non valido.");
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Inserisci un codice valido.");
+        final Optional<Cliente> cliente = controller.getModel().findClienteByUsername(txtUsernameLogin.getText());
+        if (cliente.isPresent()) {
+            controller.goToCliente(cliente.get().codiceCliente);
+        } else {
+            JOptionPane.showMessageDialog(this, "Username non valido.");
         }
     }
 }

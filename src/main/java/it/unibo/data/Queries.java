@@ -14,6 +14,21 @@ public class Queries {
         FROM clienti
         ORDER BY cognome, nome
         """;
+public static final String UPDATE_CLIENTE = """
+    UPDATE clienti
+    SET nome = ?, 
+        cognome = ?, 
+        email = ?, 
+        telefono = ?, 
+        data_nascita = ?, 
+        username = ?
+    WHERE codice_cliente = ?
+    """;
+
+public static final String DELETE_CLIENTE = """
+    DELETE FROM clienti
+    WHERE codice_cliente = ?
+    """;
 
 // già presente
 public static final String INSERT_CLIENTE = """
