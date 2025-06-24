@@ -29,9 +29,7 @@ public class CheckoutPanel extends JPanel {
         btns.add(btnConferma);
         add(btns);
 
-        btnIndietro.addActionListener(e ->
-            mainLayout.show(rootPanel, "carrelloCard")
-        );
+        btnIndietro.addActionListener(e -> controller.goToMenu());
         btnConferma.addActionListener(e -> {
             // raccogli indirizzo, carrello e pagamento e invia
             service.effettuaOrdine();

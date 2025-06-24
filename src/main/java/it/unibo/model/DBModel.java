@@ -41,8 +41,13 @@ public class DBModel implements Model {
     }
 
     @Override
-    public Optional<Cliente> findCliente(int codiceCliente) {
+    public Optional<Cliente> findClienteById(int codiceCliente) {
         return Cliente.DAO.find(connection, codiceCliente);
+    }
+
+    @Override
+    public Optional<Cliente> findClienteByUsername(String username) {
+        return Cliente.DAO.findByUsername(connection, username);
     }
 
     @Override

@@ -85,6 +85,29 @@ public class Cliente {
             }
         }
 
+        public static Optional<Cliente> findByUsername(Connection connection, String username) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.FIND_CLIENTE_BY_USERNAME, username);
+                 var rs = stmt.executeQuery()) {
+                
+                if (rs.next()) {
+                    return Optional.of(new Cliente(
+                        rs.getInt("codice_cliente"),
+                        rs.getString("nome"),
+                        rs.getString("cognome"),
+                        rs.getString("email"),
+                        rs.getString("telefono"),
+                        rs.getDate("data_nascita") != null ? 
+                            rs.getDate("data_nascita").toLocalDate() : null,
+                        rs.getString("username")
+                    ));
+                }
+                return Optional.empty();
+                
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il caricamento del cliente", e);
+            }
+        }
+
         public static List<Cliente> findAll(Connection connection) {
             try (var stmt = DAOUtils.prepare(connection, Queries.LIST_CLIENTI);
                  var rs = stmt.executeQuery()) {

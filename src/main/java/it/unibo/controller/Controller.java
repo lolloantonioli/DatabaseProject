@@ -1,15 +1,10 @@
 package it.unibo.controller;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
-import javax.swing.text.View;
 
-import it.unibo.data.Cliente;
-import it.unibo.data.DAOException;
 import it.unibo.data.DAOUtils;
-import it.unibo.data.Ristorante;
 import it.unibo.model.DBModel;
 import it.unibo.model.Model;
 import it.unibo.view.CardName;

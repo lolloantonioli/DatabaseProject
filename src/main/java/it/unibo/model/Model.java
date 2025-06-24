@@ -31,7 +31,8 @@ import it.unibo.data.ZonaGeografica;
 
 public interface Model {
     // Gestione clienti
-    Optional<Cliente> findCliente(int codiceCliente);
+    Optional<Cliente> findClienteById(int codiceCliente);
+    Optional<Cliente> findClienteByUsername(String username);
     List<Cliente> loadClienti();
     void insertCliente(Cliente cliente);
     

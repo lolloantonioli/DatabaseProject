@@ -17,7 +17,7 @@ public class Queries {
 
 // già presente
 public static final String INSERT_CLIENTE = """
-    INSERT INTO clienti (codice_cliente, nome, cognome, email, telefono, data_nascita, username)
+    INSERT INTO clienti (nome, cognome, email, telefono, data_nascita, username)
     VALUES (?, ?, ?, ?, ?, ?, ?)
     """;
 
@@ -44,7 +44,7 @@ public static final String INSERT_MEZZO = """
     VALUES (?, ?, ?, ?, ?)
     """;
 
-    //VAFFANCULO
+    
 
 // Inserisce un indirizzo
 public static final String INSERT_INDIRIZZO = """
@@ -193,6 +193,12 @@ public static final String INSERT_OFFRE = """
         SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
         FROM clienti
         WHERE codice_cliente = ?
+        """;
+    
+    public static final String FIND_CLIENTE_BY_USERNAME = """
+        SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
+        FROM clienti
+        WHERE username = ?
         """;
 
     // Lista ristoranti per zona
