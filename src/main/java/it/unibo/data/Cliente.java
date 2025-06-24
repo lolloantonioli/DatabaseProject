@@ -99,10 +99,10 @@ public class Cliente {
                     Cliente c = new Cliente(
                         rs.getString("nome"),
                         rs.getString("cognome"),
-                        rs.getString("email"),
+                        rs.getString("e_mail"),
                         rs.getString("telefono"),
-                        rs.getDate("data_nascita") != null 
-                            ? rs.getDate("data_nascita")
+                        rs.getDate("data_di_nascita") != null 
+                            ? rs.getDate("data_di_nascita")
                             : null,
                         rs.getString("username")
                     );

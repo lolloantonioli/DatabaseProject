@@ -32,8 +32,8 @@ public static final String DELETE_CLIENTE = """
 
 // già presente
 public static final String INSERT_CLIENTE = """
-    INSERT INTO clienti (nome, cognome, email, telefono, data_nascita, username)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO clienti (nome, cognome, e_mail, telefono, data_di_nascita, username)
+    VALUES (?, ?, ?, ?, ?, ?)
     """;
 
 // Inserimento metodo di pagamento
@@ -211,7 +211,7 @@ public static final String INSERT_OFFRE = """
         """;
     
     public static final String FIND_CLIENTE_BY_USERNAME = """
-        SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
+        SELECT codice_cliente, nome, cognome, e_mail, telefono, data_di_nascita, username
         FROM clienti
         WHERE username = ?
         """;
