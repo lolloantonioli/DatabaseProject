@@ -9,13 +9,12 @@ public final class DAOUtils {
 
     // Establishes a connection to a MySQL daemon running locally at port 3306.
     //
-    public static Connection localMySQLConnection(String username, String password) {
+    public static Connection localMySQLConnection() {
         try {
-            var host = "localhost";
-            var port = "3306";
-            var database = "pl8";
-            var connectionString = "jdbc:mysql://" + host + ":" + port + "/" + database;
-            return DriverManager.getConnection(connectionString, username, password);
+            String url      = "jdbc:mysql://localhost:3306/pl8?serverTimezone=UTC";
+            String username = "root";
+            String password = "Pb05L=18";
+            return DriverManager.getConnection(url, username, password);
         } catch (Exception e) {
             throw new DAOException(e);
         }

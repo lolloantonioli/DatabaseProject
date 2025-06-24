@@ -45,7 +45,8 @@ public class MainFrame extends JFrame {
         root.add((Component) amministratorePanel, CardName.AMMINISTRATORE.toString());
         root.add((Component) riderPanel, CardName.RIDER.toString());
         root.add((Component) ristorantePanel, CardName.RISTORANTE.toString());
-        root.add((Component) checkoutPanel, CardName.CHECKOUT);
+        root.add((Component) checkoutPanel, CardName.CHECKOUT.toString());
+        root.add((Component) clienteAccessPanel, CardName.CLIENTE_ACCESS.toString());
         this.add(root);
         this.pack();
         this.setLocationRelativeTo(null);

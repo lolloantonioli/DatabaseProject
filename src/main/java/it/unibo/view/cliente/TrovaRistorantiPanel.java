@@ -18,8 +18,8 @@ public class TrovaRistorantiPanel extends JPanel {
     private final CardLayout cardLayout;
     private final JPanel cards;
 
-    private final JPanel indirizzoPanel;     // form per scegliere/aggiungere indirizzo
-    private final JPanel ricercaPanel;       // vera UI di ricerca ristoranti
+    private JPanel indirizzoPanel;     // form per scegliere/aggiungere indirizzo
+    private JPanel ricercaPanel;       // vera UI di ricerca ristoranti
 
     public TrovaRistorantiPanel() {
         this.cardLayout = new CardLayout();
@@ -28,7 +28,7 @@ public class TrovaRistorantiPanel extends JPanel {
         initIndirizzoPanel();
         initRicercaPanel();
         cards.add(indirizzoPanel, "indirizzo");
-        cards.add(ricercaPanel,   "ricerca");
+        cards.add(ricercaPanel, "ricerca");
         add(cards, BorderLayout.CENTER);
 
         // Mostra prima il panel di indirizzo
@@ -42,7 +42,7 @@ public class TrovaRistorantiPanel extends JPanel {
         btnSeleziona.addActionListener(e -> {
             // salva indirizzo selezionato nel model
             cardLayout.show(cards, "ricerca");
-            loadRistorantiPerZona(selezionato);
+            //loadRistorantiPerZona(selezionato);
         });
         indirizzoPanel.add(new JLabel("Scegli un indirizzo:"), BorderLayout.NORTH);
         indirizzoPanel.add(comboIndirizzi, BorderLayout.CENTER);
@@ -56,7 +56,7 @@ public class TrovaRistorantiPanel extends JPanel {
     }
 
     private void loadRistorantiPerZona(Indirizzo ind) {
-        List<Ristorante> list = service.getRistorantiPerZona(ind.getZona());
+        //List<Ristorante> list = service.getRistorantiPerZona(ind.getZona());
         // popola la JList/Tabella
     }
 }

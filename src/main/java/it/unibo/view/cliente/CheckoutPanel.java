@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import it.unibo.controller.Controller;
@@ -32,9 +33,9 @@ public class CheckoutPanel extends JPanel {
         btnIndietro.addActionListener(e -> controller.goToMenu());
         btnConferma.addActionListener(e -> {
             // raccogli indirizzo, carrello e pagamento e invia
-            service.effettuaOrdine();
+            //service.effettuaOrdine();
             JOptionPane.showMessageDialog(this, "Ordine effettuato!");
-            mainLayout.show(rootPanel, "trovaRistorantiCard");
+            //mainLayout.show(rootPanel, "trovaRistorantiCard");
         });
     }
 }

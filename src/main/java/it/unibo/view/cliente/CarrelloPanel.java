@@ -35,7 +35,8 @@ public class CarrelloPanel extends JPanel {
 
         // Quando clicca, passa al pannello di Checkout
         btnCheckout.addActionListener(e ->
-            mainLayout.show(rootPanel, "checkoutCard")
+            //mainLayout.show(rootPanel, "checkoutCard")
+            controller.goToMenu()
         );
     }
 }

@@ -59,7 +59,7 @@ public class ClienteAccessPanel extends JPanel {
         gbc.gridwidth = 2;
         pnlReg.add(new JLabel("Username:"), gbc);
         gbc.gridx = 1;
-        txtTelefono = new JTextField(15);
+        txtUsername = new JTextField(15);
         pnlReg.add(txtUsername, gbc);
         gbc.gridx = 0; gbc.gridy++;
         JButton btnReg = new JButton("Registrati");
@@ -93,8 +93,14 @@ public class ClienteAccessPanel extends JPanel {
         String tel = txtTelefono.getText();
         String data = txtDataNasc.getText();
         String username = txtUsername.getText();
-        controller.getModel().insertCliente(new Cliente(nome, cognome, email, tel, Date.valueOf(data), username));
-        JOptionPane.showMessageDialog(this, "Registrazione avvenuta! Il tuo username è: " + username);
+
+        try {
+            Date dataNascita = Date.valueOf(data); // Deve essere nel formato yyyy-MM-dd
+            controller.getModel().insertCliente(new Cliente(nome, cognome, email, tel, dataNascita, username));
+            JOptionPane.showMessageDialog(this, "Registrazione avvenuta! Il tuo username è: " + username);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, "Data di nascita non valida. Usa il formato yyyy-MM-dd (es: 2000-12-31).");
+        }
     }
 
     private void onLogin() {
