@@ -135,6 +135,11 @@ public interface Model {
 
     // Gestione applicazioni promozione
     List<Applicazione> loadOrdiniConPromozione();
+
+    void aggiungiAlCarrello(Piatto piatto, int quantita);
+    List<RigaCarrello> getCarrello();
+    void svuotaCarrello();
+    double getTotaleCarrello();
     
     static Model fromConnection(Connection connection) {
         return new DBModel(connection);

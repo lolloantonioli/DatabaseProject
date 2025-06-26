@@ -3,6 +3,8 @@ package it.unibo.model;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +36,7 @@ import it.unibo.data.ZonaGeografica;
 public class DBModel implements Model {
     
     private final Connection connection;
+    private final List<RigaCarrello> carrello = new ArrayList<>();
 
     public DBModel(final Connection connection) {
         Objects.requireNonNull(connection, "Model created with null connection");
@@ -338,6 +341,32 @@ public class DBModel implements Model {
     @Override
     public void deleteRecensione(int codiceCliente, String piva, String titolo) {
         Recensione.DAO.deleteRecensione(connection, codiceCliente, piva, titolo);
+    }
+
+    @Override
+    public void aggiungiAlCarrello(Piatto piatto, int quantita) {
+        for (RigaCarrello r : carrello) {
+            if (r.piatto.codicePiatto == piatto.codicePiatto) {
+                r.quantita += quantita;
+                return;
+            }
+        }
+        carrello.add(new RigaCarrello(piatto, quantita));
+    }
+
+    @Override
+    public List<RigaCarrello> getCarrello() {
+        return Collections.unmodifiableList(carrello);
+    }
+
+    @Override
+    public void svuotaCarrello() {
+        carrello.clear();
+    }
+
+    @Override
+    public double getTotaleCarrello() {
+        return carrello.stream().mapToDouble(r -> r.piatto.prezzo.doubleValue() * r.quantita).sum();
     }
 
 }

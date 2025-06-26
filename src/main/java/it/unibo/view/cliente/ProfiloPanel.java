@@ -3,7 +3,6 @@ package it.unibo.view.cliente;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 

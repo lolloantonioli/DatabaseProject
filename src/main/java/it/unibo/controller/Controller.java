@@ -22,6 +22,7 @@ public final class Controller {
 
     public void goToCliente(final int codiceCliente) {
         currentClienteId = Optional.of(codiceCliente);
+        view.getClientePanel().aggiornaIndirizzi();
         view.show(CardName.CLIENTE);
     }
 
