@@ -374,10 +374,10 @@ public static final String INSERT_OFFRE = """
         LIMIT 1
         """;
     public static final String CARTE_BY_CLIENTE = """
-        SELECT numero, titolare, data_scadenza
-        FROM carte
-        WHERE codice_cliente = ?
-        ORDER BY numero
+        SELECT nome, numero, titolare, data_scadenza, cvv
+    FROM carte
+    WHERE codice_cliente = ?
+    ORDER BY numero
         """;
 
     public static final String ORDINI_BY_CARTA = """

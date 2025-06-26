@@ -109,9 +109,14 @@ public class Indirizzo {
          * @return il codice identificativo generato per l'indirizzo
          */
         public static void insertIndirizzoEAssociaResidenza(Connection connection, Indirizzo ind, int codiceCliente) {
-            try (var psInd = DAOUtils.prepare(connection, Queries.INSERT_INDIRIZZO,
-                                             ind.via, ind.numeroCivico, ind.cap,
-                                             ind.interno, ind.scala, ind.codiceZona)) {
+            try (var psInd = connection.prepareStatement(
+                 Queries.INSERT_INDIRIZZO, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                psInd.setString(1, ind.via);
+                psInd.setString(2, ind.numeroCivico);
+                psInd.setString(3, ind.cap);
+                psInd.setInt(4, ind.interno);
+                psInd.setInt(5, ind.scala);
+                psInd.setInt(6, ind.codiceZona);
                 psInd.executeUpdate();
                 try (var keys = psInd.getGeneratedKeys()) {
                     if (keys.next()) {
@@ -125,6 +130,7 @@ public class Indirizzo {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new DAOException("Errore durante l'inserimento dell'indirizzo e della residenza", e);
             }
         }

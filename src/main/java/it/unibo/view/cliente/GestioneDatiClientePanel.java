@@ -15,11 +15,19 @@ import java.util.List;
 public class GestioneDatiClientePanel extends JPanel {
 
     private final Controller controller;
+    private DefaultListModel<String> modelMetodiPagamento;
+    private DefaultListModel<String> modelCarte;
+    private DefaultListModel<String> modelIndirizzi;
 
     public GestioneDatiClientePanel(Controller controller) {
         this.controller = controller;
         setLayout(new BorderLayout());
-
+        
+        // Inizializzazione lazy - creiamo i componenti ma non carichiamo i dati
+        initializeComponents();
+    }
+    
+    private void initializeComponents() {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Metodi di Pagamento", creaPanelMetodiPagamento());
         tabbedPane.addTab("Carte", creaPanelCarte());
@@ -28,24 +36,46 @@ public class GestioneDatiClientePanel extends JPanel {
 
         add(tabbedPane, BorderLayout.CENTER);
     }
+    
+    /**
+     * Carica i dati quando il pannello diventa visibile
+     */
+    public void refreshData() {
+        if (controller.isClienteLoggato()) {
+            if (modelMetodiPagamento != null) {
+                aggiornaListaMetodiPagamento(modelMetodiPagamento);
+            }
+            if (modelCarte != null) {
+                aggiornaListaCarte(modelCarte);
+            }
+            if (modelIndirizzi != null) {
+                aggiornaListaIndirizzi(modelIndirizzi);
+            }
+        }
+    }
 
     // 1. Metodi di Pagamento
     private JPanel creaPanelMetodiPagamento() {
         JPanel panel = new JPanel(new BorderLayout());
-        DefaultListModel<String> model = new DefaultListModel<>();
-        JList<String> lista = new JList<>(model);
+        modelMetodiPagamento = new DefaultListModel<>();
+        JList<String> lista = new JList<>(modelMetodiPagamento);
         JScrollPane scroll = new JScrollPane(lista);
         JButton btnAggiungi = new JButton("Aggiungi");
         JButton btnRimuovi = new JButton("Rimuovi");
 
-        aggiornaListaMetodiPagamento(model);
+        // Non caricare i dati subito - verrà fatto in refreshData()
 
         btnAggiungi.addActionListener(e -> {
+            if (!controller.isClienteLoggato()) {
+                JOptionPane.showMessageDialog(this, "Devi effettuare il login per accedere a questa funzione.");
+                return;
+            }
+            
             String nome = JOptionPane.showInputDialog(this, "Nome metodo (es: ApplePay, PayPal, ...):");
             if (nome != null && !nome.isBlank()) {
                 try {
                     controller.getModel().insertMetodoPagamento(new MetodoPagamento(controller.getCurrentClienteId(), nome));
-                    aggiornaListaMetodiPagamento(model);
+                    aggiornaListaMetodiPagamento(modelMetodiPagamento);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
@@ -53,11 +83,16 @@ public class GestioneDatiClientePanel extends JPanel {
         });
 
         btnRimuovi.addActionListener(e -> {
+            if (!controller.isClienteLoggato()) {
+                JOptionPane.showMessageDialog(this, "Devi effettuare il login per accedere a questa funzione.");
+                return;
+            }
+            
             String selezionato = lista.getSelectedValue();
             if (selezionato != null) {
                 try {
                     controller.getModel().deleteMetodoPagamento(controller.getCurrentClienteId(), selezionato);
-                    aggiornaListaMetodiPagamento(model);
+                    aggiornaListaMetodiPagamento(modelMetodiPagamento);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
@@ -74,23 +109,37 @@ public class GestioneDatiClientePanel extends JPanel {
     }
 
     private void aggiornaListaMetodiPagamento(DefaultListModel<String> model) {
+        if (!controller.isClienteLoggato()) {
+            model.clear();
+            return;
+        }
+        
         model.clear();
-        List<MetodoPagamento> metodi = controller.getModel().loadMetodiPagamentoByCliente(controller.getCurrentClienteId());
-        metodi.forEach(m -> model.addElement(m.nome));
+        try {
+            List<MetodoPagamento> metodi = controller.getModel().loadMetodiPagamentoByCliente(controller.getCurrentClienteId());
+            metodi.forEach(m -> model.addElement(m.nome));
+        } catch (Exception e) {
+            // Gestione errore silente o log
+        }
     }
 
     // 2. Carte
     private JPanel creaPanelCarte() {
         JPanel panel = new JPanel(new BorderLayout());
-        DefaultListModel<String> model = new DefaultListModel<>();
-        JList<String> lista = new JList<>(model);
+        modelCarte = new DefaultListModel<>();
+        JList<String> lista = new JList<>(modelCarte);
         JScrollPane scroll = new JScrollPane(lista);
         JButton btnAggiungi = new JButton("Aggiungi");
         JButton btnRimuovi = new JButton("Rimuovi");
 
-        aggiornaListaCarte(model);
+        // Non caricare i dati subito
 
         btnAggiungi.addActionListener(e -> {
+            if (!controller.isClienteLoggato()) {
+                JOptionPane.showMessageDialog(this, "Devi effettuare il login per accedere a questa funzione.");
+                return;
+            }
+            
             JTextField nomeMetodo = new JTextField();
             JTextField numero = new JTextField();
             JTextField titolare = new JTextField();
@@ -113,7 +162,7 @@ public class GestioneDatiClientePanel extends JPanel {
                 try {
                     controller.getModel().insertCarta(new Carta(controller.getCurrentClienteId(), nomeMetodo.getText(), numero.getText(),
                                                       titolare.getText(), Date.valueOf(scadenza.getText()), cvv.getText()));
-                    aggiornaListaCarte(model);
+                    aggiornaListaCarte(modelCarte);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
@@ -121,14 +170,18 @@ public class GestioneDatiClientePanel extends JPanel {
         });
 
         btnRimuovi.addActionListener(e -> {
+            if (!controller.isClienteLoggato()) {
+                JOptionPane.showMessageDialog(this, "Devi effettuare il login per accedere a questa funzione.");
+                return;
+            }
+            
             String selezionato = lista.getSelectedValue();
             if (selezionato != null && selezionato.contains(" (")) {
                 try {
-                    // Esempio: "1234567890123456 (Visa)"
                     String numero = selezionato.substring(0, selezionato.indexOf(" ("));
-                    String nome = selezionato.substring(selezionato.indexOf(" (") + 2, selezionato.length() - 1); // tra parentesi
+                    String nome = selezionato.substring(selezionato.indexOf(" (") + 2, selezionato.length() - 1);
                     controller.getModel().deleteCarta(controller.getCurrentClienteId(), nome, numero);
-                    aggiornaListaCarte(model);
+                    aggiornaListaCarte(modelCarte);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
@@ -145,25 +198,39 @@ public class GestioneDatiClientePanel extends JPanel {
     }
 
     private void aggiornaListaCarte(DefaultListModel<String> model) {
+        if (!controller.isClienteLoggato()) {
+            model.clear();
+            return;
+        }
+        
         model.clear();
-        List<Carta> carte = controller.getModel().loadCarteByCliente(controller.getCurrentClienteId());
-        for (Carta c : carte) {
-            model.addElement(c.numero + " (" + c.nome + ")");
+        try {
+            List<Carta> carte = controller.getModel().loadCarteByCliente(controller.getCurrentClienteId());
+            for (Carta c : carte) {
+                model.addElement(c.numero + " (" + c.nome + ")");
+            }
+        } catch (Exception e) {
+            // Gestione errore silente o log
         }
     }
 
     // 3. Indirizzi
     private JPanel creaPanelIndirizzi() {
         JPanel panel = new JPanel(new BorderLayout());
-        DefaultListModel<String> model = new DefaultListModel<>();
-        JList<String> lista = new JList<>(model);
+        modelIndirizzi = new DefaultListModel<>();
+        JList<String> lista = new JList<>(modelIndirizzi);
         JScrollPane scroll = new JScrollPane(lista);
         JButton btnAggiungi = new JButton("Aggiungi");
         JButton btnRimuovi = new JButton("Rimuovi");
 
-        aggiornaListaIndirizzi(model);
+        // Non caricare i dati subito
 
         btnAggiungi.addActionListener(e -> {
+            if (!controller.isClienteLoggato()) {
+                JOptionPane.showMessageDialog(this, "Devi effettuare il login per accedere a questa funzione.");
+                return;
+            }
+            
             JTextField via = new JTextField();
             JTextField numeroCivico = new JTextField();
             JTextField interno = new JTextField();
@@ -194,7 +261,7 @@ public class GestioneDatiClientePanel extends JPanel {
                         selezionata.codiceZona
                     );
                     controller.getModel().insertIndirizzo(ind, controller.getCurrentClienteId());
-                    aggiornaListaIndirizzi(model);
+                    aggiornaListaIndirizzi(modelIndirizzi);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
@@ -202,13 +269,18 @@ public class GestioneDatiClientePanel extends JPanel {
         });
 
         btnRimuovi.addActionListener(e -> {
+            if (!controller.isClienteLoggato()) {
+                JOptionPane.showMessageDialog(this, "Devi effettuare il login per accedere a questa funzione.");
+                return;
+            }
+            
             String selezionato = lista.getSelectedValue();
             if (selezionato != null && selezionato.contains(":")) {
                 try {
                     String codiceStr = selezionato.substring(0, selezionato.indexOf(":")).trim();
                     int codiceIndirizzo = Integer.parseInt(codiceStr);
                     controller.getModel().deleteIndirizzo(controller.getCurrentClienteId(), codiceIndirizzo);
-                    aggiornaListaIndirizzi(model);
+                    aggiornaListaIndirizzi(modelIndirizzi);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
@@ -225,20 +297,34 @@ public class GestioneDatiClientePanel extends JPanel {
     }
 
     private void aggiornaListaIndirizzi(DefaultListModel<String> model) {
+        if (!controller.isClienteLoggato()) {
+            model.clear();
+            return;
+        }
+        
         model.clear();
-        List<Indirizzo> indirizzi = controller.getModel().loadIndirizziByCliente(controller.getCurrentClienteId());
-        for (Indirizzo i : indirizzi) {
-            model.addElement(i.codiceIndirizzo + ": " + i.via + " " + i.numeroCivico + " (" + i.cap + ")");
+        try {
+            List<Indirizzo> indirizzi = controller.getModel().loadIndirizziByCliente(controller.getCurrentClienteId());
+            for (Indirizzo i : indirizzi) {
+                model.addElement(i.codiceIndirizzo + ": " + i.via + " " + i.numeroCivico + " (" + i.cap + ")");
+            }
+        } catch (Exception e) {
+            // Gestione errore silente o log
         }
     }
 
     // 4. Scrivi Recensione
     private JPanel creaPanelRecensione() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton btnScrivi = new JButton("Scrivi Recensione");
-        panel.add(btnScrivi, BorderLayout.CENTER);
+        DefaultListModel<String> model = new DefaultListModel<>();
+        JList<String> lista = new JList<>(model);
+        JScrollPane scroll = new JScrollPane(lista);
+        JButton btnAggiungi = new JButton("Aggiungi");
+        JButton btnRimuovi = new JButton("Rimuovi");
 
-        btnScrivi.addActionListener(e -> {
+        aggiornaListaRecensioni(model);
+
+        btnAggiungi.addActionListener(e -> {
             JTextField nomeRistorante = new JTextField();
             JTextField titolo = new JTextField();
             JTextArea descrizione = new JTextArea(3, 20);
@@ -253,19 +339,63 @@ public class GestioneDatiClientePanel extends JPanel {
             panelForm.add(new JLabel("Descrizione:"));
             panelForm.add(new JScrollPane(descrizione));
 
-            int res = JOptionPane.showConfirmDialog(this, panelForm, "Scrivi recensione", JOptionPane.OK_CANCEL_OPTION);
+            int res = JOptionPane.showConfirmDialog(this, panelForm, "Aggiungi Recensione", JOptionPane.OK_CANCEL_OPTION);
             if (res == JOptionPane.OK_OPTION) {
                 try {
-                    controller.getModel().insertRecensione(new Recensione(controller.getCurrentClienteId(), controller.getModel().loadPivaByNome(nomeRistorante.getText()).get(),
-                    (int) stelle.getSelectedItem(), descrizione.getText(), titolo.getText(), Date.valueOf(LocalDate.now())));
+                    controller.getModel().insertRecensione(
+                        new Recensione(
+                            controller.getCurrentClienteId(),
+                            controller.getModel().loadPivaByNome(nomeRistorante.getText()).get(),
+                            (int) stelle.getSelectedItem(),
+                            descrizione.getText(),
+                            titolo.getText(),
+                            Date.valueOf(LocalDate.now())
+                        )
+                    );
+                    aggiornaListaRecensioni(model);
                     JOptionPane.showMessageDialog(this, "Recensione inviata!");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
                 }
             }
         });
+
+        btnRimuovi.addActionListener(e -> {
+            String selezionato = lista.getSelectedValue();
+            if (selezionato != null) {
+                // Qui puoi implementare la rimozione tramite model (serve identificatore recensione)
+                // Ad esempio, se nel testo c’è l’ID, estrailo e chiama controller.getModel().deleteRecensione(...)
+                JOptionPane.showMessageDialog(this, "Funzionalità di rimozione da implementare");
+            }
+        });
+
+        JPanel buttons = new JPanel();
+        buttons.add(btnAggiungi);
+        buttons.add(btnRimuovi);
+
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.add(buttons, BorderLayout.SOUTH);
         return panel;
     }
+
+    // Funzione di supporto per popolare la lista
+    private void aggiornaListaRecensioni(DefaultListModel<String> model) {
+        if (!controller.isClienteLoggato()) {
+            model.clear();
+            return;
+        }
+        
+        model.clear();
+        try {
+            List<Recensione> recensioni = controller.getModel().loadRecensioniByCliente(controller.getCurrentClienteId());
+            for (Recensione r : recensioni) {
+                model.addElement(r.piva + " - " + r.titolo + " (" + r.numeroStelle + "★)");
+            }
+        } catch (Exception e) {
+            // Gestione errore silente o log
+        }
+    }
+
 
     private static class CittaZona {
         public final String citta;
@@ -282,7 +412,6 @@ public class GestioneDatiClientePanel extends JPanel {
         }
     }
 
-    // Popola la lista delle città principali
     private static final CittaZona[] CITTA_ZONA = {
         new CittaZona("Roma", "00100", 1),
         new CittaZona("Milano", "20100", 2),
@@ -300,5 +429,4 @@ public class GestioneDatiClientePanel extends JPanel {
         new CittaZona("Padova", "35100", 14),
         new CittaZona("Trieste", "34100", 15),
     };
-
 }
