@@ -56,7 +56,7 @@ public class GestioneDatiClientePanel extends JPanel {
             String selezionato = lista.getSelectedValue();
             if (selezionato != null) {
                 try {
-                    controller.getModel().rimuoviMetodoPagamento(controller.getCurrentClienteId(), selezionato);
+                    controller.getModel().deleteMetodoPagamento(controller.getCurrentClienteId(), selezionato);
                     aggiornaListaMetodiPagamento(model);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
@@ -76,9 +76,7 @@ public class GestioneDatiClientePanel extends JPanel {
     private void aggiornaListaMetodiPagamento(DefaultListModel<String> model) {
         model.clear();
         List<MetodoPagamento> metodi = controller.getModel().loadMetodiPagamentoByCliente(controller.getCurrentClienteId());
-        for (MetodoPagamento m : metodi) {
-            model.addElement(m.nome);
-        }
+        metodi.forEach(m -> model.addElement(m.nome));
     }
 
     // 2. Carte
@@ -124,10 +122,12 @@ public class GestioneDatiClientePanel extends JPanel {
 
         btnRimuovi.addActionListener(e -> {
             String selezionato = lista.getSelectedValue();
-            if (selezionato != null) {
+            if (selezionato != null && selezionato.contains(" (")) {
                 try {
-                    // assumiamo che selezionato sia il numero (puoi personalizzare!)
-                    controller.getModel().rimuoviCarta(controller.getCurrentClienteId(), selezionato);
+                    // Esempio: "1234567890123456 (Visa)"
+                    String numero = selezionato.substring(0, selezionato.indexOf(" ("));
+                    String nome = selezionato.substring(selezionato.indexOf(" (") + 2, selezionato.length() - 1); // tra parentesi
+                    controller.getModel().deleteCarta(controller.getCurrentClienteId(), nome, numero);
                     aggiornaListaCarte(model);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
@@ -166,36 +166,34 @@ public class GestioneDatiClientePanel extends JPanel {
         btnAggiungi.addActionListener(e -> {
             JTextField via = new JTextField();
             JTextField numeroCivico = new JTextField();
-            JTextField cap = new JTextField();
             JTextField interno = new JTextField();
             JTextField scala = new JTextField();
-            JTextField zona = new JTextField();
+            JComboBox<CittaZona> comboCitta = new JComboBox<>(CITTA_ZONA);
             JPanel panelForm = new JPanel(new GridLayout(0, 1));
+            panelForm.add(new JLabel("Città:"));
+            panelForm.add(comboCitta);
             panelForm.add(new JLabel("Via:"));
             panelForm.add(via);
             panelForm.add(new JLabel("Numero Civico:"));
             panelForm.add(numeroCivico);
-            panelForm.add(new JLabel("CAP:"));
-            panelForm.add(cap);
             panelForm.add(new JLabel("Interno (opzionale):"));
             panelForm.add(interno);
             panelForm.add(new JLabel("Scala (opzionale):"));
             panelForm.add(scala);
-            panelForm.add(new JLabel("Codice Zona:"));
-            panelForm.add(zona);
 
             int res = JOptionPane.showConfirmDialog(this, panelForm, "Aggiungi Indirizzo", JOptionPane.OK_CANCEL_OPTION);
             if (res == JOptionPane.OK_OPTION) {
                 try {
-                    controller.getModel().insertIndirizzo(new Indirizzo(res, TOOL_TIP_TEXT_KEY, TOOL_TIP_TEXT_KEY, TOOL_TIP_TEXT_KEY, null, null, res), controller.getCurrentClienteId());(
-                        controller.getCurrentClienteId(),
+                    CittaZona selezionata = (CittaZona) comboCitta.getSelectedItem();
+                    Indirizzo ind = new Indirizzo(
                         via.getText(),
-                        Integer.parseInt(numeroCivico.getText()),
-                        cap.getText(),
+                        numeroCivico.getText(),
+                        selezionata.cap,
                         interno.getText().isBlank() ? 0 : Integer.parseInt(interno.getText()),
                         scala.getText().isBlank() ? 0 : Integer.parseInt(scala.getText()),
-                        Integer.parseInt(zona.getText())
+                        selezionata.codiceZona
                     );
+                    controller.getModel().insertIndirizzo(ind, controller.getCurrentClienteId());
                     aggiornaListaIndirizzi(model);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
@@ -205,10 +203,11 @@ public class GestioneDatiClientePanel extends JPanel {
 
         btnRimuovi.addActionListener(e -> {
             String selezionato = lista.getSelectedValue();
-            if (selezionato != null) {
+            if (selezionato != null && selezionato.contains(":")) {
                 try {
-                    // assumiamo che selezionato sia qualcosa che identifica l'indirizzo (personalizza se serve)
-                    controller.getModel().rimuoviIndirizzo(controller.getCurrentClienteId(), selezionato);
+                    String codiceStr = selezionato.substring(0, selezionato.indexOf(":")).trim();
+                    int codiceIndirizzo = Integer.parseInt(codiceStr);
+                    controller.getModel().deleteIndirizzo(controller.getCurrentClienteId(), codiceIndirizzo);
                     aggiornaListaIndirizzi(model);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
@@ -257,13 +256,8 @@ public class GestioneDatiClientePanel extends JPanel {
             int res = JOptionPane.showConfirmDialog(this, panelForm, "Scrivi recensione", JOptionPane.OK_CANCEL_OPTION);
             if (res == JOptionPane.OK_OPTION) {
                 try {
-                    controller.getModel().scriviRecensione(
-                        controller.getCurrentClienteId(),
-                        nomeRistorante.getText(),
-                        titolo.getText(),
-                        descrizione.getText(),
-                        (Integer) stelle.getSelectedItem()
-                    );
+                    controller.getModel().insertRecensione(new Recensione(controller.getCurrentClienteId(), controller.getModel().loadPivaByNome(nomeRistorante.getText()).get(),
+                    (int) stelle.getSelectedItem(), descrizione.getText(), titolo.getText(), Date.valueOf(LocalDate.now())));
                     JOptionPane.showMessageDialog(this, "Recensione inviata!");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage());
@@ -272,4 +266,39 @@ public class GestioneDatiClientePanel extends JPanel {
         });
         return panel;
     }
+
+    private static class CittaZona {
+        public final String citta;
+        public final String cap;
+        public final int codiceZona;
+        public CittaZona(String citta, String cap, int codiceZona) {
+            this.citta = citta;
+            this.cap = cap;
+            this.codiceZona = codiceZona;
+        }
+        @Override
+        public String toString() {
+            return citta + " (" + cap + ")";
+        }
+    }
+
+    // Popola la lista delle città principali
+    private static final CittaZona[] CITTA_ZONA = {
+        new CittaZona("Roma", "00100", 1),
+        new CittaZona("Milano", "20100", 2),
+        new CittaZona("Napoli", "80100", 3),
+        new CittaZona("Torino", "10100", 4),
+        new CittaZona("Palermo", "90100", 5),
+        new CittaZona("Genova", "16100", 6),
+        new CittaZona("Bologna", "40100", 7),
+        new CittaZona("Firenze", "50100", 8),
+        new CittaZona("Bari", "70100", 9),
+        new CittaZona("Catania", "95100", 10),
+        new CittaZona("Venezia", "30100", 11),
+        new CittaZona("Verona", "37100", 12),
+        new CittaZona("Messina", "98100", 13),
+        new CittaZona("Padova", "35100", 14),
+        new CittaZona("Trieste", "34100", 15),
+    };
+
 }

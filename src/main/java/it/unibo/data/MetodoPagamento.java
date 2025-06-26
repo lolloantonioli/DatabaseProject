@@ -62,6 +62,14 @@ public class MetodoPagamento {
                 throw new DAOException("Errore inserimento metodo di pagamento per cliente " + m.codiceCliente, e);
             }
         }
+
+        public static void deleteMetodoPagamento(Connection connection, int codiceCliente, String nome) {
+            try (var ps = DAOUtils.prepare(connection, Queries.DELETE_METODO_PAGAMENTO, codiceCliente, nome)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore durante la rimozione del metodo di pagamento", e);
+            }
+        }
         
     }
 

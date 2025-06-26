@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class Indirizzo {
 
-    public final int codiceIndirizzo;
+    public int codiceIndirizzo;
     public final String via;
     public final String numeroCivico;
     public final String cap;
@@ -16,8 +16,7 @@ public class Indirizzo {
     public final int scala;
     public final int codiceZona; 
 
-    public Indirizzo(int codiceIndirizzo, String via, String numeroCivico, String cap, Integer interno, Integer scala, int codiceZona) {
-        this.codiceIndirizzo = codiceIndirizzo;
+    public Indirizzo(String via, String numeroCivico, String cap, Integer interno, Integer scala, int codiceZona) {
         this.via = via;
         this.numeroCivico = numeroCivico;
         this.cap = cap;
@@ -58,6 +57,10 @@ public class Indirizzo {
         ));
     }
 
+    public void setCodiceIndirizzo(final int codiceIndirizzo) {
+        this.codiceIndirizzo = codiceIndirizzo;
+    }
+
     public static final class DAO {
         /**
          * Restituisce tutti gli indirizzi di un cliente
@@ -75,7 +78,9 @@ public class Indirizzo {
                     int interno = rs.getInt("interno");
                     int scala = rs.getInt("scala");
                     int zona = rs.getInt("codice_zona");
-                    list.add(new Indirizzo(id, via, numero, cap, interno, scala, zona));
+                    Indirizzo ind = new Indirizzo(via, numero, cap, interno, scala, zona);
+                    ind.setCodiceIndirizzo(id);
+                    list.add(ind);
                 }
                 return list;
             } catch (Exception e) {
@@ -121,6 +126,18 @@ public class Indirizzo {
                 }
             } catch (Exception e) {
                 throw new DAOException("Errore durante l'inserimento dell'indirizzo e della residenza", e);
+            }
+        }
+
+        public static void deleteIndirizzo(Connection connection, int codiceCliente, int codiceIndirizzo) {
+            try (
+                var ps1 = DAOUtils.prepare(connection, Queries.DELETE_RESIDENZA, codiceCliente, codiceIndirizzo);
+                var ps2 = DAOUtils.prepare(connection, Queries.DELETE_INDIRIZZO, codiceIndirizzo)
+            ) {
+                ps1.executeUpdate();
+                ps2.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore durante la rimozione dell'indirizzo e della residenza", e);
             }
         }
     }

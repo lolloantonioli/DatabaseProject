@@ -91,6 +91,11 @@ public class DBModel implements Model {
     }
 
     @Override
+    public Optional<String> loadPivaByNome(final String nome) {
+        return Ristorante.DAO.findPivaByNome(connection, nome);
+    }
+
+    @Override
     public void insertPiatto(Piatto piatto) {
         Piatto.DAO.insertPiatto(connection, piatto);
     }
@@ -313,6 +318,21 @@ public class DBModel implements Model {
     @Override
     public List<Applicazione> loadOrdiniConPromozione() {
         return Applicazione.DAO.listAllWithPromozione(connection);
+    }
+
+    @Override
+    public void deleteMetodoPagamento(int codiceCliente, String nome) {
+        MetodoPagamento.DAO.deleteMetodoPagamento(connection, codiceCliente, nome);
+    }
+
+    @Override
+    public void deleteIndirizzo(int codiceCliente, int codiceIndirizzo) {
+        Indirizzo.DAO.deleteIndirizzo(connection, codiceCliente, codiceIndirizzo);
+    }
+
+    @Override
+    public void deleteCarta(int codiceCliente, String nome, String numero) {
+        Carta.DAO.deleteCarta(connection, codiceCliente, nome, numero);
     }
 
 }

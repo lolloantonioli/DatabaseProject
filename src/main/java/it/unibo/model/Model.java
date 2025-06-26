@@ -40,6 +40,7 @@ public interface Model {
     void insertRistorante(Ristorante ristorante);
     Optional<Ristorante> findRistoranteByPiva(String piva);
     List<Ristorante> loadRistorantiByZona(int codiceZona);
+    Optional<String> loadPivaByNome(String nome);
 
     // Gestione piatti
     void insertPiatto(Piatto piatto);
@@ -107,11 +108,13 @@ public interface Model {
     // Gestione metodi di pagamento
     void insertMetodoPagamento(MetodoPagamento metodoPagamento);
     List<MetodoPagamento> loadMetodiPagamentoByCliente(int codiceCliente);
+    void deleteMetodoPagamento(int codiceCliente, String nome);
 
     // Gestione indirizzi
     void insertIndirizzo(Indirizzo indirizzo, int codiceCliente);
     List<Indirizzo> loadIndirizziByCliente(int codiceCliente);
     Optional<ZonaGeografica> findZonaByIndirizzo(int codiceIndirizzo);
+    void deleteIndirizzo(int codiceCliente, int codiceIndirizzo);
 
     // Gestione generazione punti
     Optional<GeneraPunti> findGenerazionePuntiByOrder(int codiceOrdine);
@@ -127,6 +130,7 @@ public interface Model {
     List<Carta> loadCarteByCliente(int codiceCliente);
     void insertCarta(Carta carta);
     List<Integer> loadOrdiniByCarta(int codiceCliente, String numeroCarta);
+    void deleteCarta(int codiceCliente, String nome, String numero);
 
     // Gestione applicazioni promozione
     List<Applicazione> loadOrdiniConPromozione();

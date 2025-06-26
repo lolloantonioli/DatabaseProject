@@ -118,8 +118,6 @@ public class ProfiloPanel extends JPanel {
             
             colonne.forEach(s -> tableModel.addColumn(s));
             
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
             recensioni.forEach(rec -> {
                 tableModel.addRow(new Object[]{
                     rec.piva,
@@ -127,7 +125,7 @@ public class ProfiloPanel extends JPanel {
                     rec.numeroStelle + " ⭐",
                     rec.descrizione.length() > 50 ? 
                         rec.descrizione.substring(0, 50) + "..." : rec.descrizione,
-                    rec.data.format(formatter)
+                    rec.data
                 });
             });
             
@@ -245,7 +243,6 @@ public class ProfiloPanel extends JPanel {
 
             colonne.forEach(s -> tableModel.addColumn(s));
             
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
             carte.forEach(carta -> {
                 // Nascondere la maggior parte del numero della carta per sicurezza
                 String numeroMascherato = "**** **** **** " + 
@@ -255,7 +252,7 @@ public class ProfiloPanel extends JPanel {
                     carta.nome,
                     numeroMascherato,
                     carta.titolare,
-                    carta.dataScadenza.format(formatter),
+                    carta.dataScadenza,
                     "***" // Nascondere CVV per sicurezza
                 });
             });

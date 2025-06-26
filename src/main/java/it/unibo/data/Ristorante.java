@@ -109,6 +109,21 @@ public class Ristorante {
             }
         }
 
+        public static Optional<String> findPivaByNome(Connection connection, String nome) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.FIND_PIVA_BY_NOME, nome);
+                var rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return Optional.of(rs.getString("p_iva"));
+                }
+                return Optional.empty();
+
+            } catch (Exception e) {
+                throw new DAOException("Errore durante la ricerca della P.IVA del ristorante", e);
+            }
+        }
+
+
     }
 
 }

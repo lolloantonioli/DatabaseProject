@@ -100,7 +100,16 @@ public class Carta {
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento carta per cliente " + c.codiceCliente, e);
             }
-}
+        }
+
+        public static void deleteCarta(Connection connection, int codiceCliente, String nome, String numero) {
+            try (var ps = DAOUtils.prepare(connection, Queries.DELETE_CARTA, codiceCliente, nome, numero)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore durante la rimozione della carta", e);
+            }
+        }
+
     }
 
 }

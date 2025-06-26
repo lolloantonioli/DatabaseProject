@@ -30,6 +30,27 @@ public static final String DELETE_CLIENTE = """
     WHERE codice_cliente = ?
     """;
 
+public static final String DELETE_CARTA = """
+    DELETE FROM carte
+    WHERE codice_cliente = ? AND nome = ? AND numero = ?
+""";
+
+public static final String DELETE_METODO_PAGAMENTO = """
+    DELETE FROM metodi_pagamento
+    WHERE codice_cliente = ? AND nome = ?
+""";
+
+public static final String DELETE_RESIDENZA = """
+    DELETE FROM residenza
+    WHERE codice_cliente = ? AND codice_indirizzo = ?
+""";
+
+public static final String DELETE_INDIRIZZO = """
+    DELETE FROM indirizzi
+    WHERE codice_indirizzo = ?
+""";
+
+
 // già presente
 public static final String INSERT_CLIENTE = """
     INSERT INTO clienti (nome, cognome, e_mail, telefono, data_di_nascita, username)
@@ -59,7 +80,12 @@ public static final String INSERT_MEZZO = """
     VALUES (?, ?, ?, ?, ?)
     """;
 
-    
+public static final String FIND_PIVA_BY_NOME = """
+        SELECT p_iva
+        FROM ristoranti
+        WHERE nome = ?;
+
+""";
 
 // Inserisce un indirizzo
 public static final String INSERT_INDIRIZZO = """

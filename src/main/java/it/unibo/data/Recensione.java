@@ -1,7 +1,7 @@
 package it.unibo.data;
 
 import java.sql.Connection;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,9 +12,9 @@ public class Recensione {
     public final int numeroStelle;
     public final String descrizione;
     public final String titolo;
-    public final LocalDate data;
+    public final Date data;
 
-    public Recensione(int codiceCliente, String piva, int numeroStelle, String descrizione, String titolo, LocalDate data) {
+    public Recensione(int codiceCliente, String piva, int numeroStelle, String descrizione, String titolo, Date data) {
         this.codiceCliente = codiceCliente;
         this.piva = piva;
         this.numeroStelle = numeroStelle;
@@ -64,7 +64,7 @@ public class Recensione {
                                            rec.numeroStelle,
                                            rec.descrizione,
                                            rec.titolo,
-                                           java.sql.Date.valueOf(rec.data))) {
+                                           rec.data)) {
                 ps.executeUpdate();
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento recensione per cliente " + rec.codiceCliente, e);
@@ -85,7 +85,7 @@ public class Recensione {
                         rs.getInt("numero_stelle"),
                         rs.getString("descrizione"),
                         rs.getString("titolo"),
-                        rs.getDate("data").toLocalDate()
+                        rs.getDate("data")
                     ));
                 }
             } catch (Exception e) {
@@ -108,7 +108,7 @@ public class Recensione {
                         rs.getInt("numero_stelle"),
                         rs.getString("descrizione"),
                         rs.getString("titolo"),
-                        rs.getDate("data").toLocalDate()
+                        rs.getDate("data")
                     ));
                 }
             } catch (Exception e) {
