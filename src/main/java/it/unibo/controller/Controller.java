@@ -15,9 +15,9 @@ public final class Controller {
     private Optional<Integer> currentClienteId;
 
     public Controller() {
+        this.currentClienteId = Optional.empty();
         this.model = new DBModel(DAOUtils.localMySQLConnection());
         this.view = new MainFrame(this);
-        this.currentClienteId = Optional.empty();
     }
 
     public void goToCliente(final int codiceCliente) {
