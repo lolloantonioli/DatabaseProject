@@ -335,4 +335,9 @@ public class DBModel implements Model {
         Carta.DAO.deleteCarta(connection, codiceCliente, nome, numero);
     }
 
+    @Override
+    public void deleteRecensione(Recensione r) {
+        Recensione.DAO.deleteRecensione(connection, r);
+    }
+
 }

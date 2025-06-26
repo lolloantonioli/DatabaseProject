@@ -30,6 +30,12 @@ public static final String DELETE_CLIENTE = """
     WHERE codice_cliente = ?
     """;
 
+public static final String DELETE_RECENSIONE = """
+    DELETE FROM recensioni
+    WHERE codice_cliente = ? AND piva = ? AND titolo = ? AND data = ?
+""";
+
+
 public static final String DELETE_CARTA = """
     DELETE FROM carte
     WHERE codice_cliente = ? AND nome = ? AND numero = ?
