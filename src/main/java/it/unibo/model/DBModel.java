@@ -336,8 +336,8 @@ public class DBModel implements Model {
     }
 
     @Override
-    public void deleteRecensione(Recensione r) {
-        Recensione.DAO.deleteRecensione(connection, r);
+    public void deleteRecensione(int codiceCliente, String piva, String titolo) {
+        Recensione.DAO.deleteRecensione(connection, codiceCliente, piva, titolo);
     }
 
 }

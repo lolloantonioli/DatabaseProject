@@ -84,7 +84,7 @@ public interface Model {
     List<Recensione> loadRecensioniByRistorante(String piva);
     List<Recensione> loadRecensioniByCliente(int codiceCliente);
     List<String> loadTop10Ristoranti();
-    void deleteRecensione(Recensione r);
+    void deleteRecensione(int codiceCliente, String piva, String titolo);
 
     // Gestione raccolte punti
     void insertRaccoltaPunti(RaccoltaPunti raccoltaPunti);

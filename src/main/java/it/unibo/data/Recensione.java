@@ -133,12 +133,8 @@ public class Recensione {
             return result;
         }
 
-        public static void deleteRecensione(Connection conn, Recensione rec) {
-            try (var ps = DAOUtils.prepare(conn, Queries.DELETE_RECENSIONE,
-                                        rec.codiceCliente,
-                                        rec.piva,
-                                        rec.titolo,
-                                        rec.data)) {
+        public static void deleteRecensione(Connection conn, int codiceCliente, String piva, String titolo) {
+            try (var ps = DAOUtils.prepare(conn, Queries.DELETE_RECENSIONE, codiceCliente, piva, titolo)) {
                 ps.executeUpdate();
             } catch (Exception e) {
                 throw new DAOException("Errore nella cancellazione della recensione", e);

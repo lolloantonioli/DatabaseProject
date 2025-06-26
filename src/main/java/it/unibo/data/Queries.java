@@ -32,7 +32,7 @@ public static final String DELETE_CLIENTE = """
 
 public static final String DELETE_RECENSIONE = """
     DELETE FROM recensioni
-    WHERE codice_cliente = ? AND piva = ? AND titolo = ? AND data = ?
+    WHERE codice_cliente = ? AND piva = ? AND titolo = ?
 """;
 
 
