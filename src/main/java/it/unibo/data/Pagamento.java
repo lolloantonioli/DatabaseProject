@@ -2,7 +2,7 @@ package it.unibo.data;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,12 +10,12 @@ import java.util.Objects;
 public class Pagamento {
 
     public final int codicePagamento;
-    public final LocalDateTime data;
+    public final Date data;
     public final BigDecimal importo;
     public final int codiceCliente;
     public final String nomeMetodo;
 
-    public Pagamento(int codicePagamento, LocalDateTime data, BigDecimal importo, int codiceCliente, String nomeMetodo) {
+    public Pagamento(int codicePagamento, Date data, BigDecimal importo, int codiceCliente, String nomeMetodo) {
         this.codicePagamento = codicePagamento;
         this.data = data;
         this.importo = importo;
@@ -61,9 +61,9 @@ public class Pagamento {
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int codice = rs.getInt("codice_pagamento");
-                    var date = rs.getTimestamp("data").toLocalDateTime();
+                    var date = rs.getDate("data");
                     BigDecimal imp = rs.getBigDecimal("importo");
-                    String metodo = rs.getString("metodo");
+                    String metodo = rs.getString("nome");
                     result.add(new Pagamento(codice, date, imp, codiceCliente, metodo));
                 }
             } catch (Exception e) {

@@ -68,7 +68,7 @@ public class Ordine {
                         rs.getInt("codice_pagamento"),
                         rs.getInt("codice_stato"),
                         rs.getBigDecimal("prezzo_totale"),
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         dettagli
                     ));
                 }
@@ -83,7 +83,7 @@ public class Ordine {
             try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
                 
-                var ordini = new java.util.ArrayList<Ordine>();
+                var ordini = new ArrayList<Ordine>();
                 while (rs.next()) {
                     var codiceOrdine = rs.getInt("codice_ordine");
                     var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
@@ -93,13 +93,14 @@ public class Ordine {
                         rs.getInt("codice_pagamento"),
                         rs.getInt("codice_stato"),
                         rs.getBigDecimal("prezzo_totale"),
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         dettagli
                     ));
                 }
                 return ordini;
                 
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new DAOException("Errore durante il caricamento degli ordini del cliente", e);
             }
         }
@@ -119,7 +120,7 @@ public class Ordine {
                         rs.getInt("codice_pagamento"),
                         rs.getInt("codice_stato"),
                         rs.getBigDecimal("prezzo_totale"),
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         dettagli
                     ));
                 }
@@ -145,7 +146,7 @@ public class Ordine {
                         rs.getInt("codice_pagamento"),
                         rs.getInt("codice_stato"),
                         rs.getBigDecimal("prezzo_totale"),
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         dettagli
                     ));
                 }

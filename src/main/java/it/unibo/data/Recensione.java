@@ -81,7 +81,7 @@ public class Recensione {
                 while (rs.next()) {
                     result.add(new Recensione(
                         rs.getInt("codice_cliente"),
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         rs.getInt("numero_stelle"),
                         rs.getString("descrizione"),
                         rs.getString("titolo"),
@@ -104,7 +104,7 @@ public class Recensione {
                 while (rs.next()) {
                     result.add(new Recensione(
                         rs.getInt("codice_cliente"),
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         rs.getInt("numero_stelle"),
                         rs.getString("descrizione"),
                         rs.getString("titolo"),
@@ -124,7 +124,7 @@ public class Recensione {
             try (var ps = DAOUtils.prepare(conn, Queries.TOP10_RISTORANTI);
                  var rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String pivaTop = rs.getString("piva");
+                    String pivaTop = rs.getString("p_iva");
                     result.add(pivaTop);
                 }
             } catch (Exception e) {

@@ -513,13 +513,12 @@ public class ProfiloPanel extends JPanel {
 
             colonne.forEach(s -> tableModel.addColumn(s));
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             pagamenti.forEach(pag -> {
                 tableModel.addRow(new Object[]{
                     pag.codicePagamento,
                     pag.nomeMetodo,
                     "€ " + pag.importo.toString(),
-                    pag.data.format(formatter),
+                    pag.data,
                 });
             });
 

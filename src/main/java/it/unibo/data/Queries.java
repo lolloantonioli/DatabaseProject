@@ -32,7 +32,7 @@ public static final String DELETE_CLIENTE = """
 
 public static final String DELETE_RECENSIONE = """
     DELETE FROM recensioni
-    WHERE codice_cliente = ? AND piva = ? AND titolo = ?
+    WHERE codice_cliente = ? AND p_iva = ? AND titolo = ?
 """;
 
 
@@ -99,14 +99,14 @@ public static final String INSERT_INDIRIZZO = """
     VALUES (?, ?, ?, ?, ?, ?)
     """;
 public static final String INSERT_PROMOZIONE = """
-    INSERT INTO promozioni (piva, data_inizio, data_fine, nome, descrizione, percentuale_sconto)
+    INSERT INTO promozioni (p_iva, data_inizio, data_fine, nome, descrizione, percentuale_sconto)
     VALUES (?, ?, ?, ?, ?, ?)
     """;
 
 public static final String SELECT_PROMOZIONI_ATTIVE_BY_RISTORANTE = """
     SELECT data_inizio, data_fine, nome, descrizione, percentuale_sconto
     FROM promozioni
-    WHERE piva = ? AND CURRENT_DATE BETWEEN data_inizio AND data_fine
+    WHERE p_iva = ? AND CURRENT_DATE BETWEEN data_inizio AND data_fine
     ORDER BY data_inizio
     """;
 
@@ -131,20 +131,20 @@ public static final String INSERT_RACCOLTA_PUNTI = """
 
     // Ristoranti
     public static final String FIND_RISTORANTE = """
-        SELECT piva, nome, indirizzo, orario, codice_zona
+        SELECT p_iva, nome, indirizzo, orario, codice_zona
         FROM ristoranti
-        WHERE piva = ?
+        WHERE p_iva = ?
         """;
 
     public static final String RISTORANTI_BY_ZONA = """
-        SELECT r.piva, r.nome, r.indirizzo, r.orario, r.codice_zona
+        SELECT r.p_iva, r.nome, r.indirizzo, r.orario, r.codice_zona
         FROM ristoranti r
         WHERE r.codice_zona = ?
         ORDER BY r.nome
         """;
 
      public static final String INSERT_RISTORANTE = """
-        INSERT INTO ristoranti (piva, nome, indirizzo, orario, codice_zona)
+        INSERT INTO ristoranti (p_iva, nome, indirizzo, orario, codice_zona)
         VALUES (?, ?, ?, ?, ?)
         """;
 
@@ -157,7 +157,7 @@ public static final String INSERT_PIATTO = """
 
 // Associa il piatto appena creato al ristorante
 public static final String INSERT_OFFRE = """
-    INSERT INTO offre (piva, codice_piatto)
+    INSERT INTO offre (p_iva, codice_piatto)
     VALUES (?, ?)
     """;
 
@@ -166,7 +166,7 @@ public static final String INSERT_OFFRE = """
         SELECT p.codice_piatto, p.nome, p.prezzo, p.descrizione
         FROM piatti p
         JOIN offre o ON p.codice_piatto = o.codice_piatto
-        WHERE o.piva = ?
+        WHERE o.p_iva = ?
         ORDER BY p.nome
         """;
 
@@ -178,7 +178,7 @@ public static final String INSERT_OFFRE = """
 
     // Ordini che contengono un dato piatto
     public static final String ORDINI_BY_PIATTO = """
-        SELECT DISTINCT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        SELECT DISTINCT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN dettagli_ordini d ON o.codice_ordine = d.codice_ordine
         WHERE d.codice_piatto = ?
@@ -198,14 +198,14 @@ public static final String INSERT_OFFRE = """
     // Ordini
     public static final String FIND_ORDINE = """
         SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, 
-               o.prezzo_totale, o.piva
+               o.prezzo_totale, o.p_iva
         FROM ordini o
         WHERE o.codice_ordine = ?
         """;
 
     public static final String ORDINI_BY_CLIENTE = """
         SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, 
-               o.prezzo_totale, o.piva, p.data as data_pagamento
+               o.prezzo_totale, o.p_iva, p.data as data_pagamento
         FROM ordini o
         JOIN pagamenti p ON o.codice_pagamento = p.codice_pagamento
         WHERE p.codice_cliente = ?
@@ -213,22 +213,22 @@ public static final String INSERT_OFFRE = """
         """;
 
     public static final String ORDINI_CON_PROMOZIONE = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva, a.sconto_applicato
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva, a.sconto_applicato
         FROM ordini o
         JOIN applicazione a ON o.codice_ordine = a.codice_ordine
         ORDER BY o.codice_ordine;
         """;
 
     public static final String ORDINI_BY_RISTORANTE = """
-        SELECT codice_ordine, codice_pagamento, codice_stato, prezzo_totale, piva
+        SELECT codice_ordine, codice_pagamento, codice_stato, prezzo_totale, p_iva
         FROM ordini
-        WHERE piva = ?
+        WHERE p_iva = ?
         ORDER BY codice_ordine
         """;
     
     // Ordini che un rider deve consegnare
     public static final String ORDINI_DA_CONSEGNARE_BY_RIDER = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN stati_ordini s ON o.codice_stato = s.codice_stato
         WHERE s.codice_rider = ? AND s.consegnato = FALSE
@@ -250,7 +250,7 @@ public static final String INSERT_OFFRE = """
 
     // Lista ristoranti per zona
     public static final String LIST_RISTORANTI = """
-        SELECT piva, nome, indirizzo, orario
+        SELECT p_iva, nome, indirizzo, orario
         FROM ristoranti
         ORDER BY nome
         """;
@@ -266,7 +266,7 @@ public static final String INSERT_OFFRE = """
 
     // Inserimento ordine
     public static final String INSERT_ORDINE = """
-        INSERT INTO ordini (codice_pagamento, codice_stato, prezzo_totale, piva)
+        INSERT INTO ordini (codice_pagamento, codice_stato, prezzo_totale, p_iva)
         VALUES (?, ?, ?, ?)
         """;
 
@@ -278,7 +278,7 @@ public static final String INSERT_OFFRE = """
 
 
     public static final String PAGAMENTI_BY_CLIENTE = """
-        SELECT codice_pagamento, data, importo, metodo
+        SELECT codice_pagamento, data, importo, nome
         FROM pagamenti
         WHERE codice_cliente = ?
         ORDER BY data DESC
@@ -287,7 +287,7 @@ public static final String INSERT_OFFRE = """
 
         // Ordini già consegnati da un rider
     public static final String ORDINI_CONSEGNATI_BY_RIDER = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN stati_ordini s ON o.codice_stato = s.codice_stato
         WHERE s.codice_rider = ? AND s.consegnato = TRUE
@@ -324,19 +324,19 @@ public static final String INSERT_OFFRE = """
                c.nome, c.cognome
         FROM recensioni r
         JOIN clienti c ON r.codice_cliente = c.codice_cliente
-        WHERE r.piva = ?
+        WHERE r.p_iva = ?
         ORDER BY r.data DESC
         """;
 
           public static final String INSERT_RECENSIONE = """
-        INSERT INTO recensioni (codice_cliente, piva, numero_stelle, descrizione, titolo, data)
+        INSERT INTO recensioni (codice_cliente, p_iva, numero_stelle, descrizione, titolo, data)
         VALUES (?, ?, ?, ?, ?, NOW())
         """;
 
     // Promozioni
     public static final String PROMOZIONI_ATTIVE = """
         SELECT * FROM promozioni
-        WHERE piva = ? AND CURDATE() BETWEEN data_inizio AND data_fine
+        WHERE p_iva = ? AND CURDATE() BETWEEN data_inizio AND data_fine
         """;
 
     public static final String APPLICA_PROMOZIONE = """
@@ -364,9 +364,9 @@ public static final String INSERT_OFFRE = """
         """;
 
     public static final String TOP10_RISTORANTI = """
-        SELECT piva, AVG(numero_stelle) AS media
+        SELECT p_iva, AVG(numero_stelle) AS media
         FROM recensioni
-        GROUP BY piva
+        GROUP BY p_iva
         ORDER BY media DESC
         LIMIT 10
         """;
@@ -387,7 +387,7 @@ public static final String INSERT_OFFRE = """
         """;
 
     public static final String ORDINI_BY_CARTA = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.piva
+        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN pagamenti p ON o.codice_pagamento = p.codice_pagamento
         WHERE p.codice_cliente = ? AND p.id_carta = ?
@@ -431,16 +431,16 @@ public static final String INSERT_OFFRE = """
     // Ordini con promozione applicata
 
 public static final String SELECT_RECENSIONI_BY_CLIENTE = """
-    SELECT codice_cliente, piva, numero_stelle, descrizione, titolo, data
+    SELECT codice_cliente, p_iva, numero_stelle, descrizione, titolo, data
     FROM recensioni
     WHERE codice_cliente = ?
     ORDER BY data DESC
     """;
 //DFVJHDFIOHVBOUIDF
 public static final String SELECT_RECENSIONI_BY_RISTORANTE = """
-    SELECT codice_cliente, piva, numero_stelle, descrizione, titolo, data
+    SELECT codice_cliente, p_iva, numero_stelle, descrizione, titolo, data
     FROM recensioni
-    WHERE piva = ?
+    WHERE p_iva = ?
     ORDER BY numero_stelle DESC, data DESC
     """;
 
@@ -509,7 +509,7 @@ public static final String ORDINI_WITH_POINTS = """
     FROM utilizza_punti
     """;
 public static final String VISUALIZZAZIONI_BY_CLIENTE_ON_DATE = """
-    SELECT codice_cliente, piva
+    SELECT codice_cliente, p_iva
     FROM visualizzazioni
     WHERE codice_cliente = ? AND DATE(data) = ?
     """;
@@ -517,7 +517,7 @@ public static final String VISUALIZZAZIONI_BY_CLIENTE_ON_DATE = """
 public static final String COUNT_VISUALIZZAZIONI_BY_RISTORANTE = """
     SELECT COUNT(*) AS total
     FROM visualizzazioni
-    WHERE piva = ?
+    WHERE p_iva = ?
     """;
 public static final String INSERT_ZONA = """
     INSERT INTO zone_geografiche (codice_zona, nome)

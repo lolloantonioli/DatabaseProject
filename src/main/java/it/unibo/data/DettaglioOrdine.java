@@ -2,6 +2,7 @@ package it.unibo.data;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,7 +59,7 @@ public class DettaglioOrdine {
             try (var stmt = DAOUtils.prepare(connection, Queries.DETTAGLI_ORDINE, codiceOrdine);
                  var rs = stmt.executeQuery()) {
                 
-                var dettagli = new java.util.ArrayList<DettaglioOrdine>();
+                var dettagli = new ArrayList<DettaglioOrdine>();
                 while (rs.next()) {
                     dettagli.add(new DettaglioOrdine(
                         rs.getInt("codice_piatto"),
