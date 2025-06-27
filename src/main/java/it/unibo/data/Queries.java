@@ -18,9 +18,9 @@ public static final String UPDATE_CLIENTE = """
     UPDATE clienti
     SET nome = ?, 
         cognome = ?, 
-        email = ?, 
+        e_mail = ?, 
         telefono = ?, 
-        data_nascita = ?, 
+        data_di_nascita = ?, 
         username = ?
     WHERE codice_cliente = ?
     """;
@@ -260,8 +260,8 @@ public static final String INSERT_OFFRE = """
 
     // Inserimento pagamento
     public static final String INSERT_PAGAMENTO = """
-        INSERT INTO pagamenti (codice_cliente, metodo, data, importo)
-        VALUES (?, ?, CURRENT_TIMESTAMP, ?)
+        INSERT INTO pagamenti (codice_cliente, data, importo)
+        VALUES (?, CURRENT_TIMESTAMP, ?)
         """;
 
     // Inserimento ordine
@@ -289,7 +289,7 @@ public static final String INSERT_OFFRE = """
     public static final String ORDINI_CONSEGNATI_BY_RIDER = """
         SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
         FROM ordini o
-        JOIN stati_ordini s ON o.codice_stato = s.codice_stato
+        JOIN stati_ordini s ON o.codice_ordine = s.codice_ordine
         WHERE s.codice_rider = ? AND s.consegnato = TRUE
         ORDER BY o.codice_ordine
         """;
@@ -347,7 +347,7 @@ public static final String INSERT_OFFRE = """
 
     // Raccolta Punti
     public static final String USA_PUNTI = """
-        INSERT INTO utilizza_punti (codice_raccolta, codice_ordine, punti_usati, sconto_applicato)
+        INSERT INTO utilizza_punti (codice_ordine, codice_cliente, punti_usati, sconto_applicato)
         VALUES (?, ?, ?, ?)
         """;
 
@@ -390,12 +390,13 @@ public static final String INSERT_OFFRE = """
         SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN pagamenti p ON o.codice_pagamento = p.codice_pagamento
-        WHERE p.codice_cliente = ? AND p.id_carta = ?
-        ORDER BY o.codice_ordine
+        WHERE p.codice_cliente = ? AND p.nome = ?
+        ORDER BY o.codice_ordine;
+
         """;
 
     public static final String MOSTRA_CONTRATTO= """
-        SELECT cod_contratto, codice_rider, paga_oraria, testo
+        SELECT codice_rider, paga_oraria, testo
         FROM contratti
         WHERE codice_rider = ?
         """;
@@ -424,7 +425,7 @@ public static final String INSERT_OFFRE = """
       public static final String MEZZI_BY_RIDER = """
         SELECT codice_mezzo, tipo, targa, modello
         FROM mezzi
-        WHERE id_rider = ?
+        WHERE codice_rider = ?
         ORDER BY codice_mezzo
         """;
 
@@ -449,37 +450,36 @@ public static final String RESIDENZA_BY_CLIENTE = """
     FROM residenza
     WHERE codice_cliente = ?
     """;
-//vbjkjkbvjckxbv
-//dbfisdbvuidfsviufubfdiuvb
+
 // Inserisce un nuovo rider
 public static final String INSERT_RIDER = """
-    INSERT INTO riders
-        (codice_rider, nome, cognome, data_nascita, email, telefono,
-         iban, cf, patente, disponibile, codice_zona)
+    INSERT INTO rider
+        (codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,
+         iban, codice_fiscale, patente, disponibile, codice_zona)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
 // Trova un rider per ID
 public static final String FIND_RIDER = """
-    SELECT codice_rider, nome, cognome, data_nascita, email, telefono,
-           iban, cf, patente, disponibile, codice_zona
-    FROM riders
+    SELECT codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,
+           iban, codice_fiscale, patente, disponibile, codice_zona
+    FROM rider
     WHERE codice_rider = ?
     """;
 
 // Riders per zona
 public static final String RIDERS_BY_ZONA = """
-    SELECT codice_rider, nome, cognome, data_nascita, email, telefono,
-           iban, cf, patente, disponibile, codice_zona
-    FROM riders
+    SELECT codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,
+           iban, codice_fiscale, patente, disponibile, codice_zona
+    FROM rider
     WHERE codice_zona = ?
     """;
 
 // Riders disponibili per zona
 public static final String AVAILABLE_RIDERS_BY_ZONA = """
-    SELECT codice_rider, nome, cognome, data_nascita, email, telefono,
-           iban, cf, patente, disponibile, codice_zona
-    FROM riders
+    SELECT codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,
+           iban, codice_fiscale, patente, disponibile, codice_zona
+    FROM rider
     WHERE codice_zona = ? AND disponibile = TRUE
     """;
 
