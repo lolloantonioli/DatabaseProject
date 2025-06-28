@@ -70,26 +70,26 @@ public class Cliente {
     public static final class DAO {
 
         public static Optional<Cliente> find(Connection connection, int codiceCliente) {
-        try (var stmt = DAOUtils.prepare(connection, Queries.FIND_CLIENTE_BY_ID, codiceCliente);
-             var rs   = stmt.executeQuery()) {
-            if (rs.next()) {
-                Cliente c = new Cliente(
-                    rs.getString("nome"),
-                    rs.getString("cognome"),
-                    rs.getString("e_mail"),
-                    rs.getString("telefono"),
-                    rs.getDate("data_di_nascita") != null 
-                        ? rs.getDate("data_di_nascita") 
-                        : null,
-                    rs.getString("username")
-                );
-                c.setCodiceCliente(rs.getInt("codice_cliente"));
-                return Optional.of(c);
+            try (var stmt = DAOUtils.prepare(connection, Queries.FIND_CLIENTE_BY_ID, codiceCliente);
+                var rs   = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Cliente c = new Cliente(
+                        rs.getString("nome"),
+                        rs.getString("cognome"),
+                        rs.getString("e_mail"),
+                        rs.getString("telefono"),
+                        rs.getDate("data_di_nascita") != null 
+                            ? rs.getDate("data_di_nascita") 
+                            : null,
+                        rs.getString("username")
+                    );
+                    c.setCodiceCliente(rs.getInt("codice_cliente"));
+                    return Optional.of(c);
+                }
+                return Optional.empty();
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il FIND del cliente", e);
             }
-            return Optional.empty();
-        } catch (Exception e) {
-            throw new DAOException("Errore durante il FIND del cliente", e);
-        }
         }
 
         public static Optional<Cliente> findByUsername(Connection connection, String username) {

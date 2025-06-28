@@ -1,6 +1,5 @@
 package it.unibo.view.cliente;
 
-import java.awt.CardLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;

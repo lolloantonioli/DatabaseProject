@@ -2,7 +2,6 @@ package it.unibo.data;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,22 +9,21 @@ import java.util.Optional;
 
 public class Rider {
 
-    public final int codiceRider;
+    public int codiceRider;
     public final String nome;
     public final String cognome;
     public final String email;
     public final String telefono;
-    public final LocalDate dataNascita;
+    public final Date dataNascita;
     public final String iban;
     public final String cf;
     public final boolean patente;
     public final boolean disponibile;
     public final int codiceZona;
 
-    public Rider(int codiceRider, String nome, String cognome, String email, 
-                 String telefono, LocalDate dataNascita, String iban, String cf,
+    public Rider(String nome, String cognome, String email, 
+                 String telefono, Date dataNascita, String iban, String cf,
                  boolean patente, boolean disponibile, int codiceZona) {
-        this.codiceRider = codiceRider;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -79,6 +77,10 @@ public class Rider {
         ));
     }
 
+    public void setCodiceRider(final int codiceRider) {
+        this.codiceRider = codiceRider;
+    }
+
     public static final class DAO {
 
         public static Optional<Rider> find(Connection connection, int codiceRider) {
@@ -86,20 +88,21 @@ public class Rider {
                  var rs = stmt.executeQuery()) {
                 
                 if (rs.next()) {
-                    return Optional.of(new Rider(
-                        rs.getInt("codice_rider"),
+                    Rider r = new Rider(
                         rs.getString("nome"),
                         rs.getString("cognome"),
                         rs.getString("email"),
                         rs.getString("telefono"),
                         rs.getDate("data_nascita") != null ? 
-                            rs.getDate("data_nascita").toLocalDate() : null,
+                            rs.getDate("data_nascita") : null,
                         rs.getString("iban"),
                         rs.getString("cf"),
                         rs.getBoolean("patente"),
                         rs.getBoolean("disponibile"),
                         rs.getInt("codice_zona")
-                    ));
+                    );
+                    r.setCodiceRider(rs.getInt("codice_rider"));
+                    return Optional.of(r);
                 }
                 return Optional.empty();
                 
@@ -114,20 +117,21 @@ public class Rider {
                 
                 var riders = new ArrayList<Rider>();
                 while (rs.next()) {
-                    riders.add(new Rider(
-                        rs.getInt("codice_rider"),
+                    Rider r = new Rider(
                         rs.getString("nome"),
                         rs.getString("cognome"),
                         rs.getString("email"),
                         rs.getString("telefono"),
                         rs.getDate("data_nascita") != null ? 
-                            rs.getDate("data_nascita").toLocalDate() : null,
+                            rs.getDate("data_nascita") : null,
                         rs.getString("iban"),
                         rs.getString("cf"),
                         rs.getBoolean("patente"),
                         rs.getBoolean("disponibile"),
                         rs.getInt("codice_zona")
-                    ));
+                    );
+                    r.setCodiceRider(rs.getInt("codice_rider"));
+                    riders.add(r);
                 }
                 return riders;
                 
@@ -143,13 +147,12 @@ public class Rider {
                 var riders = new ArrayList<Rider>();
                 while (rs.next()) {
                     riders.add(new Rider(
-                        rs.getInt("codice_rider"),
                         rs.getString("nome"),
                         rs.getString("cognome"),
                         rs.getString("email"),
                         rs.getString("telefono"),
                         rs.getDate("data_nascita") != null ? 
-                            rs.getDate("data_nascita").toLocalDate() : null,
+                            rs.getDate("data_nascita") : null,
                         rs.getString("iban"),
                         rs.getString("cf"),
                         rs.getBoolean("patente"),
@@ -172,7 +175,7 @@ public class Rider {
                                         r.codiceRider,
                                         r.nome,
                                         r.cognome,
-                                        Date.valueOf(r.dataNascita),
+                                        r.dataNascita,
                                         r.email,
                                         r.telefono,
                                         r.iban,
