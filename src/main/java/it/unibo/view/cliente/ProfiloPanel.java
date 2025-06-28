@@ -217,9 +217,10 @@ public class ProfiloPanel extends JPanel {
         JTextField numeroCivico = new JTextField();
         JTextField interno = new JTextField();
         JTextField scala = new JTextField();
-        JTextField cap = new JTextField();
-        JTextField zona = new JTextField();
+        JComboBox<CittaZona> comboCitta = new JComboBox<>(CITTA_ZONA);
         JPanel panelForm = new JPanel(new GridLayout(0, 1));
+        panelForm.add(new JLabel("Zona:"));
+        panelForm.add(comboCitta);
         panelForm.add(new JLabel("Via:"));
         panelForm.add(via);
         panelForm.add(new JLabel("Numero Civico:"));
@@ -228,21 +229,18 @@ public class ProfiloPanel extends JPanel {
         panelForm.add(interno);
         panelForm.add(new JLabel("Scala (opzionale):"));
         panelForm.add(scala);
-        panelForm.add(new JLabel("CAP:"));
-        panelForm.add(cap);
-        panelForm.add(new JLabel("Codice Zona:"));
-        panelForm.add(zona);
 
         int res = JOptionPane.showConfirmDialog(this, panelForm, "Aggiungi Indirizzo", JOptionPane.OK_CANCEL_OPTION);
         if (res == JOptionPane.OK_OPTION) {
             try {
+                CittaZona selezionata = (CittaZona) comboCitta.getSelectedItem();
                 Indirizzo ind = new Indirizzo(
                     via.getText(),
                     numeroCivico.getText(),
-                    cap.getText(),
+                    selezionata.cap,
                     interno.getText().isBlank() ? 0 : Integer.parseInt(interno.getText()),
                     scala.getText().isBlank() ? 0 : Integer.parseInt(scala.getText()),
-                    Integer.parseInt(zona.getText())
+                    selezionata.codiceZona
                 );
                 controller.getModel().insertIndirizzo(ind, controller.getCurrentClienteId());
                 visualizzaIndirizzi();
@@ -607,6 +605,40 @@ public class ProfiloPanel extends JPanel {
         tableModel.addColumn("Errore");
         tableModel.addRow(new Object[]{messaggio});
         JOptionPane.showMessageDialog(this, messaggio, "Errore", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private static final CittaZona[] CITTA_ZONA = {
+        new CittaZona("Roma", "00100", 1),
+        new CittaZona("Milano", "20100", 2),
+        new CittaZona("Napoli", "80100", 3),
+        new CittaZona("Torino", "10100", 4),
+        new CittaZona("Palermo", "90100", 5),
+        new CittaZona("Genova", "16100", 6),
+        new CittaZona("Bologna", "40100", 7),
+        new CittaZona("Firenze", "50100", 8),
+        new CittaZona("Bari", "70100", 9),
+        new CittaZona("Catania", "95100", 10),
+        new CittaZona("Venezia", "30100", 11),
+        new CittaZona("Verona", "37100", 12),
+        new CittaZona("Messina", "98100", 13),
+        new CittaZona("Padova", "35100", 14),
+        new CittaZona("Trieste", "34100", 15),
+    };
+
+    private static class CittaZona {
+        public final String citta;
+        public final String cap;
+        public final int codiceZona;
+        public CittaZona(String citta, String cap, int codiceZona) {
+            this.citta = citta;
+            this.cap = cap;
+            this.codiceZona = codiceZona;
+        }
+
+        @Override
+        public String toString() {
+            return citta + " (" + cap + ")";
+        }
     }
 
 }
