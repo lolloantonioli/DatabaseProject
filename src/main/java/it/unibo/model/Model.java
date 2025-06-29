@@ -135,7 +135,8 @@ public interface Model {
 
     // Gestione applicazioni promozione
     List<Applicazione> loadOrdiniConPromozione();
-
+ /** Restituisce gli ordini ricevuti dal ristorante indicato. */
+    List<Ordine> loadOrdiniByRistorante(String piva);
     void aggiungiAlCarrello(Piatto piatto, int quantita);
     List<RigaCarrello> getCarrello();
     void svuotaCarrello();

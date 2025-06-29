@@ -15,10 +15,11 @@ public final class DAOUtils {
             String username = "root";
             String password = "Pb05L=18";
             return DriverManager.getConnection(url, username, password);
-        } catch (Exception e) {
-            throw new DAOException(e);
+        } catch (SQLException e) {
+            throw new DAOException("Errore di connessione al database", e);
         }
     }
+
 
     // We must always prepare a statement to make sure we do not fall victim to SQL injection:
     // https://owasp.org/www-community/attacks/SQL_Injection
@@ -27,19 +28,15 @@ public final class DAOUtils {
     //
     //     prepare(connection, MY_QUERY, query_arg1, query_arg2, ...)
     //
-    public static PreparedStatement prepare(Connection connection, String query, Object... values) throws SQLException {
-        PreparedStatement statement = null;
+    public static PreparedStatement prepare(Connection connection, String query, Object... values) {
         try {
-            statement = connection.prepareStatement(query);
+            PreparedStatement stmt = connection.prepareStatement(query);
             for (int i = 0; i < values.length; i++) {
-                statement.setObject(i + 1, values[i]);
+                stmt.setObject(i + 1, values[i]);
             }
-            return statement;
-        } catch (Exception e) {
-            if (statement != null) {
-                statement.close();
-            }
-            throw e;
+            return stmt;
+        } catch (SQLException e) {
+            throw new DAOException("Errore preparing statement", e);
         }
     }
 

@@ -8,6 +8,7 @@ import it.unibo.model.Model;
 import it.unibo.view.CardName;
 import it.unibo.view.MainFrame;
 
+
 public final class Controller {
 
     private final Model model;

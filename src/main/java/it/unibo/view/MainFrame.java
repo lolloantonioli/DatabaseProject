@@ -7,6 +7,7 @@ import it.unibo.view.cliente.CheckoutPanel;
 import it.unibo.view.cliente.ClienteAccessPanel;
 import it.unibo.view.cliente.ClientePanel;
 import it.unibo.view.rider.RiderPanel;
+import it.unibo.view.ristorante.MenuPanel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
