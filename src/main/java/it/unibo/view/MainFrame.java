@@ -22,7 +22,10 @@ public class MainFrame extends JFrame {
     private final RistorantePanel ristorantePanel;
     private final CheckoutPanel checkoutPanel;
     private final ClienteAccessPanel clienteAccessPanel;
-
+    /**
+     * Temporary P.IVA used while login is not integrated.
+     */
+    private static final String TEST_PIVA = "00000000000";
     private static final String FRAME_NAME = "PL8";
     private static final String MSG = "CardName cannot be null";
     private static final int FRAME_WIDTH = 800;
@@ -31,11 +34,11 @@ public class MainFrame extends JFrame {
     public MainFrame(final Controller controller) {
         this.layout = new CardLayout();
         this.root = new JPanel(this.layout);
-        this.menuPanel = new MenuPanel(controller);
+        this.menuPanel = new MenuPanel(controller, TEST_PIVA);
         this.clientePanel = new ClientePanel(controller);
         this.amministratorePanel = new AmministratorePanel(controller);
         this.riderPanel = new RiderPanel(controller);
-        this.ristorantePanel = new RistorantePanel(controller);
+        this.ristorantePanel = new RistorantePanel(controller, TEST_PIVA);
         this.checkoutPanel = new CheckoutPanel(controller);
         this.clienteAccessPanel = new ClienteAccessPanel(controller);
 
