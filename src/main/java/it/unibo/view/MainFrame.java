@@ -8,6 +8,7 @@ import it.unibo.view.cliente.ClienteAccessPanel;
 import it.unibo.view.cliente.ClientePanel;
 import it.unibo.view.rider.RiderAccessPanel;
 import it.unibo.view.rider.RiderPanel;
+import it.unibo.view.ristorante.MenuPanel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,6 +25,10 @@ public class MainFrame extends JFrame {
     private final ClienteAccessPanel clienteAccessPanel;
     private final RiderAccessPanel riderAccessPanel;
 
+    /**
+     * Temporary P.IVA used while login is not integrated.
+     */
+    private static final String TEST_PIVA = "00000000000";
     private static final String FRAME_NAME = "PL8";
     private static final String MSG = "CardName cannot be null";
     private static final int FRAME_WIDTH = 800;
@@ -32,11 +37,11 @@ public class MainFrame extends JFrame {
     public MainFrame(final Controller controller) {
         this.layout = new CardLayout();
         this.root = new JPanel(this.layout);
-        this.menuPanel = new MenuPanel(controller);
+        this.menuPanel = new MenuPanel(controller, TEST_PIVA);
         this.clientePanel = new ClientePanel(controller);
         this.amministratorePanel = new AmministratorePanel(controller);
         this.riderPanel = new RiderPanel(controller);
-        this.ristorantePanel = new RistorantePanel(controller);
+        this.ristorantePanel = new RistorantePanel(controller, TEST_PIVA);
         this.checkoutPanel = new CheckoutPanel(controller);
         this.clienteAccessPanel = new ClienteAccessPanel(controller);
         this.riderAccessPanel = new RiderAccessPanel(controller);

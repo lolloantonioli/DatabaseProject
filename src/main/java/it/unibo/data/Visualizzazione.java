@@ -51,7 +51,7 @@ public class Visualizzazione {
                 while (rs.next()) {
                     result.add(new Visualizzazione(
                         rs.getInt("codice_cliente"),
-                        rs.getString("piva")
+                        rs.getString("p_iva")
                     ));
                 }
             } catch (Exception e) {

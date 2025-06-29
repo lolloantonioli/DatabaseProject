@@ -61,7 +61,7 @@ public class Applicazione {
                 while (rs.next()) {
                     int codiceOrdine = rs.getInt("codice_ordine");
                     BigDecimal sconto = rs.getBigDecimal("sconto_applicato");
-                    String piva = rs.getString("piva");
+                    String piva = rs.getString("p_iva");
                     LocalDate inizio = rs.getDate("data_inizio").toLocalDate();
                     LocalDate fine = rs.getDate("data_fine").toLocalDate();
                     result.add(new Applicazione(codiceOrdine, sconto, piva, inizio, fine));

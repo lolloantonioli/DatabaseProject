@@ -79,7 +79,7 @@ public class Piatto {
                         Printer.field("codice_pagamento", rs.getInt("codice_pagamento")),
                         Printer.field("codice_stato", rs.getInt("codice_stato")),
                         Printer.field("prezzo_totale", rs.getBigDecimal("prezzo_totale")),
-                        Printer.field("piva", rs.getString("piva"))
+                        Printer.field("p_iva", rs.getString("piva"))
                     )));
                 }
             } catch (Exception e) {
@@ -99,7 +99,7 @@ public class Piatto {
                     result.add(Printer.stringify("PiattoTop", List.of(
                         Printer.field("codice_piatto", rs.getInt("codice_piatto")),
                         Printer.field("nome", rs.getString("nome")),
-                        Printer.field("totale_ordini", rs.getInt("totale_orari"))
+                        Printer.field("totale_ordini", rs.getInt("totale_piatti"))
                     )));
                 }
             } catch (Exception e) {

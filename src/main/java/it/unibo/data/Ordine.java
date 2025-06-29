@@ -195,5 +195,33 @@ public class Ordine {
                 try { conn.setAutoCommit(true); } catch (Exception ign) {}
             }
         }
+
+          /**
+         * Restituisce tutti gli ordini ricevuti da un ristorante.
+         */
+        public static List<Ordine> byRistorante(Connection connection, String piva) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.ORDINI_BY_RISTORANTE, piva);
+                 var rs = stmt.executeQuery()) {
+
+                var ordini = new ArrayList<Ordine>();
+                while (rs.next()) {
+                    var codiceOrdine = rs.getInt("codice_ordine");
+                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
+
+                    ordini.add(new Ordine(
+                        codiceOrdine,
+                        rs.getInt("codice_pagamento"),
+                        rs.getInt("codice_stato"),
+                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getString("p_iva"),
+                        dettagli
+                    ));
+                }
+                return ordini;
+
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il caricamento degli ordini del ristorante " + piva, e);
+            }
+        }
     }
 }

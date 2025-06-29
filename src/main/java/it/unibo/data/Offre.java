@@ -47,7 +47,7 @@ public class Offre {
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int codicePiatto = rs.getInt("codice_piatto");
-                    String partIva = rs.getString("piva");
+                    String partIva = rs.getString("p_iva");
                     result.add(new Offre(partIva, codicePiatto));
                 }
             } catch (Exception e) {

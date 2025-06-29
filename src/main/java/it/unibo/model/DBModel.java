@@ -77,6 +77,11 @@ public class DBModel implements Model {
     public Optional<Ordine> findOrdine(int codiceOrdine) {
         return Ordine.DAO.find(connection, codiceOrdine);
     }
+    
+    @Override
+    public List<Ordine> loadOrdiniByRistorante(String piva) {
+        return Ordine.DAO.byRistorante(connection, piva);
+    }
 
     @Override
     public List<Ordine> loadOrdiniByCliente(int codiceCliente) {

@@ -91,12 +91,12 @@ public class Rider {
                     Rider r = new Rider(
                         rs.getString("nome"),
                         rs.getString("cognome"),
-                        rs.getString("email"),
+                        rs.getString("e_mail"),
                         rs.getString("telefono"),
-                        rs.getDate("data_nascita") != null ? 
-                            rs.getDate("data_nascita") : null,
+                        rs.getDate("data_di_nascita") != null ? 
+                            rs.getDate("data_di_nascita") : null,
                         rs.getString("iban"),
-                        rs.getString("cf"),
+                        rs.getString("codice_fiscale"),
                         rs.getBoolean("patente"),
                         rs.getBoolean("disponibile"),
                         rs.getInt("codice_zona")
@@ -120,12 +120,12 @@ public class Rider {
                     Rider r = new Rider(
                         rs.getString("nome"),
                         rs.getString("cognome"),
-                        rs.getString("email"),
+                        rs.getString("e_mail"),
                         rs.getString("telefono"),
-                        rs.getDate("data_nascita") != null ? 
-                            rs.getDate("data_nascita") : null,
+                        rs.getDate("data_di_nascita") != null ? 
+                            rs.getDate("data_di_nascita") : null,
                         rs.getString("iban"),
-                        rs.getString("cf"),
+                        rs.getString("codice_fiscale"),
                         rs.getBoolean("patente"),
                         rs.getBoolean("disponibile"),
                         rs.getInt("codice_zona")
@@ -149,12 +149,12 @@ public class Rider {
                     riders.add(new Rider(
                         rs.getString("nome"),
                         rs.getString("cognome"),
-                        rs.getString("email"),
+                        rs.getString("e_mail"),
                         rs.getString("telefono"),
-                        rs.getDate("data_nascita") != null ? 
-                            rs.getDate("data_nascita") : null,
+                        rs.getDate("data_di_nascita") != null ? 
+                            rs.getDate("data_di_nascita") : null,
                         rs.getString("iban"),
-                        rs.getString("cf"),
+                        rs.getString("codice_fiscale"),
                         rs.getBoolean("patente"),
                         rs.getBoolean("disponibile"),
                         rs.getInt("codice_zona")
