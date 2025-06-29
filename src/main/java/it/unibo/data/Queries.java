@@ -467,6 +467,13 @@ public static final String FIND_RIDER = """
     WHERE codice_rider = ?
     """;
 
+public static final String FIND_RIDER_BY_EMAIL = """
+    SELECT codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,
+           iban, codice_fiscale, patente, disponibile, codice_zona
+    FROM rider
+    WHERE e_mail = ? 
+    """;
+
 // Riders per zona
 public static final String RIDERS_BY_ZONA = """
     SELECT codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,

@@ -184,6 +184,11 @@ public class DBModel implements Model {
     }
 
     @Override
+    public Optional<Rider> findRiderByEmail(String email) {
+        return Rider.DAO.findRiderByEmail(connection, email);
+    }
+
+    @Override
     public List<Residenza> loadResidenzeByCliente(int codiceCliente) {
         return Residenza.DAO.listByCliente(connection, codiceCliente);
     }
@@ -256,6 +261,11 @@ public class DBModel implements Model {
     @Override
     public List<Mezzo> loadMezziByRider(int codiceRider) {
         return Mezzo.DAO.listByRider(connection, codiceRider);
+    }
+
+    @Override
+    public int getNextCodiceMezzo(int codiceRider) {
+        return Mezzo.DAO.getNextCodiceMezzo(connection, codiceRider);
     }
 
     @Override

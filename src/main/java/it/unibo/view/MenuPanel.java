@@ -32,7 +32,7 @@ public class MenuPanel extends JPanel {
 
         btnCliente.addActionListener(e -> controller.goToClienteAccess());
         btnRistorante.addActionListener(e -> controller.goToRistorante());
-        btnRider.addActionListener(e -> controller.goToRider());
+        btnRider.addActionListener(e -> controller.goToRiderAccess());
         btnAmministratore.addActionListener(e -> controller.goToAmministratore());
 
         final JPanel buttonsPanel = new JPanel(new GridLayout(4, 1, 0, 20));

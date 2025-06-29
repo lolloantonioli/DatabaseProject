@@ -1,23 +1,20 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Mezzo {
 
-    public enum TipoMezzo {
-        BICICLETTA, MOTO, AUTO, SCOOTER
-    }
-
     public final int codiceRider;
     public final int codiceMezzo;
-    public final TipoMezzo tipo;
+    public final String tipo;
     public final String targa;
     public final String modello;
 
-    public Mezzo(int codiceRider, int codiceMezzo, TipoMezzo tipo, String targa, String modello) {
+    public Mezzo(int codiceRider, int codiceMezzo, String tipo, String targa, String modello) {
         this.codiceRider = codiceRider;
         this.codiceMezzo = codiceMezzo;
         this.tipo = tipo;
@@ -61,8 +58,7 @@ public class Mezzo {
                 var rs = ps.executeQuery();
                     while (rs.next()) {
                         int idMezzo = rs.getInt("codice_mezzo");
-                        String tipoStr = rs.getString("tipo");
-                        TipoMezzo tipo = TipoMezzo.valueOf(tipoStr.toUpperCase());
+                        String tipo = String.valueOf("tipo");
                         String targa = rs.getString("targa");
                         String modello = rs.getString("modello");
                         result.add(new Mezzo(codiceRider, idMezzo, tipo, targa, modello));
@@ -81,13 +77,28 @@ public class Mezzo {
                                         Queries.INSERT_MEZZO,
                                         m.codiceRider,
                                         m.codiceMezzo,
-                                        m.tipo.name(),
+                                        m.tipo,
                                         m.targa,
                                         m.modello)) {
                 ps.executeUpdate();
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento mezzo per rider " + m.codiceRider, e);
             }
+        }
+
+        public static int getNextCodiceMezzo(Connection conn, int codiceRider) {
+            String sql = "SELECT COALESCE(MAX(Codice_Mezzo), 0) FROM Mezzi WHERE Codice_Rider = ?";
+            try (var ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, codiceRider);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1) + 1;
+                    }
+                }
+            } catch (SQLException e) {
+                throw new DAOException("Errore calcolo Codice_Mezzo", e);
+            }
+            return 1;
         }
     }
 }

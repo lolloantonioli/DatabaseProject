@@ -166,6 +166,33 @@ public class Rider {
                 throw new DAOException("Errore durante il caricamento dei riders disponibili", e);
             }
         }
+
+        public static Optional<Rider> findRiderByEmail(Connection connection, String email) {
+            try (var stmt = DAOUtils.prepare(connection, Queries.FIND_RIDER_BY_EMAIL, email);
+                 var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Rider r = new Rider(
+                        rs.getString("nome"),
+                        rs.getString("cognome"),
+                        rs.getString("email"),
+                        rs.getString("telefono"),
+                        rs.getDate("data_nascita") != null ? 
+                            rs.getDate("data_nascita") : null,
+                        rs.getString("iban"),
+                        rs.getString("cf"),
+                        rs.getBoolean("patente"),
+                        rs.getBoolean("disponibile"),
+                        rs.getInt("codice_zona")
+                    );
+                    r.setCodiceRider(rs.getInt("codice_rider"));
+                    return Optional.of(r);
+                }
+                return Optional.empty();
+            } catch (Exception e) {
+                throw new DAOException("Errore durante il caricamento del rider dall'email", e);
+            }
+        }
+
         /**
          * Inserisce un nuovo rider
          */

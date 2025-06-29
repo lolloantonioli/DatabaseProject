@@ -6,6 +6,7 @@ import it.unibo.controller.Controller;
 import it.unibo.view.cliente.CheckoutPanel;
 import it.unibo.view.cliente.ClienteAccessPanel;
 import it.unibo.view.cliente.ClientePanel;
+import it.unibo.view.rider.RiderAccessPanel;
 import it.unibo.view.rider.RiderPanel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -21,6 +22,7 @@ public class MainFrame extends JFrame {
     private final RistorantePanel ristorantePanel;
     private final CheckoutPanel checkoutPanel;
     private final ClienteAccessPanel clienteAccessPanel;
+    private final RiderAccessPanel riderAccessPanel;
 
     private static final String FRAME_NAME = "PL8";
     private static final String MSG = "CardName cannot be null";
@@ -37,6 +39,7 @@ public class MainFrame extends JFrame {
         this.ristorantePanel = new RistorantePanel(controller);
         this.checkoutPanel = new CheckoutPanel(controller);
         this.clienteAccessPanel = new ClienteAccessPanel(controller);
+        this.riderAccessPanel = new RiderAccessPanel(controller);
 
         this.setTitle(FRAME_NAME);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -48,6 +51,7 @@ public class MainFrame extends JFrame {
         root.add((Component) ristorantePanel, CardName.RISTORANTE.toString());
         root.add((Component) checkoutPanel, CardName.CHECKOUT.toString());
         root.add((Component) clienteAccessPanel, CardName.CLIENTE_ACCESS.toString());
+        root.add((Component) riderAccessPanel, CardName.RIDER_ACCESS.toString());
         this.add(root);
         this.pack();
         this.setLocationRelativeTo(null);

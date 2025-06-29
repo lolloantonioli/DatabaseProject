@@ -2,6 +2,9 @@ package it.unibo.view.rider;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Date;
+import java.util.Optional;
+
 import it.unibo.controller.Controller;
 import it.unibo.data.Rider;
 import it.unibo.model.CittaZona;
@@ -37,8 +40,9 @@ public class RiderAccessPanel extends JPanel {
                 this, panel, "Login Rider", JOptionPane.OK_CANCEL_OPTION);
             if(result == JOptionPane.OK_OPTION) {
                 String email = emailField.getText();
-                if(controller.loginRider(email)) {
-                    controller.showRiderPanel();
+                final Optional<Rider> rider = controller.getModel().findRiderByEmail(email);
+                if (rider.isPresent()) {
+                    controller.goToRider(rider.get().codiceRider);
                 } else {
                     JOptionPane.showMessageDialog(this, "Email non trovata o errata.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -51,6 +55,9 @@ public class RiderAccessPanel extends JPanel {
             JTextField cognomeField = new JTextField();
             JTextField emailField = new JTextField();
             JTextField telefonoField = new JTextField();
+            JTextField dataNascitaField = new JTextField();
+            JTextField ibanField = new JTextField();
+            JTextField cfField = new JTextField();
             JCheckBox patenteBox = new JCheckBox("Hai la patente?");
             JComboBox<CittaZona> comboCitta = new JComboBox<>(CittaZona.CITTA_ZONA);
 
@@ -63,6 +70,12 @@ public class RiderAccessPanel extends JPanel {
             panel.add(emailField);
             panel.add(new JLabel("Telefono:"));
             panel.add(telefonoField);
+            panel.add(new JLabel("Data di nascita: (yyyy-mm-dd)"));
+            panel.add(dataNascitaField);
+            panel.add(new JLabel("Iban:"));
+            panel.add(ibanField);
+            panel.add(new JLabel("Codice fiscale:"));
+            panel.add(cfField);
             panel.add(patenteBox);
             panel.add(new JLabel("Zona geografica:"));
             panel.add(comboCitta);
@@ -72,20 +85,25 @@ public class RiderAccessPanel extends JPanel {
             );
 
             if(res == JOptionPane.OK_OPTION) {
-                CittaZona zona = (CittaZona) comboCitta.getSelectedItem();
-                boolean ok = controller.getModel().insertRider(new Rider(
-                    nomeField.getText(),
-                    cognomeField.getText(),
-                    emailField.getText(),
-                    telefonoField.getText(),
-                    patenteBox.isSelected(),
-                    zona.codiceZona)
-                );
-                if(ok) {
+                try {
+                    CittaZona zona = (CittaZona) comboCitta.getSelectedItem();
+                    controller.getModel().insertRider(new Rider(
+                        nomeField.getText(),
+                        cognomeField.getText(),
+                        emailField.getText(),
+                        telefonoField.getText(),
+                        Date.valueOf(dataNascitaField.getText()),
+                        ibanField.getText(),
+                        cfField.getText(),
+                        patenteBox.isSelected(),
+                        true,
+                        zona.codiceZona)
+                    );
                     JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
-                } else {
+                } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Errore nella registrazione.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
+                
             }
         });
     }

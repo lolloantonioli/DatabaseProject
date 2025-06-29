@@ -13,9 +13,11 @@ public final class Controller {
     private final Model model;
     private final MainFrame view;
     private Optional<Integer> currentClienteId;
+    private Optional<Integer> currentRiderId;
 
     public Controller() {
         this.currentClienteId = Optional.empty();
+        this.currentRiderId = Optional.empty();
         this.model = new DBModel(DAOUtils.localMySQLConnection());
         this.view = new MainFrame(this);
     }
@@ -34,8 +36,13 @@ public final class Controller {
         view.show(CardName.AMMINISTRATORE);
     }
 
-    public void goToRider() {
+    public void goToRider(final int codiceRider) {
+        this.currentRiderId = Optional.of(codiceRider);
         view.show(CardName.RIDER);
+    }
+
+    public void goToRiderAccess() {
+        view.show(CardName.RIDER_ACCESS);
     }
 
     public void goToRistorante() {
@@ -76,6 +83,24 @@ public final class Controller {
      */
     public boolean isClienteLoggato() {
         return currentClienteId.isPresent();
+    }
+
+    public int getCurrentRiderId() {
+        if (currentRiderId.isEmpty()) {
+            throw new IllegalStateException("Nessun rider attualmente loggato");
+        }
+        return currentRiderId.get();
+    }
+
+    public boolean isRiderLoggato() {
+        return currentRiderId.isPresent();
+    }
+
+    public boolean riderHaPatente() {
+        if (currentRiderId.isEmpty()) {
+            throw new IllegalStateException("Nessun rider attualmente loggato");
+        }
+        return model.findRider(currentRiderId.get()).get().patente;
     }
 
     /*public void userClickedCliente(Cliente cliente) {

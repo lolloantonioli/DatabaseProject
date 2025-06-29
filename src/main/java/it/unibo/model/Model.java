@@ -75,6 +75,7 @@ public interface Model {
     Optional<Rider> findRider(int codiceRider);
     List<Rider> findRidersAvailable(int codiceZona);
     void insertRider(Rider rider);
+    Optional<Rider> findRiderByEmail(String email);
 
     // Gestione residenze
     List<Residenza> loadResidenzeByCliente(int codiceCliente);
@@ -105,6 +106,7 @@ public interface Model {
     // Gestione mezzi
     void insertMezzo(Mezzo mezzo);
     List<Mezzo> loadMezziByRider(int codiceRider);
+    int getNextCodiceMezzo(int codiceRider);
 
     // Gestione metodi di pagamento
     void insertMetodoPagamento(MetodoPagamento metodoPagamento);
