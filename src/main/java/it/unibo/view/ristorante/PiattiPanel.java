@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * Pannello per la gestione del menu del ristorante.
  */
-public class MenuPanel extends JPanel {
+public class PiattiPanel extends JPanel {
 
     private final Controller controller;
     private final String piva;
     private final DefaultTableModel model;
     private final JTable table;
 
-    public MenuPanel(Controller controller, String piva) {
+    public PiattiPanel(Controller controller, String piva) {
         this.controller = controller;
         this.piva = piva;
         setLayout(new BorderLayout());

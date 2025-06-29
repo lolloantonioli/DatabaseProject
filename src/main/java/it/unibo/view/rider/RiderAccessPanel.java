@@ -101,6 +101,7 @@ public class RiderAccessPanel extends JPanel {
                     );
                     JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Errore nella registrazione.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
                 

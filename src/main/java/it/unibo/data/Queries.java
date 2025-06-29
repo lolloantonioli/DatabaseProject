@@ -4,13 +4,13 @@ public class Queries {
 
     // Clienti
     public static final String FIND_CLIENTE = """
-        SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
+        SELECT codice_cliente, nome, cognome, e_mail, telefono, data_di_nascita, username
         FROM clienti
         WHERE codice_cliente = ?
         """;
 
     public static final String LIST_CLIENTI = """
-        SELECT codice_cliente, nome, cognome, email, telefono, data_nascita, username
+        SELECT codice_cliente, nome, cognome, e_mail, telefono, data_di_nascita, username
         FROM clienti
         ORDER BY cognome, nome
         """;

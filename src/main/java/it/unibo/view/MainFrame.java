@@ -8,7 +8,8 @@ import it.unibo.view.cliente.ClienteAccessPanel;
 import it.unibo.view.cliente.ClientePanel;
 import it.unibo.view.rider.RiderAccessPanel;
 import it.unibo.view.rider.RiderPanel;
-import it.unibo.view.ristorante.MenuPanel;
+import it.unibo.view.ristorante.PiattiPanel;
+import it.unibo.view.ristorante.RistorantePanel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,6 +25,7 @@ public class MainFrame extends JFrame {
     private final CheckoutPanel checkoutPanel;
     private final ClienteAccessPanel clienteAccessPanel;
     private final RiderAccessPanel riderAccessPanel;
+    private final PiattiPanel piattiPanel;
 
     /**
      * Temporary P.IVA used while login is not integrated.
@@ -37,7 +39,7 @@ public class MainFrame extends JFrame {
     public MainFrame(final Controller controller) {
         this.layout = new CardLayout();
         this.root = new JPanel(this.layout);
-        this.menuPanel = new MenuPanel(controller, TEST_PIVA);
+        this.menuPanel = new MenuPanel(controller);
         this.clientePanel = new ClientePanel(controller);
         this.amministratorePanel = new AmministratorePanel(controller);
         this.riderPanel = new RiderPanel(controller);
@@ -45,6 +47,7 @@ public class MainFrame extends JFrame {
         this.checkoutPanel = new CheckoutPanel(controller);
         this.clienteAccessPanel = new ClienteAccessPanel(controller);
         this.riderAccessPanel = new RiderAccessPanel(controller);
+        this.piattiPanel = new PiattiPanel(controller, TEST_PIVA);
 
         this.setTitle(FRAME_NAME);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -68,8 +71,8 @@ public class MainFrame extends JFrame {
         this.layout.show(this.root, name.toString());
     }
 
-    public MenuPanel getMenuPanel() {
-        return this.menuPanel;
+    public PiattiPanel getMenuPanel() {
+        return this.piattiPanel;
     }
 
     public ClientePanel getClientePanel() {
