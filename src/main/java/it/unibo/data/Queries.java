@@ -454,9 +454,9 @@ public static final String RESIDENZA_BY_CLIENTE = """
 // Inserisce un nuovo rider
 public static final String INSERT_RIDER = """
     INSERT INTO rider
-        (codice_rider, nome, cognome, data_di_nascita, e_mail, telefono,
+        (nome, cognome, data_di_nascita, e_mail, telefono,
          iban, codice_fiscale, patente, disponibile, codice_zona)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
 // Trova un rider per ID

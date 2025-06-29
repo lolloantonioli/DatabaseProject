@@ -28,6 +28,7 @@ import it.unibo.data.Ordine;
 import it.unibo.data.Pagamento;
 import it.unibo.data.Recensione;
 import it.unibo.data.StatoOrdine;
+import it.unibo.model.CittaZona;
 
 public class ProfiloPanel extends JPanel {
 
@@ -217,9 +218,10 @@ public class ProfiloPanel extends JPanel {
         JTextField numeroCivico = new JTextField();
         JTextField interno = new JTextField();
         JTextField scala = new JTextField();
-        JTextField cap = new JTextField();
-        JTextField zona = new JTextField();
+        JComboBox<CittaZona> comboCitta = new JComboBox<>(CittaZona.CITTA_ZONA);
         JPanel panelForm = new JPanel(new GridLayout(0, 1));
+        panelForm.add(new JLabel("Zona:"));
+        panelForm.add(comboCitta);
         panelForm.add(new JLabel("Via:"));
         panelForm.add(via);
         panelForm.add(new JLabel("Numero Civico:"));
@@ -228,21 +230,18 @@ public class ProfiloPanel extends JPanel {
         panelForm.add(interno);
         panelForm.add(new JLabel("Scala (opzionale):"));
         panelForm.add(scala);
-        panelForm.add(new JLabel("CAP:"));
-        panelForm.add(cap);
-        panelForm.add(new JLabel("Codice Zona:"));
-        panelForm.add(zona);
 
         int res = JOptionPane.showConfirmDialog(this, panelForm, "Aggiungi Indirizzo", JOptionPane.OK_CANCEL_OPTION);
         if (res == JOptionPane.OK_OPTION) {
             try {
+                CittaZona selezionata = (CittaZona) comboCitta.getSelectedItem();
                 Indirizzo ind = new Indirizzo(
                     via.getText(),
                     numeroCivico.getText(),
-                    cap.getText(),
+                    selezionata.cap,
                     interno.getText().isBlank() ? 0 : Integer.parseInt(interno.getText()),
                     scala.getText().isBlank() ? 0 : Integer.parseInt(scala.getText()),
-                    Integer.parseInt(zona.getText())
+                    selezionata.codiceZona
                 );
                 controller.getModel().insertIndirizzo(ind, controller.getCurrentClienteId());
                 visualizzaIndirizzi();
