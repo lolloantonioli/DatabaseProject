@@ -43,6 +43,7 @@ public class RiderAccessPanel extends JPanel {
                 final Optional<Rider> rider = controller.getModel().findRiderByEmail(email);
                 if (rider.isPresent()) {
                     controller.goToRider(rider.get().codiceRider);
+                    controller.getRiderProfiloPanel().mostraProfiloRider();
                 } else {
                     JOptionPane.showMessageDialog(this, "Email non trovata o errata.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }

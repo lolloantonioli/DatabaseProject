@@ -27,7 +27,6 @@ public class ClientePanel extends JPanel {
         tabbedPane.addTab("Trova Ristoranti", trovaRistorantiPanel);
         tabbedPane.addTab("Carrello", carrelloPanel);
         tabbedPane.addTab("Profilo", profiloPanel);
-        System.out.println("Aggiunto tab");
         add(tabbedPane, BorderLayout.CENTER);
     }
 

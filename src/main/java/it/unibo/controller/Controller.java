@@ -7,6 +7,7 @@ import it.unibo.model.DBModel;
 import it.unibo.model.Model;
 import it.unibo.view.CardName;
 import it.unibo.view.MainFrame;
+import it.unibo.view.rider.RiderProfiloPanel;
 
 
 public final class Controller {
@@ -102,6 +103,10 @@ public final class Controller {
             throw new IllegalStateException("Nessun rider attualmente loggato");
         }
         return model.findRider(currentRiderId.get()).get().patente;
+    }
+
+    public RiderProfiloPanel getRiderProfiloPanel() {
+        return view.getRiderPanel().getRiderProfiloPanel();
     }
 
     /*public void userClickedCliente(Cliente cliente) {

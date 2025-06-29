@@ -16,7 +16,6 @@ public class RiderProfiloPanel extends JPanel {
     public RiderProfiloPanel(final Controller controller) {
         this.controller = controller;
         setLayout(new BorderLayout());
-
     }
 
     private void aggiornaTabellaMezzi() {
