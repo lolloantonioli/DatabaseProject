@@ -126,7 +126,7 @@ public class Cliente {
                         rs.getString("e_mail"),
                         rs.getString("telefono"),
                         rs.getDate("data_di_nascita") != null 
-                            ? rs.getDate("data_nascita")
+                            ? rs.getDate("data_di_nascita")
                             : null,
                         rs.getString("username")
                     );
