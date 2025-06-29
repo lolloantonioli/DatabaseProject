@@ -58,7 +58,7 @@ public class Ristorante {
                 
                 if (rs.next()) {
                     return Optional.of(new Ristorante(
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         rs.getString("nome"),
                         rs.getString("indirizzo"),
                         rs.getString("orario"),
@@ -79,7 +79,7 @@ public class Ristorante {
                 var ristoranti = new ArrayList<Ristorante>();
                 while (rs.next()) {
                     ristoranti.add(new Ristorante(
-                        rs.getString("piva"),
+                        rs.getString("p_iva"),
                         rs.getString("nome"),
                         rs.getString("indirizzo"),
                         rs.getString("orario"),

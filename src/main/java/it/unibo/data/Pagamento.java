@@ -74,7 +74,7 @@ public class Pagamento {
         
         public static int insertPagamento(Connection conn, Pagamento p) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_PAGAMENTO,
-                                           p.codiceCliente, p.nomeMetodo, p.data, p.importo)) {
+                                           p.codiceCliente, p.data, p.importo)) {
                 ps.executeUpdate();
                 try (var rs = ps.getGeneratedKeys()) {
                     if (rs.next()) return rs.getInt(1);
