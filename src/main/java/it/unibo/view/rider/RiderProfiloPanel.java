@@ -22,7 +22,7 @@ public class RiderProfiloPanel extends JPanel {
         mezziTableModel.setRowCount(0);
         List<Mezzo> mezzi = controller.getModel().loadMezziByRider(controller.getCurrentRiderId());
         for (Mezzo m : mezzi) {
-            mezziTableModel.addRow(new Object[]{m.codiceMezzo, m.tipo, m.targa == null ? "" : m.targa});
+            mezziTableModel.addRow(new Object[]{m.codiceMezzo, m.tipo, m.targa == null ? "" : m.targa, m.modello});
         }
     }
 

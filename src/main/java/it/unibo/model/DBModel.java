@@ -184,8 +184,8 @@ public class DBModel implements Model {
     }
 
     @Override
-    public void insertRider(Rider rider) {
-        Rider.DAO.insertRider(connection, rider);
+    public int insertRider(Rider rider) {
+        return Rider.DAO.insertRider(connection, rider);
     }
 
     @Override

@@ -74,7 +74,7 @@ public interface Model {
     List<Rider> loadRidersByZona(int codiceZona);
     Optional<Rider> findRider(int codiceRider);
     List<Rider> findRidersAvailable(int codiceZona);
-    void insertRider(Rider rider);
+    int insertRider(Rider rider);
     Optional<Rider> findRiderByEmail(String email);
 
     // Gestione residenze

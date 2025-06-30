@@ -2,15 +2,18 @@ package it.unibo.view.rider;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Optional;
 
 import it.unibo.controller.Controller;
 import it.unibo.data.Rider;
+import it.unibo.data.Contratto;
+import it.unibo.data.Mezzo;
 import it.unibo.model.CittaZona;
 
 public class RiderAccessPanel extends JPanel {
-    
+
     public RiderAccessPanel(Controller controller) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -88,7 +91,8 @@ public class RiderAccessPanel extends JPanel {
             if(res == JOptionPane.OK_OPTION) {
                 try {
                     CittaZona zona = (CittaZona) comboCitta.getSelectedItem();
-                    controller.getModel().insertRider(new Rider(
+                    boolean haPatente = patenteBox.isSelected();
+                    Rider nuovo = new Rider(
                         nomeField.getText(),
                         cognomeField.getText(),
                         emailField.getText(),
@@ -96,17 +100,70 @@ public class RiderAccessPanel extends JPanel {
                         Date.valueOf(dataNascitaField.getText()),
                         ibanField.getText(),
                         cfField.getText(),
-                        patenteBox.isSelected(),
+                        haPatente,
                         true,
-                        zona.codiceZona)
+                        zona.codiceZona
                     );
+                    final int codiceNuovoRider = controller.getModel().insertRider(nuovo);
+                    controller.getModel().insertContratto(new Contratto(codiceNuovoRider,
+                                                                        BigDecimal.valueOf(8),
+                                                                        "Contratto standard Rider"));
+                    
+                    // Chiede di inserire almeno un mezzo
+                    inserisciMezzo(controller, codiceNuovoRider, nuovo.patente);
+
                     JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Errore nella registrazione.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
-                
             }
         });
+    }
+
+    /**
+     * Mostra un dialog per inserire un mezzo associato al rider,
+     * limitando la scelta dei tipi in base al flag patente
+     */
+    private void inserisciMezzo(Controller controller, int codiceRider, boolean haPatente) {
+        // Combo dinamico in base al flag patente
+        JComboBox<String> tipoBox = new JComboBox<>(haPatente
+                ? new String[]{"BICICLETTA", "MOTO", "AUTO", "SCOOTER"}
+                : new String[]{"BICICLETTA"});
+        JTextField targaField = new JTextField();
+        JTextField modelloField = new JTextField();
+
+        JPanel mezzoPanel = new JPanel(new GridLayout(0, 1));
+        mezzoPanel.add(new JLabel("Tipo mezzo:"));
+        mezzoPanel.add(tipoBox);
+        mezzoPanel.add(new JLabel("Targa (solo per mezzi a motore):"));
+        mezzoPanel.add(targaField);
+        mezzoPanel.add(new JLabel("Modello:"));
+        mezzoPanel.add(modelloField);
+
+        int resMezzo = JOptionPane.showConfirmDialog(
+            this, mezzoPanel, "Inserisci un mezzo", JOptionPane.OK_CANCEL_OPTION
+        );
+        if (resMezzo == JOptionPane.OK_OPTION) {
+            String tipo = tipoBox.getSelectedItem().toString();
+            String targa = targaField.getText();
+            String modello = modelloField.getText();
+
+            // Targa obbligatoria per mezzi a motore
+            if (!tipo.equals("BICICLETTA") && (targa == null || targa.isBlank())) {
+                JOptionPane.showMessageDialog(this, "La targa è obbligatoria per auto, moto e scooter.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int codiceMezzo = controller.getModel().getNextCodiceMezzo(codiceRider);
+            Mezzo mezzo = new Mezzo(
+                codiceRider,
+                codiceMezzo,
+                tipo,
+                tipo.equals("BICICLETTA") ? null : targa,
+                modello
+            );
+            controller.getModel().insertMezzo(mezzo);
+        }
     }
 }

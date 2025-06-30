@@ -58,7 +58,7 @@ public class Mezzo {
                 var rs = ps.executeQuery();
                     while (rs.next()) {
                         int idMezzo = rs.getInt("codice_mezzo");
-                        String tipo = String.valueOf("tipo");
+                        String tipo = rs.getString("tipo");
                         String targa = rs.getString("targa");
                         String modello = rs.getString("modello");
                         result.add(new Mezzo(codiceRider, idMezzo, tipo, targa, modello));

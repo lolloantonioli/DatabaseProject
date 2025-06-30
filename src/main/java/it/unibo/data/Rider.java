@@ -2,6 +2,7 @@ package it.unibo.data;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -196,20 +197,27 @@ public class Rider {
         /**
          * Inserisce un nuovo rider
          */
-        public static void insertRider(Connection conn, Rider r) {
-            try (var ps = DAOUtils.prepare(conn,
-                                        Queries.INSERT_RIDER,
-                                        r.nome,
-                                        r.cognome,
-                                        r.dataNascita,
-                                        r.email,
-                                        r.telefono,
-                                        r.iban,
-                                        r.cf,
-                                        r.patente,
-                                        r.disponibile,
-                                        r.codiceZona)) {
+        public static int insertRider(Connection conn, Rider r) {
+            try (var ps = conn.prepareStatement(Queries.INSERT_RIDER, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, r.nome);
+                ps.setString(2, r.cognome);
+                ps.setDate(3, r.dataNascita);
+                ps.setString(4, r.email);
+                ps.setString(5, r.telefono);
+                ps.setString(6, r.iban);
+                ps.setString(7, r.cf);
+                ps.setBoolean(8, r.patente);
+                ps.setBoolean(9, r.disponibile);
+                ps.setInt(10, r.codiceZona);
                 ps.executeUpdate();
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        int codiceRider = keys.getInt(1);
+                        r.codiceRider = codiceRider;
+                        return codiceRider;
+                    }
+                    return 0;
+                }
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento rider " + r.codiceRider, e);
             }
