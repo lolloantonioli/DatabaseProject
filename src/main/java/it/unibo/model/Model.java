@@ -107,6 +107,7 @@ public interface Model {
     void insertMezzo(Mezzo mezzo);
     List<Mezzo> loadMezziByRider(int codiceRider);
     int getNextCodiceMezzo(int codiceRider);
+    void deleteMezzo(int codiceRider, int codiceMezzo);
 
     // Gestione metodi di pagamento
     void insertMetodoPagamento(MetodoPagamento metodoPagamento);

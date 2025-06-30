@@ -384,4 +384,9 @@ public class DBModel implements Model {
         return carrello.stream().mapToDouble(r -> r.piatto.prezzo.doubleValue() * r.quantita).sum();
     }
 
+    @Override
+    public void deleteMezzo(int codiceRider, int codiceMezzo) {
+        Mezzo.DAO.deleteMezzo(connection, codiceRider, codiceMezzo);
+    }
+
 }

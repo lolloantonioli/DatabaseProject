@@ -34,7 +34,6 @@ public class RiderProfiloPanel extends JPanel {
         infoPanel.setBorder(BorderFactory.createTitledBorder("Contratto attuale"));
         infoPanel.add(new JLabel("Paga oraria: " + contratto.pagaOraria));
         infoPanel.add(new JLabel("Testo: " + contratto.testo));
-
         add(infoPanel, BorderLayout.NORTH);
 
         // --- Mezzi ---
@@ -46,8 +45,12 @@ public class RiderProfiloPanel extends JPanel {
         mezziPanel.setBorder(BorderFactory.createTitledBorder("Mezzi"));
         mezziPanel.add(new JScrollPane(mezziTable), BorderLayout.CENTER);
 
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton btnAggiungiMezzo = new JButton("Aggiungi Mezzo");
-        mezziPanel.add(btnAggiungiMezzo, BorderLayout.SOUTH);
+        JButton btnEliminaMezzo = new JButton("Elimina Mezzo");
+        btnPanel.add(btnAggiungiMezzo);
+        btnPanel.add(btnEliminaMezzo);
+        mezziPanel.add(btnPanel, BorderLayout.SOUTH);
 
         btnAggiungiMezzo.addActionListener(e -> {
             String[] tipi = controller.riderHaPatente() ? new String[]{"Bicicletta", "Scooter", "Auto", "Moto"} : new String[]{"Bicicletta"};
@@ -73,8 +76,24 @@ public class RiderProfiloPanel extends JPanel {
             }
         });
 
+        // **NUOVO - elimina mezzo selezionato**
+        btnEliminaMezzo.addActionListener(e -> {
+            int selectedRow = mezziTable.getSelectedRow();
+            if (selectedRow < 0) {
+                JOptionPane.showMessageDialog(this, "Seleziona il mezzo da eliminare nella tabella.", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int codiceMezzo = Integer.parseInt(mezziTableModel.getValueAt(selectedRow, 0).toString());
+            int confirm = JOptionPane.showConfirmDialog(this, "Eliminare il mezzo selezionato?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                controller.getModel().deleteMezzo(controller.getCurrentRiderId(), codiceMezzo);
+                aggiornaTabellaMezzi();
+            }
+        });
+
         add(mezziPanel, BorderLayout.CENTER);
         revalidate();
         repaint();
     }
+
 }

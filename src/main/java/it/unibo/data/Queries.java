@@ -75,6 +75,11 @@ public static final String INSERT_CONTRATTO = """
     VALUES (?, ?, ?)
     """;
 
+public static final String DELETE_MEZZO = """
+    DELETE FROM Mezzi WHERE Codice_Rider = ? AND Codice_Mezzo = ?
+""";
+
+
 // Inserimento carta
 public static final String INSERT_CARTA = """
     INSERT INTO carte (codice_cliente, nome, numero, titolare, data_scadenza, cvv)

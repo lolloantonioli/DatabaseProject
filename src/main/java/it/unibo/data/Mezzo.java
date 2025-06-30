@@ -100,5 +100,14 @@ public class Mezzo {
             }
             return 1;
         }
+
+        public static void deleteMezzo(Connection conn, int codiceRider, int codiceMezzo) {
+            try (var ps = DAOUtils.prepare(conn, Queries.DELETE_MEZZO, codiceRider, codiceMezzo)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore eliminazione mezzo per rider " + codiceRider + " mezzo " + codiceMezzo, e);
+            }
+        }
+
     }
 }
