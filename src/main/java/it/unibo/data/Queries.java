@@ -79,6 +79,24 @@ public static final String DELETE_MEZZO = """
     DELETE FROM Mezzi WHERE Codice_Rider = ? AND Codice_Mezzo = ?
 """;
 
+public static final String ORDINI_PREPARAZIONE_ZONA =
+    "SELECT o.Codice_Ordine, o.P_IVA, o.Prezzo_Totale, s.Data " +
+    "FROM ORDINI o " +
+    "JOIN STATI_ORDINI s ON o.Codice_Ordine = s.Codice_Ordine " +
+    "JOIN RISTORANTI r ON o.P_IVA = r.P_IVA " +
+    "WHERE s.In_Preparazione = TRUE AND r.Codice_Zona = ?";
+
+public static final String PRENDI_IN_CARICO_ORDINE =
+    "UPDATE STATI_ORDINI SET In_Preparazione = FALSE, In_Consegna = TRUE, Ora_In_Consegna = NOW(), Codice_Rider = ? WHERE Codice_Ordine = ?";
+
+public static final String ORDINE_IN_CARICO_RIDER =
+    "SELECT o.Codice_Ordine, o.P_IVA, o.Prezzo_Totale, s.Data " +
+    "FROM ORDINI o " +
+    "JOIN STATI_ORDINI s ON o.Codice_Ordine = s.Codice_Ordine " +
+    "WHERE s.In_Consegna = TRUE AND s.Codice_Rider = ?";
+
+public static final String CONSEGNA_ORDINE =
+    "UPDATE STATI_ORDINI SET In_Consegna = FALSE, Consegnato = TRUE, Ora_Consegnato = NOW() WHERE Codice_Ordine = ? AND Codice_Rider = ?";
 
 // Inserimento carta
 public static final String INSERT_CARTA = """

@@ -3,6 +3,7 @@ package it.unibo.data;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -110,6 +111,29 @@ public class StatoOrdine {
             } catch (Exception e) {
                 throw new DAOException("Errore recupero stato ordine " + codiceOrdine, e);
             }
+        }
+
+        // a. Lista ordini "in preparazione" per zona
+        public static List<Ordine> inPreparazioneByZona(Connection conn, int codiceZona) {
+            var ordini = new ArrayList<Ordine>();
+            try (var ps = DAOUtils.prepare(conn, Queries.ORDINI_PREPARAZIONE_ZONA, codiceZona);
+                var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int codOrd = rs.getInt("codice_ordine");
+                    var dettagli = DettaglioOrdine.DAO.byOrdine(conn, codOrd);
+                    ordini.add(new Ordine(
+                        codOrd,
+                        rs.getInt("codice_pagamento"),
+                        rs.getInt("codice_stato"),
+                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getString("p_iva"),
+                        dettagli
+                    ));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore caricamento ordini in preparazione", e);
+            }
+            return ordini;
         }
     }
 

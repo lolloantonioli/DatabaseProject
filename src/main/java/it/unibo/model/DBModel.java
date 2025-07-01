@@ -389,4 +389,24 @@ public class DBModel implements Model {
         Mezzo.DAO.deleteMezzo(connection, codiceRider, codiceMezzo);
     }
 
+    @Override
+    public List<Ordine> inPreparazioneByZona(int codiceZona) {
+        return StatoOrdine.DAO.inPreparazioneByZona(connection, codiceZona);
+    }
+
+    @Override
+    public void prendiInCaricoOrdine(int codiceOrdine, int codiceRider) {
+        Rider.DAO.prendiInCaricoOrdine(connection, codiceOrdine, codiceRider);
+    }
+
+    @Override
+    public Optional<Ordine> ordineInCaricoByRider(int codiceRider) {
+        return Rider.DAO.ordineInCaricoByRider(connection, codiceRider);
+    }
+
+    @Override
+    public void consegnaOrdine(int codiceOrdine, int codiceRider) {
+        Rider.DAO.consegnaOrdine(connection, codiceOrdine, codiceRider);
+    }
+
 }

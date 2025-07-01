@@ -222,5 +222,42 @@ public class Rider {
                 throw new DAOException("Errore inserimento rider " + r.codiceRider, e);
             }
         }
+
+        public static void prendiInCaricoOrdine(Connection conn, int codiceOrdine, int codiceRider) {
+            try (var ps = DAOUtils.prepare(conn, Queries.PRENDI_IN_CARICO_ORDINE, codiceRider, codiceOrdine)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore presa in carico ordine", e);
+            }
+        }
+
+        public static Optional<Ordine> ordineInCaricoByRider(Connection conn, int codiceRider) {
+            try (var ps = DAOUtils.prepare(conn, Queries.ORDINE_IN_CARICO_RIDER, codiceRider);
+                var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int codOrd = rs.getInt("codice_ordine");
+                    var dettagli = DettaglioOrdine.DAO.byOrdine(conn, codOrd);
+                    return Optional.of(new Ordine(
+                        codOrd,
+                        rs.getInt("codice_pagamento"),
+                        rs.getInt("codice_stato"),
+                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getString("p_iva"),
+                        dettagli
+                    ));
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore ordine in carico", e);
+            }
+            return Optional.empty();
+        }
+
+        public static void consegnaOrdine(Connection conn, int codiceOrdine, int codiceRider) {
+            try (var ps = DAOUtils.prepare(conn, Queries.CONSEGNA_ORDINE, codiceOrdine, codiceRider)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore consegna ordine", e);
+            }
+        }
     }
 }

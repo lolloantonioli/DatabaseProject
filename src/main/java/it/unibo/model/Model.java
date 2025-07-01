@@ -69,6 +69,7 @@ public interface Model {
     void insertState(StatoOrdine statoOrdine);
     void updateState(StatoOrdine statoOrdine);
     Optional<StatoOrdine> findStateByOrder(int codiceOrdine);
+    List<Ordine> inPreparazioneByZona(int codiceZona);
     
     // Gestione rider
     List<Rider> loadRidersByZona(int codiceZona);
@@ -76,6 +77,9 @@ public interface Model {
     List<Rider> findRidersAvailable(int codiceZona);
     int insertRider(Rider rider);
     Optional<Rider> findRiderByEmail(String email);
+    void prendiInCaricoOrdine(int codiceOrdine, int codiceRider);
+    Optional<Ordine> ordineInCaricoByRider(int codiceRider);
+    void consegnaOrdine(int codiceOrdine, int codiceRider);
 
     // Gestione residenze
     List<Residenza> loadResidenzeByCliente(int codiceCliente);
