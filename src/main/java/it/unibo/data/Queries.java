@@ -30,6 +30,23 @@ public static final String DELETE_CLIENTE = """
     WHERE codice_cliente = ?
     """;
 
+public static final String TOP_RIDER_PER_CONSEGNE_PERIODO = """
+        SELECT R.Codice_Rider, R.Nome AS NomeRider, R.Cognome AS CognomeRider, COUNT(*) AS ConsegneCompletate
+        FROM STATI_ORDINI S
+        JOIN RIDER R ON S.Codice_Rider = R.Codice_Rider
+        WHERE S.Consegnato = TRUE
+        AND S.Ora_Consegnato BETWEEN ? AND ?
+        GROUP BY R.Codice_Rider, R.Nome, R.Cognome
+        ORDER BY ConsegneCompletate DESC;
+        """;
+
+public static final String RISTORANTI_SPESA_MEDIA = """
+        SELECT P_IVA AS Ristorante, AVG(Prezzo_Totale) AS SpesaMedia
+        FROM ORDINI
+        GROUP BY P_IVA
+        HAVING AVG(Prezzo_Totale) > 30;
+        """;
+
 public static final String DELETE_RECENSIONE = """
     DELETE FROM recensioni
     WHERE codice_cliente = ? AND p_iva = ? AND titolo = ?
@@ -152,25 +169,28 @@ public static final String INSERT_RACCOLTA_PUNTI = """
     """;
 
 
-    // Ristoranti
-    public static final String FIND_RISTORANTE = """
-        SELECT p_iva, nome, indirizzo, orario, codice_zona
-        FROM ristoranti
-        WHERE p_iva = ?
-        """;
+// Ristoranti
+public static final String FIND_RISTORANTE = """
+    SELECT p_iva, nome, indirizzo, orario, codice_zona
+    FROM ristoranti
+    WHERE p_iva = ?
+    """;
 
-    public static final String RISTORANTI_BY_ZONA = """
-        SELECT r.p_iva, r.nome, r.indirizzo, r.orario, r.codice_zona
-        FROM ristoranti r
-        WHERE r.codice_zona = ?
-        ORDER BY r.nome
-        """;
+public static final String RISTORANTI_BY_ZONA = """
+    SELECT r.p_iva, r.nome, r.indirizzo, r.orario, r.codice_zona
+    FROM ristoranti r
+    WHERE r.codice_zona = ?
+    ORDER BY r.nome
+    """;
 
-     public static final String INSERT_RISTORANTE = """
-        INSERT INTO ristoranti (p_iva, nome, indirizzo, orario, codice_zona)
-        VALUES (?, ?, ?, ?, ?)
-        """;
+public static final String INSERT_RISTORANTE = """
+    INSERT INTO ristoranti (p_iva, nome, indirizzo, orario, codice_zona)
+    VALUES (?, ?, ?, ?, ?)
+    """;
 
+public static final String ALL_RISTORANTI = """
+        SELECT P_IVA, Nome, Indirizzo, Orario, Codice_Zona FROM RISTORANTI;
+        """;
 
 // Inserisce un nuovo piatto
 public static final String INSERT_PIATTO = """

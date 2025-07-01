@@ -3,6 +3,7 @@ package it.unibo.view;
 import javax.swing.*;
 import java.awt.*;
 import it.unibo.controller.Controller;
+import it.unibo.view.amministratore.AmministratorePanel;
 import it.unibo.view.cliente.CheckoutPanel;
 import it.unibo.view.cliente.ClienteAccessPanel;
 import it.unibo.view.cliente.ClientePanel;

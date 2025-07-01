@@ -259,5 +259,26 @@ public class Rider {
                 throw new DAOException("Errore consegna ordine", e);
             }
         }
+
+        public static List<Object[]> topRiderConsegne(Connection connection, Date from, Date to) {
+            List<Object[]> list = new ArrayList<>();
+            try (var ps = DAOUtils.prepare(connection, Queries.TOP_RIDER_PER_CONSEGNE_PERIODO, from, to)) {
+                ps.setDate(1, from);
+                ps.setDate(2, to);
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        list.add(new Object[] {
+                            rs.getInt("Codice_Rider"),
+                            rs.getString("Nome"),
+                            rs.getString("Cognome"),
+                            rs.getInt("ConsegneCompletate")
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore caricamento migliori rider per consegne in un periodo", e);
+            }
+            return list;
+        }
     }
 }

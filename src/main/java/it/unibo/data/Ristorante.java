@@ -1,6 +1,7 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -123,7 +124,56 @@ public class Ristorante {
             }
         }
 
+        public static List<Ristorante> listAllRistoranti(Connection connection) {
+            var list = new ArrayList<Ristorante>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.ALL_RISTORANTI);
+                var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Ristorante(
+                        rs.getString("P_IVA"),
+                        rs.getString("Nome"),
+                        rs.getString("Indirizzo"),
+                        rs.getString("Orario"),
+                        rs.getInt("Codice_Zona")
+                    ));
+                }
+            } catch (SQLException e) {
+                throw new DAOException(e);
+            }
+            return list;
+        }
 
+        public static List<Object[]> ristorantiTopSpesa(Connection connection) {
+            List<Object[]> list = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.RISTORANTI_SPESA_MEDIA);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Object[] {
+                        rs.getString("P_IVA"),
+                        rs.getBigDecimal("SpesaMedia")
+                    });
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore caricamento ristoranti con media ordini > 30€", e);
+            }
+            return list;
+        }
+
+        public static List<Object[]> top10RistorantiPerRecensioni(Connection connection) {
+            List<Object[]> list = new ArrayList<>();
+            try (var stmt = DAOUtils.prepare(connection, Queries.TOP10_RISTORANTI);
+                 var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Object[] {
+                        rs.getString("P_IVA"),
+                        rs.getDouble("MediaStelle")
+                    });
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore caricamento ristoranti con media ordini > 30€", e);
+            }
+            return list;
+        }
     }
 
 }

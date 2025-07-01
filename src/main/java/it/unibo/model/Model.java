@@ -2,6 +2,7 @@ package it.unibo.model;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,9 @@ public interface Model {
     Optional<Ristorante> findRistoranteByPiva(String piva);
     List<Ristorante> loadRistorantiByZona(int codiceZona);
     Optional<String> loadPivaByNome(String nome);
+    List<Ristorante> listAllRistoranti();
+    List<Object[]> loadRistorantiTopSpesaMedia();
+    List<Object[]> loadTop10RistorantiPerRecensioni();
 
     // Gestione piatti
     void insertPiatto(Piatto piatto);
@@ -80,6 +84,7 @@ public interface Model {
     void prendiInCaricoOrdine(int codiceOrdine, int codiceRider);
     Optional<Ordine> ordineInCaricoByRider(int codiceRider);
     void consegnaOrdine(int codiceOrdine, int codiceRider);
+    List<Object[]> topRiderPerConsegneInPeriodo(Date from, Date to);
 
     // Gestione residenze
     List<Residenza> loadResidenzeByCliente(int codiceCliente);

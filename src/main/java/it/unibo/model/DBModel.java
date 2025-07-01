@@ -2,6 +2,7 @@ package it.unibo.model;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -407,6 +408,26 @@ public class DBModel implements Model {
     @Override
     public void consegnaOrdine(int codiceOrdine, int codiceRider) {
         Rider.DAO.consegnaOrdine(connection, codiceOrdine, codiceRider);
+    }
+
+    @Override
+    public List<Ristorante> listAllRistoranti() {
+        return Ristorante.DAO.listAllRistoranti(connection);
+    }
+
+    @Override
+    public List<Object[]> loadRistorantiTopSpesaMedia() {
+        return Ristorante.DAO.ristorantiTopSpesa(connection);
+    }
+
+    @Override
+    public List<Object[]> loadTop10RistorantiPerRecensioni() {
+        return Ristorante.DAO.top10RistorantiPerRecensioni(connection);
+    }
+
+    @Override
+    public List<Object[]> topRiderPerConsegneInPeriodo(Date from, Date to) {
+        return Rider.DAO.topRiderConsegne(connection, from, to);
     }
 
 }
