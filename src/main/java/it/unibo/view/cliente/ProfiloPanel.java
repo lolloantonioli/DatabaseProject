@@ -3,6 +3,8 @@ package it.unibo.view.cliente;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -200,10 +202,10 @@ public class ProfiloPanel extends JPanel {
                     new Recensione(
                         controller.getCurrentClienteId(),
                         controller.getModel().loadPivaByNome(nomeRistorante.getText()).get(),
-                        (int) stelle.getSelectedItem(),
+                        Integer.valueOf(stelle.getSelectedItem().toString()),
                         descrizione.getText(),
                         titolo.getText(),
-                        java.sql.Date.valueOf(java.time.LocalDate.now())
+                        Date.valueOf(LocalDate.now())
                     )
                 );
                 visualizzaRecensioni();
@@ -274,7 +276,7 @@ public class ProfiloPanel extends JPanel {
             try {
                 controller.getModel().insertCarta(new Carta(
                     controller.getCurrentClienteId(), nomeMetodo.getText(), numero.getText(),
-                    titolare.getText(), java.sql.Date.valueOf(scadenza.getText()), cvv.getText()));
+                    titolare.getText(), Date.valueOf(scadenza.getText()), cvv.getText()));
                 visualizzaCarte();
                 JOptionPane.showMessageDialog(this, "Carta aggiunta!");
             } catch (Exception ex) {

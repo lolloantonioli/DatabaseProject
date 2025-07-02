@@ -383,7 +383,7 @@ public static final String INSERT_OFFRE = """
 
           public static final String INSERT_RECENSIONE = """
         INSERT INTO recensioni (codice_cliente, p_iva, numero_stelle, descrizione, titolo, data)
-        VALUES (?, ?, ?, ?, ?, NOW())
+        VALUES (?, ?, ?, ?, ?, ?)
         """;
 
     // Promozioni
