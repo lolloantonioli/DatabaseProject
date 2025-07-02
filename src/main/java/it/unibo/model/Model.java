@@ -47,10 +47,11 @@ public interface Model {
     List<Object[]> loadTop10RistorantiPerRecensioni();
 
     // Gestione piatti
-    void insertPiatto(Piatto piatto);
+    int insertPiatto(Piatto piatto, String piva);
     List<Piatto> loadPiattiByRistorante(String piva);
     List<String> loadPiattoInOrdini(int codicePiatto);
     List<String> loadTop10Piatti();
+    void deletePiatto(int codicePiatto);
     
     // Gestione ordini
     void insertOrdine(int codicePagamento, BigDecimal prezzoTotale, String piva, List<DettaglioOrdine> dettagli);
@@ -103,6 +104,7 @@ public interface Model {
     // Gestione promozioni
     void insertPromozione(Promozione promozione);
     List<Promozione> loadPromozioniByRistorante(String piva);
+    void deletePromozione(String piva, Date dataInizio, Date dataFine);
 
     // Gestione pagamenti
     void insertPagamento(Pagamento pagamento);

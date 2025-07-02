@@ -16,10 +16,12 @@ public final class Controller {
     private final MainFrame view;
     private Optional<Integer> currentClienteId;
     private Optional<Integer> currentRiderId;
+    private Optional<String> currentRistorantePiva;
 
     public Controller() {
         this.currentClienteId = Optional.empty();
         this.currentRiderId = Optional.empty();
+        this.currentRistorantePiva = Optional.empty();
         this.model = new DBModel(DAOUtils.localMySQLConnection());
         this.view = new MainFrame(this);
     }
@@ -38,6 +40,11 @@ public final class Controller {
         view.show(CardName.AMMINISTRATORE);
     }
 
+    public void goToRistoranteAccess() {
+        System.out.println("Vado a RISTORANTE_ACCESS");
+        view.show(CardName.RISTORANTE_ACCESS);
+    }
+
     public void goToRider(final int codiceRider) {
         this.currentRiderId = Optional.of(codiceRider);
         view.show(CardName.RIDER);
@@ -47,7 +54,8 @@ public final class Controller {
         view.show(CardName.RIDER_ACCESS);
     }
 
-    public void goToRistorante() {
+    public void goToRistorante(final String piva) {
+        this.currentRistorantePiva = Optional.of(piva);
         view.show(CardName.RISTORANTE);
     }
 
@@ -107,6 +115,13 @@ public final class Controller {
 
     public RiderProfiloPanel getRiderProfiloPanel() {
         return view.getRiderPanel().getRiderProfiloPanel();
+    }
+
+    public String getCurrentPiva() {
+        if (currentRistorantePiva.isEmpty()) {
+            throw new IllegalStateException("Nessun rider attualmente loggato");
+        }
+        return this.currentRistorantePiva.get();
     }
 
     /*public void userClickedCliente(Cliente cliente) {

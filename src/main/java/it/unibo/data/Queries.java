@@ -52,6 +52,16 @@ public static final String DELETE_RECENSIONE = """
     WHERE codice_cliente = ? AND p_iva = ? AND titolo = ?
 """;
 
+// Rimuove una promozione identificata da piva, data inizio, data fine
+public static final String DELETE_PROMOZIONE = 
+    "DELETE FROM Promozioni WHERE P_IVA = ? AND Data_Inizio = ? AND Data_Fine = ?";
+
+public static final String DELETE_OFFRE = 
+    "DELETE FROM Offre WHERE Codice_Piatto = ?";
+
+public static final String DELETE_PIATTO =
+    "DELETE FROM Piatti WHERE Codice_Piatto = ?";
+
 
 public static final String DELETE_CARTA = """
     DELETE FROM carte
@@ -194,8 +204,8 @@ public static final String ALL_RISTORANTI = """
 
 // Inserisce un nuovo piatto
 public static final String INSERT_PIATTO = """
-    INSERT INTO piatti (codice_piatto, nome, prezzo, descrizione)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO piatti (nome, prezzo, descrizione)
+    VALUES (?, ?, ?)
     """;
 
 // Associa il piatto appena creato al ristorante

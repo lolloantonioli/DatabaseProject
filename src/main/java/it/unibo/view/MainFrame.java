@@ -10,6 +10,7 @@ import it.unibo.view.cliente.ClientePanel;
 import it.unibo.view.rider.RiderAccessPanel;
 import it.unibo.view.rider.RiderPanel;
 import it.unibo.view.ristorante.PiattiPanel;
+import it.unibo.view.ristorante.RistoranteAccessPanel;
 import it.unibo.view.ristorante.RistorantePanel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -26,12 +27,13 @@ public class MainFrame extends JFrame {
     private final CheckoutPanel checkoutPanel;
     private final ClienteAccessPanel clienteAccessPanel;
     private final RiderAccessPanel riderAccessPanel;
-    private final PiattiPanel piattiPanel;
+    //private final PiattiPanel piattiPanel;
+    private final RistoranteAccessPanel ristoranteAccessPanel;
 
     /**
      * Temporary P.IVA used while login is not integrated.
      */
-    private static final String TEST_PIVA = "00000000000";
+    //private static final String TEST_PIVA = "00000000000";
     private static final String FRAME_NAME = "PL8";
     private static final String MSG = "CardName cannot be null";
     private static final int FRAME_WIDTH = 800;
@@ -44,11 +46,12 @@ public class MainFrame extends JFrame {
         this.clientePanel = new ClientePanel(controller);
         this.amministratorePanel = new AmministratorePanel(controller);
         this.riderPanel = new RiderPanel(controller);
-        this.ristorantePanel = new RistorantePanel(controller, TEST_PIVA);
+        this.ristorantePanel = new RistorantePanel(controller);
         this.checkoutPanel = new CheckoutPanel(controller);
         this.clienteAccessPanel = new ClienteAccessPanel(controller);
         this.riderAccessPanel = new RiderAccessPanel(controller);
-        this.piattiPanel = new PiattiPanel(controller, TEST_PIVA);
+        //this.piattiPanel = new PiattiPanel(controller, TEST_PIVA);
+        this.ristoranteAccessPanel = new RistoranteAccessPanel(controller);
 
         this.setTitle(FRAME_NAME);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -61,6 +64,7 @@ public class MainFrame extends JFrame {
         root.add((Component) checkoutPanel, CardName.CHECKOUT.toString());
         root.add((Component) clienteAccessPanel, CardName.CLIENTE_ACCESS.toString());
         root.add((Component) riderAccessPanel, CardName.RIDER_ACCESS.toString());
+        root.add((Component) ristoranteAccessPanel, CardName.RISTORANTE_ACCESS.toString());
         this.add(root);
         this.pack();
         this.setLocationRelativeTo(null);
@@ -71,9 +75,9 @@ public class MainFrame extends JFrame {
         checkNotNull(name, MSG);
         this.layout.show(this.root, name.toString());
     }
-
-    public PiattiPanel getMenuPanel() {
-        return this.piattiPanel;
+    
+    public MenuPanel getMenuPanel() {
+        return this.menuPanel;
     }
 
     public ClientePanel getClientePanel() {

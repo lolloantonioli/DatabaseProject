@@ -75,6 +75,22 @@ public class Promozione {
         }
 
         /**
+         * Rimuove una promozione identificata da piva, data inizio e data fine.
+         */
+        public static void deletePromozione(Connection connection, String piva, Date dataInizio, Date dataFine) {
+            try (var ps = DAOUtils.prepare(connection,
+                    Queries.DELETE_PROMOZIONE,
+                    piva,
+                    dataInizio,
+                    dataFine
+            )) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore eliminazione promozione per ristorante " + piva, e);
+            }
+        }
+
+        /**
          * Restituisce le promozioni attive di un ristorante
          */
         public static List<Promozione> listActiveByRistorante(Connection connection, String piva) {

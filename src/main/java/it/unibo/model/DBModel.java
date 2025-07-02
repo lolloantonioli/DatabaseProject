@@ -105,8 +105,8 @@ public class DBModel implements Model {
     }
 
     @Override
-    public void insertPiatto(Piatto piatto) {
-        Piatto.DAO.insertPiatto(connection, piatto);
+    public int insertPiatto(Piatto piatto, String piva) {
+        return Piatto.DAO.insertPiatto(connection, piatto, piva);
     }
 
     @Override
@@ -428,6 +428,16 @@ public class DBModel implements Model {
     @Override
     public List<Object[]> topRiderPerConsegneInPeriodo(Date from, Date to) {
         return Rider.DAO.topRiderConsegne(connection, from, to);
+    }
+
+    @Override
+    public void deletePiatto(int codicePiatto) {
+        Piatto.DAO.deletePiatto(connection, codicePiatto);
+    }
+
+    @Override
+    public void deletePromozione(String piva, Date dataInizio, Date dataFine) {
+        Promozione.DAO.deletePromozione(connection, piva, dataInizio, dataFine);
     }
 
 }

@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class Piatto {
-    public final int codicePiatto;
+    public int codicePiatto;
     public final String nome;
     public final BigDecimal prezzo;
     public final String descrizione;
 
-    public Piatto(int codicePiatto, String nome, BigDecimal prezzo, String descrizione) {
-        this.codicePiatto = codicePiatto;
+    public Piatto(String nome, BigDecimal prezzo, String descrizione) {
         this.nome = nome;
         this.prezzo = prezzo;
         this.descrizione = descrizione == null ? "" : descrizione;
@@ -50,18 +49,19 @@ public class Piatto {
         public static List<Piatto> byRistorante(Connection connection, String piva) {
             try (var stmt = DAOUtils.prepare(connection, Queries.PIATTI_BY_RISTORANTE, piva);
                  var rs = stmt.executeQuery()) {
-                
+
                 var piatti = new ArrayList<Piatto>();
                 while (rs.next()) {
-                    piatti.add(new Piatto(
-                        rs.getInt("codice_piatto"),
+                    Piatto p = new Piatto(
                         rs.getString("nome"),
                         rs.getBigDecimal("prezzo"),
                         rs.getString("descrizione")
-                    ));
+                    );
+                    p.codicePiatto = rs.getInt("codice_piatto");
+                    piatti.add(p);
                 }
                 return piatti;
-                
+
             } catch (Exception e) {
                 throw new DAOException("Errore durante il caricamento dei piatti", e);
             }
@@ -110,16 +110,49 @@ public class Piatto {
         /**
          * Inserisce un nuovo piatto per un ristorante
          */
-        public static void insertPiatto(Connection connection, Piatto p) {
-            try (var stmt = DAOUtils.prepare(
-                    connection,
+        public static int insertPiatto(Connection connection, Piatto p, String piva) {
+            try (
+                var stmt = connection.prepareStatement(
                     Queries.INSERT_PIATTO,
-                    p.codicePiatto, p.nome, p.prezzo, p.descrizione
-                )) {
+                    java.sql.Statement.RETURN_GENERATED_KEYS
+                )
+            ) {
+                stmt.setString(1, p.nome);
+                stmt.setBigDecimal(2, p.prezzo);
+                stmt.setString(3, p.descrizione);
                 stmt.executeUpdate();
+
+                try (var rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int nuovoId = rs.getInt(1);
+                        // Inserisce anche nella tabella Offre
+                        try (var stmtOffre = DAOUtils.prepare(connection, Queries.INSERT_OFFRE, piva, nuovoId)) {
+                            stmtOffre.executeUpdate();
+                        }
+                        return nuovoId;
+                    } else {
+                        throw new DAOException("Nessun codice piatto generato");
+                    }
+                }
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento piatto", e);
             }
         }
+
+        public static void deletePiatto(Connection connection, int codicePiatto) {
+            try {
+                // Prima elimina da Offre (relazione)
+                try (var stmtOffre = DAOUtils.prepare(connection, Queries.DELETE_OFFRE, codicePiatto)) {
+                    stmtOffre.executeUpdate();
+                }
+                // Poi elimina da Piatti
+                try (var stmtPiatto = DAOUtils.prepare(connection, Queries.DELETE_PIATTO, codicePiatto)) {
+                    stmtPiatto.executeUpdate();
+                }
+            } catch (Exception e) {
+                throw new DAOException("Errore eliminazione piatto", e);
+            }
+        }
+
     }
 }
