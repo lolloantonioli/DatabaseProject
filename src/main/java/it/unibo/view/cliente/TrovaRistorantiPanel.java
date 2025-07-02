@@ -2,6 +2,7 @@ package it.unibo.view.cliente;
 
 import it.unibo.controller.Controller;
 import it.unibo.data.Indirizzo;
+import it.unibo.data.Piatto;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class TrovaRistorantiPanel extends JPanel {
     private final Controller controller;
+    private final CarrelloPanel carrelloPanel;
     private final CardLayout cardLayout;
     private final JPanel cards;
 
@@ -20,11 +22,13 @@ public class TrovaRistorantiPanel extends JPanel {
     // Pannelli per CardLayout
     private final JPanel indirizzoPanel;
     private final JPanel ricercaPanel;
+    private final ViewPiattiPanel viewPiattiPanel;
 
     private Indirizzo indirizzoSelezionato = null;
 
-    public TrovaRistorantiPanel(Controller controller) {
+    public TrovaRistorantiPanel(Controller controller, CarrelloPanel carrelloPanel) {
         this.controller = controller;
+        this.carrelloPanel = carrelloPanel;
         this.cardLayout = new CardLayout();
         this.cards = new JPanel(cardLayout);
 
@@ -54,9 +58,10 @@ public class TrovaRistorantiPanel extends JPanel {
         // ====== Ricerca Panel ======
         ricercaPanel = new JPanel(new BorderLayout());
         // Qui aggiungerai tabella ristoranti e bottone per visualizzare piatti (da riempire dopo)
-
+        viewPiattiPanel = new ViewPiattiPanel(controller, carrelloPanel);
         cards.add(indirizzoPanel, "indirizzo");
         cards.add(ricercaPanel, "ricerca");
+        cards.add(viewPiattiPanel, "piatti");
         setLayout(new BorderLayout());
         add(cards, BorderLayout.CENTER);
 
@@ -131,20 +136,8 @@ public class TrovaRistorantiPanel extends JPanel {
 
     /** Mostra la tabella dei piatti del ristorante scelto */
     private void mostraTabellaPiatti(String pivaRistorante) {
-        // Fai apparire una nuova finestra o una dialog con la tabella dei piatti (implementazione simile)
-        // Qui puoi richiamare il tuo ViewPiattiPanel se vuoi integrarlo, o mostrare direttamente la tabella qui
-        // Esempio minimale:
-        List<it.unibo.data.Piatto> piatti = controller.getModel().loadPiattiByRistorante(pivaRistorante);
-        DefaultTableModel modelPiatti = new DefaultTableModel(
-            new Object[]{"Codice", "Nome", "Prezzo", "Aggiungi"}, 0);
-        JTable tabellaPiatti = new JTable(modelPiatti);
-
-        for (it.unibo.data.Piatto p : piatti) {
-            modelPiatti.addRow(new Object[]{p.codicePiatto, p.nome, p.prezzo, "Aggiungi"});
-        }
-
-        // Qui puoi aggiungere pulsante per selezionare quantità ed effettivamente aggiungere al carrello ecc.
-
-        JOptionPane.showMessageDialog(this, new JScrollPane(tabellaPiatti), "Piatti disponibili", JOptionPane.PLAIN_MESSAGE);
+        List<Piatto> piatti = controller.getModel().loadPiattiByRistorante(pivaRistorante);
+        viewPiattiPanel.mostraPiatti(piatti);
+        cardLayout.show(cards, "piatti");
     }
 }

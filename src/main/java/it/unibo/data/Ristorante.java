@@ -150,7 +150,7 @@ public class Ristorante {
                 while (rs.next()) {
                     list.add(new Object[] {
                         rs.getString("P_IVA"),
-                        rs.getBigDecimal("SpesaMedia")
+                        rs.getDouble("SpesaMedia")
                     });
                 }
             } catch (Exception e) {
@@ -166,7 +166,7 @@ public class Ristorante {
                 while (rs.next()) {
                     list.add(new Object[] {
                         rs.getString("P_IVA"),
-                        rs.getDouble("MediaStelle")
+                        rs.getDouble("media")
                     });
                 }
             } catch (Exception e) {

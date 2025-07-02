@@ -1,16 +1,12 @@
 package it.unibo.view.cliente;
 
-import java.awt.BorderLayout;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
 import it.unibo.controller.Controller;
 import it.unibo.data.Piatto;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
 
 public class ViewPiattiPanel extends JPanel {
     private final Controller controller;
@@ -22,10 +18,21 @@ public class ViewPiattiPanel extends JPanel {
     public ViewPiattiPanel(Controller controller, CarrelloPanel carrelloPanel) {
         this.controller = controller;
         this.carrelloPanel = carrelloPanel;
+
         setLayout(new BorderLayout());
 
-        piattiTable = new JTable(new String[][]{}, new String[]{"Nome", "Prezzo", "Descrizione"});
-        add(new JScrollPane(piattiTable), BorderLayout.CENTER);
+        // Modello tabella non editabile
+        DefaultTableModel tableModel = new DefaultTableModel(new String[]{"Nome", "Prezzo", "Descrizione"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        piattiTable = new JTable(tableModel);
+        piattiTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(piattiTable);
+        add(scrollPane, BorderLayout.CENTER);
 
         btnAggiungiAlCarrello = new JButton("Aggiungi al Carrello");
         add(btnAggiungiAlCarrello, BorderLayout.SOUTH);
@@ -37,29 +44,38 @@ public class ViewPiattiPanel extends JPanel {
                 return;
             }
             String quantitaStr = JOptionPane.showInputDialog(this, "Quantità:");
+            if (quantitaStr == null) return; // annullato
             int quantita;
             try {
                 quantita = Integer.parseInt(quantitaStr);
+                if (quantita <= 0) throw new NumberFormatException();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Quantità non valida.");
                 return;
             }
             Piatto piatto = piattiList.get(row);
             controller.getModel().aggiungiAlCarrello(piatto, quantita);
-            carrelloPanel.aggiornaCarrello();
+            if (carrelloPanel != null) {
+                carrelloPanel.aggiornaCarrello();
+            }
             JOptionPane.showMessageDialog(this, "Piatto aggiunto al carrello!");
         });
     }
 
-    // Metodo da chiamare per popolare la tabella
+    /** 
+     * Mostra la lista dei piatti e popola la tabella.
+     * Puoi chiamare questo metodo ogni volta che vuoi aggiornare la tabella.
+     */
     public void mostraPiatti(List<Piatto> piatti) {
         this.piattiList = piatti;
-        String[][] data = new String[piatti.size()][3];
-        for (int i = 0; i < piatti.size(); i++) {
-            data[i][0] = piatti.get(i).nome;
-            data[i][1] = String.format("€ %.2f", piatti.get(i).prezzo);
-            data[i][2] = piatti.get(i).descrizione;
+        DefaultTableModel model = (DefaultTableModel) piattiTable.getModel();
+        model.setRowCount(0);
+        for (Piatto p : piatti) {
+            model.addRow(new Object[]{
+                p.nome,
+                String.format("€ %.2f", p.prezzo),
+                p.descrizione
+            });
         }
-        piattiTable.setModel(new javax.swing.table.DefaultTableModel(data, new String[]{"Nome", "Prezzo", "Descrizione"}));
     }
 }

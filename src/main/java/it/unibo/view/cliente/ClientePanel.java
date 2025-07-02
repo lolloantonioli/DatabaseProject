@@ -1,37 +1,30 @@
 package it.unibo.view.cliente;
 
-import it.unibo.controller.Controller;
-
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-public class ClientePanel extends JPanel {
+import it.unibo.controller.Controller;
 
-    private final BorderLayout layout;
+public class ClientePanel extends JPanel {
     private final JTabbedPane tabbedPane;
     private final TrovaRistorantiPanel trovaRistorantiPanel;
     private final CarrelloPanel carrelloPanel;
     private final ProfiloPanel profiloPanel;
-    private final ViewPiattiPanel piattiPanel;
 
     public ClientePanel(final Controller controller) {
-        this.layout = new BorderLayout();
         this.tabbedPane = new JTabbedPane();
-        this.trovaRistorantiPanel = new TrovaRistorantiPanel(controller);
         this.carrelloPanel = new CarrelloPanel(controller);
+        this.trovaRistorantiPanel = new TrovaRistorantiPanel(controller, carrelloPanel);
         this.profiloPanel = new ProfiloPanel(controller);
-        this.piattiPanel = new ViewPiattiPanel(controller, carrelloPanel);
-        setLayout(layout);
+        setLayout(new BorderLayout());
         tabbedPane.addTab("Trova Ristoranti", trovaRistorantiPanel);
         tabbedPane.addTab("Carrello", carrelloPanel);
         tabbedPane.addTab("Profilo", profiloPanel);
         add(tabbedPane, BorderLayout.CENTER);
     }
-
     public void aggiornaIndirizzi() {
         trovaRistorantiPanel.aggiornaIndirizzi();
     }
-
 }
