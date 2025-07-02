@@ -119,7 +119,7 @@ public final class Controller {
 
     public String getCurrentPiva() {
         if (currentRistorantePiva.isEmpty()) {
-            throw new IllegalStateException("Nessun rider attualmente loggato");
+            return "";
         }
         return this.currentRistorantePiva.get();
     }
