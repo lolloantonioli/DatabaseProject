@@ -124,43 +124,4 @@ public final class Controller {
         return this.currentRistorantePiva.get();
     }
 
-    /*public void userClickedCliente(Cliente cliente) {
-        try {
-            this.view.loadingClienteDetail();
-            var ordini = this.model.loadOrdiniByCliente(cliente.codiceCliente);
-            this.view.clienteDetailPage(cliente, ordini);
-        } catch (DAOException e) {
-            this.view.failedToLoadClienteDetail(cliente);
-        }
-    }
-
-    public void userClickedRistorante(Ristorante ristorante) {
-        try {
-            this.view.loadingRistoranteDetail();
-            var piatti = this.model.loadPiattiByRistorante(ristorante.piva);
-            this.view.ristoranteDetailPage(ristorante, piatti);
-        } catch (DAOException e) {
-            this.view.failedToLoadRistoranteDetail(ristorante);
-        }
-    }
-
-    public void userClickedBack() {
-        this.loadClientList();
-    }
-
-    public void userClickedReloadClients() {
-        this.loadClientList();
-    }
-
-    void loadClientList() {
-        try {
-            this.view.loadingClients();
-            var clienti = this.model.loadClienti();
-            this.view.clientListPage(clienti);
-        } catch (DAOException e) {
-            e.printStackTrace();
-            this.view.failedToLoadClients();
-        }
-    }*/
-
 }

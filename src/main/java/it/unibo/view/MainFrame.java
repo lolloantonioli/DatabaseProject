@@ -9,7 +9,6 @@ import it.unibo.view.cliente.ClienteAccessPanel;
 import it.unibo.view.cliente.ClientePanel;
 import it.unibo.view.rider.RiderAccessPanel;
 import it.unibo.view.rider.RiderPanel;
-import it.unibo.view.ristorante.PiattiPanel;
 import it.unibo.view.ristorante.RistoranteAccessPanel;
 import it.unibo.view.ristorante.RistorantePanel;
 
