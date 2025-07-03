@@ -7,7 +7,7 @@ import java.util.List;
 import it.unibo.controller.Controller;
 import it.unibo.data.Recensione;
 
-class RistoranteRecensioniPanel extends JPanel {
+public class RistoranteRecensioniPanel extends JPanel {
     private final Controller controller;
     private final DefaultTableModel model;
     private final JTable table;
@@ -24,10 +24,13 @@ class RistoranteRecensioniPanel extends JPanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
-    private void refreshTable() {
+    public void refreshTable() {
         model.setRowCount(0);
-        List<Recensione> recs = controller.getModel().loadRecensioniByRistorante(controller.getCurrentPiva());
-        for(Recensione r : recs)
+        String piva = controller.getCurrentPiva();
+        System.out.println("PIVA attuale: " + piva); // DEBUG
+        List<Recensione> recs = controller.getModel().loadRecensioniByRistorante(piva);
+        System.out.println("Recensioni trovate: " + recs.size());
+        for (Recensione r : recs)
             model.addRow(new Object[]{r.codiceCliente, r.titolo, r.numeroStelle, r.descrizione, r.data});
     }
 }

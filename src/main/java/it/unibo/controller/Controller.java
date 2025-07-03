@@ -56,6 +56,7 @@ public final class Controller {
 
     public void goToRistorante(final String piva) {
         this.currentRistorantePiva = Optional.of(piva);
+        view.getRistorantePanel().getRecensioniPanel().refreshTable();
         view.show(CardName.RISTORANTE);
     }
 
