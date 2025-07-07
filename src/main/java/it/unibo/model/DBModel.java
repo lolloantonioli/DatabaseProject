@@ -3,17 +3,22 @@ package it.unibo.model;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import it.unibo.controller.Controller;
 import it.unibo.data.Applicazione;
 import it.unibo.data.Carta;
 import it.unibo.data.Cliente;
 import it.unibo.data.Contratto;
+import it.unibo.data.DAOUtils;
 import it.unibo.data.DettaglioOrdine;
 import it.unibo.data.GeneraPunti;
 import it.unibo.data.Indirizzo;
@@ -38,10 +43,12 @@ public class DBModel implements Model {
     
     private final Connection connection;
     private final List<RigaCarrello> carrello = new ArrayList<>();
+    private final Controller controller;
 
-    public DBModel(final Connection connection) {
+    public DBModel(final Connection connection, final Controller controller) {
         Objects.requireNonNull(connection, "Model created with null connection");
         this.connection = connection;
+        this.controller = controller;
     }
 
     @Override
@@ -120,7 +127,7 @@ public class DBModel implements Model {
     }
 
     @Override
-    public void insertOrdine(int codicePagamento, BigDecimal prezzoTotale, String piva, List<DettaglioOrdine> dettagli) {
+    public void insertOrdine(int codicePagamento, double prezzoTotale, String piva, List<DettaglioOrdine> dettagli) {
         Ordine.DAO.insertFullOrder(connection, codicePagamento, prezzoTotale, piva, dettagli);
     }
 
@@ -240,8 +247,8 @@ public class DBModel implements Model {
     }
 
     @Override
-    public void insertPagamento(Pagamento pagamento) {
-        Pagamento.DAO.insertPagamento(connection, pagamento);
+    public int insertPagamento(Pagamento pagamento) {
+        return Pagamento.DAO.insertPagamento(connection, pagamento);
     }
 
     @Override
@@ -439,5 +446,159 @@ public class DBModel implements Model {
     public void deletePromozione(String piva, Date dataInizio, Date dataFine) {
         Promozione.DAO.deletePromozione(connection, piva, dataInizio, dataFine);
     }
+
+    @Override
+    public CarrelloInfo calcolaTotaleCheckout(int codiceCliente) {
+        // total parziale e dettagli
+        List<RigaCarrello> car = getCarrello(); // assume exists
+        List<DettaglioInfo> dettagli = car.stream()
+            .map(r -> new DettaglioInfo(r.piatto.nome, r.quantita, r.piatto.prezzo.doubleValue()))
+            .collect(Collectors.toList());
+        double totaleParziale = car.stream()
+            .mapToDouble(r -> r.piatto.prezzo.doubleValue() * r.quantita)
+            .sum();
+        // promozioni
+        var promo = Applicazione.DAO.listAllWithPromozione(connection).stream()
+            .filter(a -> a.codiceOrdine == 0) // none yet, skip
+            .findFirst();
+        // invece calcola promozioni attive per ogni ristorante
+        double scontoProm = 0; String descProm = "Nessuna";
+        // omitted: query attive, pick best
+        // raccolta punti
+        var rp = RaccoltaPunti.DAO.findByCliente(connection, codiceCliente);
+        double scontoPunti = 0; String descPunti = "Nessuna";
+        if (rp.isPresent() && totaleParziale >= rp.get().sogliaPunti) {
+            scontoPunti = totaleParziale * rp.get().percentualeSconto / 100.0;
+            descPunti = rp.get().percentualeSconto + "%";
+        }
+        double totaleFinale = totaleParziale - scontoProm - scontoPunti;
+        return new CarrelloInfo(dettagli, totaleParziale, scontoProm, descProm, scontoPunti, descPunti, totaleFinale);
+    }
+
+    @Override
+    public List<Pagamento> getPagamentiCliente(int codiceCliente) {
+        return Pagamento.DAO.listByCliente(connection, codiceCliente);
+    }
+
+    @Override
+    public int creaOrdineCompleto(int codiceCliente, Pagamento metodoSelezionato) {
+        try {
+            connection.setAutoCommit(false);
+            // 1) inserisci pagamento
+            int idPag = Pagamento.DAO.insertPagamento(connection, metodoSelezionato);
+            // 2) carrello
+            var car = getCarrello();
+            BigDecimal prezzoTot = car.stream()
+                .map(r -> r.piatto.prezzo.multiply(BigDecimal.valueOf(r.quantita)))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            String piva = controller.getCurrentPiva();
+            int ordineId = Ordine.DAO.insertFullOrder(connection, idPag, prezzoTot, piva, car.stream()
+                .map(r -> new DettaglioOrdine(r.piatto.codicePiatto, 0, r.quantita, r.piatto.prezzo, r.piatto.nome, r.piatto.descrizione))
+                .collect(Collectors.toList())
+            );
+            connection.commit();
+            return ordineId;
+        } catch (Exception e) {
+            try { connection.rollback(); } catch (Exception ign) {}
+            throw new RuntimeException(e);
+        } finally {
+            try { connection.setAutoCommit(true); } catch (Exception ign) {}
+        }
+    }
+
+    public void creaOrdineCompleto(
+        int codiceCliente,
+        MetodoPagamento metodo,
+        CarrelloInfo carrello
+    ) throws SQLException {
+        try (var conn = DAOUtils.localMySQLConnection()) {
+            conn.setAutoCommit(false);
+            // 1) inserisci pagamento
+            int idPagamento = Pagamento.DAO.insertPagamento(
+                conn,
+                new Pagamento(
+                    0,
+                    new java.sql.Date(System.currentTimeMillis()),
+                    BigDecimal.valueOf(carrello.totaleFinale),
+                    codiceCliente,
+                    metodo.nome
+                )
+            );
+
+            // 2) inserisci ordine + dettagli
+            int idOrdine = Ordine.DAO.insertFullOrder(
+                conn,
+                idPagamento,
+                BigDecimal.valueOf(carrello.totaleFinale),
+                carrello.piva,
+                carrello.dettagli.stream()
+                    .map(d -> new DettaglioOrdine(
+                        d.codicePiatto,
+                        /* numeroLinea */ 0,
+                        d.quantita,
+                        d.prezzoUnitario,
+                        d.nomePiatto,
+                        d.descrizionePiatto
+                    ))
+                    .toList()
+            );
+
+            // 3) inserisci stato "in preparazione"
+            StatoOrdine stato = new StatoOrdine(
+                idOrdine,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                null,
+                null,
+                /* nessun rider assegnato */ 0
+            );
+            StatoOrdine.DAO.insertState(conn, stato);
+
+            // 4) applica eventuale promozione usata
+            if (carrello.scontoPromozioni > 0 && carrello.promozioneUsata != null) {
+                var pr = carrello.promozioneUsata;
+                Applicazione.DAO.insertApplicazione(
+                    conn,
+                    new Applicazione(
+                        idOrdine,
+                        BigDecimal.valueOf(carrello.scontoPromozioni),
+                        pr.piva,
+                        pr.dataInizio,
+                        pr.dataFine
+                    )
+                );
+            }
+
+            // 5) utilizzo punti se presenti
+            if (carrello.scontoPunti > 0) {
+                UtilizzaPunti.DAO.insertUtilizzo(
+                    conn,
+                    new UtilizzaPunti(
+                        idOrdine,
+                        carrello.puntiUsati,
+                        carrello.scontoPunti,
+                        codiceCliente
+                    )
+                );
+            }
+
+            // 6) genera nuovi punti
+            if (carrello.puntiGenerati > 0) {
+                GeneraPunti.DAO.insertGenerazione(
+                    conn,
+                    new GeneraPunti(
+                        idOrdine,
+                        carrello.puntiGenerati,
+                        codiceCliente
+                    )
+                );
+            }
+
+            conn.commit();
+        } catch (SQLException|RuntimeException ex) {
+            throw ex;
+        }
+    }
+
 
 }

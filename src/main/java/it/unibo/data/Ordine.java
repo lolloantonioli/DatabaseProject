@@ -1,6 +1,5 @@
 package it.unibo.data;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +9,14 @@ import java.util.Optional;
 public class Ordine {
     public final int codiceOrdine;
     public final int codicePagamento;
-    public final int codiceStato;
-    public final BigDecimal prezzoTotale;
+    public final double prezzoTotale;
     public final String piva;
     public final List<DettaglioOrdine> dettagli;
 
-    public Ordine(int codiceOrdine, int codicePagamento, int codiceStato, 
-                  BigDecimal prezzoTotale, String piva, List<DettaglioOrdine> dettagli) {
+    public Ordine(int codiceOrdine, int codicePagamento, 
+                  double prezzoTotale, String piva, List<DettaglioOrdine> dettagli) {
         this.codiceOrdine = codiceOrdine;
         this.codicePagamento = codicePagamento;
-        this.codiceStato = codiceStato;
         this.prezzoTotale = prezzoTotale;
         this.piva = piva;
         this.dettagli = dettagli;
@@ -32,15 +29,14 @@ public class Ordine {
         var o = (Ordine) other;
         return o.codiceOrdine == this.codiceOrdine &&
                o.codicePagamento == this.codicePagamento &&
-               o.codiceStato == this.codiceStato &&
-               o.prezzoTotale.equals(this.prezzoTotale) &&
+               o.prezzoTotale == this.prezzoTotale &&
                o.piva.equals(this.piva) &&
                o.dettagli.equals(this.dettagli);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codiceOrdine, codicePagamento, codiceStato, prezzoTotale, piva, dettagli);
+        return Objects.hash(codiceOrdine, codicePagamento, prezzoTotale, piva, dettagli);
     }
 
     @Override
@@ -48,7 +44,6 @@ public class Ordine {
         return Printer.stringify("Ordine", List.of(
             Printer.field("codiceOrdine", codiceOrdine),
             Printer.field("codicePagamento", codicePagamento),
-            Printer.field("codiceStato", codiceStato),
             Printer.field("prezzoTotale", prezzoTotale),
             Printer.field("piva", piva),
             Printer.field("dettagli", dettagli)
@@ -66,8 +61,7 @@ public class Ordine {
                     return Optional.of(new Ordine(
                         rs.getInt("codice_ordine"),
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getDouble("prezzo_totale"),
                         rs.getString("p_iva"),
                         dettagli
                     ));
@@ -91,8 +85,7 @@ public class Ordine {
                     ordini.add(new Ordine(
                         codiceOrdine,
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getDouble("prezzo_totale"),
                         rs.getString("p_iva"),
                         dettagli
                     ));
@@ -118,8 +111,7 @@ public class Ordine {
                     ordini.add(new Ordine(
                         codiceOrdine,
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getDouble("prezzo_totale"),
                         rs.getString("p_iva"),
                         dettagli
                     ));
@@ -144,8 +136,7 @@ public class Ordine {
                     ordini.add(new Ordine(
                         codiceOrdine,
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getDouble("prezzo_totale"),
                         rs.getString("p_iva"),
                         dettagli
                     ));
@@ -158,7 +149,7 @@ public class Ordine {
 
         public static int insertFullOrder(Connection conn,
                                    int codicePagamento,
-                                   BigDecimal prezzoTotale,
+                                   double prezzoTotale,
                                    String piva,
                                    List<DettaglioOrdine> cart) {
             try {
@@ -166,7 +157,7 @@ public class Ordine {
                 // 1) crea ordine con stato=1 (In preparazione)
                 int orderId;
                 try (var ps = DAOUtils.prepare(conn, Queries.INSERT_ORDINE,
-                                               codicePagamento, 1, prezzoTotale, piva)) {
+                                               codicePagamento, prezzoTotale, piva)) {
                     ps.executeUpdate();
                     try (var rs = ps.getGeneratedKeys()) {
                         if (!rs.next()) throw new DAOException("Nessun ID ordine");
@@ -211,8 +202,7 @@ public class Ordine {
                     ordini.add(new Ordine(
                         codiceOrdine,
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
+                        rs.getDouble("prezzo_totale"),
                         rs.getString("p_iva"),
                         dettagli
                     ));

@@ -313,14 +313,14 @@ public static final String INSERT_OFFRE = """
 
     // Inserimento pagamento
     public static final String INSERT_PAGAMENTO = """
-        INSERT INTO pagamenti (codice_cliente, data, importo)
-        VALUES (?, CURRENT_TIMESTAMP, ?)
+        INSERT INTO pagamenti (data, importo, codice_cliente, nome)
+        VALUES (?, ?, ?, ?)
         """;
 
     // Inserimento ordine
     public static final String INSERT_ORDINE = """
-        INSERT INTO ordini (codice_pagamento, codice_stato, prezzo_totale, p_iva)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO ordini (codice_pagamento, prezzo_totale, p_iva)
+        VALUES (?, ?, ?)
         """;
 
     // Inserimento dettaglio ordine

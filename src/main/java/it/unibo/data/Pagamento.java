@@ -1,22 +1,21 @@
 package it.unibo.data;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Pagamento {
 
-    public final int codicePagamento;
+    public int codicePagamento;
     public final Date data;
-    public final BigDecimal importo;
+    public final double importo;
     public final int codiceCliente;
     public final String nomeMetodo;
 
-    public Pagamento(int codicePagamento, Date data, BigDecimal importo, int codiceCliente, String nomeMetodo) {
-        this.codicePagamento = codicePagamento;
+    public Pagamento(Date data, double importo, int codiceCliente, String nomeMetodo) {
         this.data = data;
         this.importo = importo;
         this.codiceCliente = codiceCliente;
@@ -30,7 +29,7 @@ public class Pagamento {
         Pagamento p = (Pagamento) other;
         return p.codicePagamento == this.codicePagamento
             && p.data.equals(this.data)
-            && p.importo.equals(this.importo)
+            && p.importo == this.importo
             && p.codiceCliente == this.codiceCliente
             && p.nomeMetodo.equals(this.nomeMetodo);
     }
@@ -60,11 +59,10 @@ public class Pagamento {
             try (var stmt = DAOUtils.prepare(connection, Queries.PAGAMENTI_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    int codice = rs.getInt("codice_pagamento");
                     var date = rs.getDate("data");
-                    BigDecimal imp = rs.getBigDecimal("importo");
+                    double imp = rs.getDouble("importo");
                     String metodo = rs.getString("nome");
-                    result.add(new Pagamento(codice, date, imp, codiceCliente, metodo));
+                    result.add(new Pagamento(date, imp, codiceCliente, metodo));
                 }
             } catch (Exception e) {
                 throw new DAOException("Error while retrieving payments for client " + codiceCliente, e);
@@ -74,12 +72,16 @@ public class Pagamento {
         
         public static int insertPagamento(Connection conn, Pagamento p) {
             try (var ps = DAOUtils.prepare(conn, Queries.INSERT_PAGAMENTO,
-                                           p.codiceCliente, p.data, p.importo)) {
+                                           p.data, p.importo, p.codiceCliente, p.nomeMetodo)) {
                 ps.executeUpdate();
                 try (var rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) return rs.getInt(1);
+                    if (rs.next()) {
+                        p.codicePagamento = rs.getInt(1);
+                        return rs.getInt(1);
+                    } else {
+                        throw new DAOException("Inserimento pagamento fallito, nessun ID generato.");
+                    }
                 }
-                throw new DAOException("Nessun ID generato per il pagamento");
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento pagamento", e);
             }

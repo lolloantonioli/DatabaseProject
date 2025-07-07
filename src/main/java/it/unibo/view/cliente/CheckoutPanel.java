@@ -1,30 +1,32 @@
 package it.unibo.view.cliente;
 
 import java.awt.*;
-import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
 import it.unibo.controller.Controller;
+import it.unibo.data.MetodoPagamento;
 import it.unibo.data.Pagamento;
+import it.unibo.data.StatoOrdine;
+import it.unibo.model.CarrelloInfo;
 
 public class CheckoutPanel extends JPanel {
     private final Controller controller;
-    private final JComboBox<Pagamento> comboPagamenti;
+    private final JComboBox<MetodoPagamento> comboPagamenti;
     private final JButton btnConferma, btnIndietro;
-    private final JLabel lblDettagliOrdine;
-    private final JLabel lblTotale;
-    private final JLabel lblSconti;
-    private final JLabel lblTotaleFinale;
+    private final JLabel lblDettagliOrdine, lblTotale, lblSconti, lblTotaleFinale;
 
     public CheckoutPanel(final Controller controller) {
         this.controller = controller;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         lblDettagliOrdine = new JLabel();
-        lblTotale = new JLabel();
-        lblSconti = new JLabel();
-        lblTotaleFinale = new JLabel();
+        lblTotale          = new JLabel();
+        lblSconti         = new JLabel();
+        lblTotaleFinale   = new JLabel();
 
         add(new JLabel("Dettaglio Ordine:"));
         add(lblDettagliOrdine);
@@ -37,59 +39,87 @@ public class CheckoutPanel extends JPanel {
         comboPagamenti = new JComboBox<>();
         add(comboPagamenti);
 
-        final JPanel btns = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnIndietro = new JButton("Annulla");
-        btnConferma = new JButton("Conferma Ordine");
+        JPanel btns = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        btnIndietro  = new JButton("Annulla");
+        btnConferma  = new JButton("Conferma Ordine");
         btns.add(btnIndietro);
         btns.add(btnConferma);
         add(btns);
 
-        btnIndietro.addActionListener(e -> controller.goToMenu());
-        //btnConferma.addActionListener(e -> effettuaOrdine());
+        btnIndietro.addActionListener(e ->
+            controller.goToCliente(controller.getCurrentClienteId()));
 
-        // Quando entri in questo panel, chiama aggiornaDettaglioOrdine()
+        btnConferma.addActionListener(e -> effettuaOrdine());
     }
 
-    /** Da chiamare sempre quando entri nel checkout */
-    /*public void aggiornaDettaglioOrdine() {
+    /** Da chiamare ogni volta che arrivi su questo card */
+    public void aggiornaDettaglioOrdine() {
         comboPagamenti.removeAllItems();
+
         int codCliente = controller.getCurrentClienteId();
         CarrelloInfo carrello = controller.getModel().calcolaTotaleCheckout(codCliente);
-        List<Pagamento> pagamenti = controller.getModel().getPagamentiCliente(codCliente);
+        List<MetodoPagamento> metodi = controller.getModel().loadMetodiPagamentoByCliente(codCliente);
 
-        StringBuilder dettagli = new StringBuilder("<html><ul>");
-        carrello.dettagli.forEach(d -> dettagli.append(
-            "<li>").append(d.nomePiatto)
-                  .append(" x").append(d.quantita)
-                  .append(" (").append(d.prezzoUnitario).append("€)")
-                  .append("</li>"));
-        dettagli.append("</ul></html>");
-        lblDettagliOrdine.setText(dettagli.toString());
-        lblTotale.setText("Totale Parziale: € " + carrello.totaleParziale);
-        lblSconti.setText("<html>Sconto Promozioni: <b>-€ " + carrello.scontoPromozioni + "</b> (" + carrello.descScontoPromozioni + ")<br>"
-                + "Sconto Raccolta Punti: <b>-€ " + carrello.scontoPunti + "</b> (" + carrello.descScontoPunti + ")</html>");
-        lblTotaleFinale.setText("<html><h2>Totale da Pagare: € " + carrello.totaleFinale + "</h2></html>");
+        // dettaglio
+        StringBuilder sb = new StringBuilder("<html><ul>");
+        for (var d : carrello.dettagli) {
+            sb.append("<li>")
+              .append(d.nomePiatto).append(" x").append(d.quantita)
+              .append(" @").append(d.prezzoUnitario).append("€")
+              .append("</li>");
+        }
+        sb.append("</ul></html>");
+        lblDettagliOrdine.setText(sb.toString());
 
-        for (Pagamento p : pagamenti) comboPagamenti.addItem(p);
+        lblTotale.setText(
+            String.format("Totale Parziale: € %.2f", carrello.totaleParziale));
+        lblSconti.setText(String.format(
+            "<html>Sconto Promozioni: <b>-€ %.2f</b> (%s)<br>"
+          + "Sconto Punti: <b>-€ %.2f</b> (%s)</html>",
+            carrello.scontoPromozioni,
+            carrello.descScontoPromozioni,
+            carrello.scontoPunti,
+            carrello.descScontoPunti));
+
+        lblTotaleFinale.setText(
+            String.format("<html><h2>Totale da Pagare: € %.2f</h2></html>",
+            carrello.totaleFinale));
+
+        metodi.forEach(comboPagamenti::addItem);
     }
 
     private void effettuaOrdine() {
-        Pagamento selezionato = (Pagamento) comboPagamenti.getSelectedItem();
-        if (selezionato == null) {
+        var metodo = (MetodoPagamento) comboPagamenti.getSelectedItem();
+        if (metodo == null) {
             JOptionPane.showMessageDialog(this, "Seleziona un metodo di pagamento!");
             return;
         }
+
         try {
+            int codCliente = controller.getCurrentClienteId();
+            CarrelloInfo carrello = controller.getModel().calcolaTotaleCheckout(codCliente);
+
+            // chiama il model che esegue tutta la transaction
             controller.getModel().creaOrdineCompleto(
-                controller.getCurrentClienteId(),
-                selezionato
-                // altri dati come indirizzo selezionato se serve
+                codCliente,
+                metodo,
+                carrello
             );
-            JOptionPane.showMessageDialog(this, "Ordine effettuato! Ti arriverà una conferma.");
+            
+            int codPagamento = controller.getModel().insertPagamento(
+                new Pagamento(Date.valueOf(LocalDate.now()), carrello.totaleFinale, codCliente, metodo.toString()));
+            controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, null, null);
+            controller.getModel().insertState(new StatoOrdine(codCliente, null, null, null, null, codCliente));
+
+            JOptionPane.showMessageDialog(this,
+                "Ordine effettuato! Riceverai una conferma a breve.");
             controller.goToMenu();
+
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Errore nell'effettuare l'ordine: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                "Errore durante il checkout: " + ex.getMessage(),
+                "Errore", JOptionPane.ERROR_MESSAGE);
         }
-    }*/
+    }
 }

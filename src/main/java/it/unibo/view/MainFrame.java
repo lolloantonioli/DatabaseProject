@@ -95,5 +95,9 @@ public class MainFrame extends JFrame {
         return this.ristorantePanel;
     }
 
+    public CheckoutPanel gCheckoutPanel() {
+        return this.checkoutPanel;
+    }
+
 }
 

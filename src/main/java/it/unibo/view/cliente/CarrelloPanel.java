@@ -40,8 +40,7 @@ public class CarrelloPanel extends JPanel {
         add(south, BorderLayout.SOUTH);
 
         btnCheckout.addActionListener(e -> {
-            // Apre schermata checkout o riepilogo
-            JOptionPane.showMessageDialog(this, "Procedi all'ordine (da implementare)");
+            controller.goToCheckout();
         });
     }
 

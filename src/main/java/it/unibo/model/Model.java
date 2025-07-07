@@ -54,7 +54,7 @@ public interface Model {
     void deletePiatto(int codicePiatto);
     
     // Gestione ordini
-    void insertOrdine(int codicePagamento, BigDecimal prezzoTotale, String piva, List<DettaglioOrdine> dettagli);
+    void insertOrdine(int codicePagamento, double prezzoTotale, String piva, List<DettaglioOrdine> dettagli);
     Optional<Ordine> findOrdine(int codiceOrdine);
     List<Ordine> loadOrdiniByCliente(int codiceCliente);
     List<Ordine> loadOrdiniDaConsegnareByRider(int codiceRider);
@@ -107,7 +107,7 @@ public interface Model {
     void deletePromozione(String piva, Date dataInizio, Date dataFine);
 
     // Gestione pagamenti
-    void insertPagamento(Pagamento pagamento);
+    int insertPagamento(Pagamento pagamento);
     List<Pagamento> loadPagamentiByCliente(int codiceCliente);
 
     // Gestione offerte di piatti
@@ -155,8 +155,8 @@ public interface Model {
     List<RigaCarrello> getCarrello();
     void svuotaCarrello();
     double getTotaleCarrello();
-    
-    static Model fromConnection(Connection connection) {
-        return new DBModel(connection);
-    }
+
+    CarrelloInfo calcolaTotaleCheckout(int codiceCliente);
+    List<Pagamento> getPagamentiCliente(int codiceCliente);
+    int creaOrdineCompleto(int codiceCliente, Pagamento metodoSelezionato);
 }

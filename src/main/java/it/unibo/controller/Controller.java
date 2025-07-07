@@ -22,7 +22,7 @@ public final class Controller {
         this.currentClienteId = Optional.empty();
         this.currentRiderId = Optional.empty();
         this.currentRistorantePiva = Optional.empty();
-        this.model = new DBModel(DAOUtils.localMySQLConnection());
+        this.model = new DBModel(DAOUtils.localMySQLConnection(), this);
         this.view = new MainFrame(this);
     }
 
@@ -64,6 +64,7 @@ public final class Controller {
     }
 
     public void goToCheckout(){
+        view.gCheckoutPanel().aggiornaDettaglioOrdine();
         view.show(CardName.CHECKOUT);
     }
 
