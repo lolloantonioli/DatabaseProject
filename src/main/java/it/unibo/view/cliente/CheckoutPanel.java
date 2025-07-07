@@ -7,7 +7,6 @@ import javax.swing.*;
 
 import it.unibo.controller.Controller;
 import it.unibo.data.Pagamento;
-import it.unibo.model.DBModel.CarrelloInfo; // Vedi sopra
 
 public class CheckoutPanel extends JPanel {
     private final Controller controller;
@@ -46,13 +45,13 @@ public class CheckoutPanel extends JPanel {
         add(btns);
 
         btnIndietro.addActionListener(e -> controller.goToMenu());
-        btnConferma.addActionListener(e -> effettuaOrdine());
+        //btnConferma.addActionListener(e -> effettuaOrdine());
 
         // Quando entri in questo panel, chiama aggiornaDettaglioOrdine()
     }
 
     /** Da chiamare sempre quando entri nel checkout */
-    public void aggiornaDettaglioOrdine() {
+    /*public void aggiornaDettaglioOrdine() {
         comboPagamenti.removeAllItems();
         int codCliente = controller.getCurrentClienteId();
         CarrelloInfo carrello = controller.getModel().calcolaTotaleCheckout(codCliente);
@@ -92,5 +91,5 @@ public class CheckoutPanel extends JPanel {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Errore nell'effettuare l'ordine: " + ex.getMessage());
         }
-    }
+    }*/
 }

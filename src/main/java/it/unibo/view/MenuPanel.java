@@ -31,15 +31,7 @@ public class MenuPanel extends JPanel {
         final JButton btnAmministratore = new JButton(AMMINISTRATORE);
 
         btnCliente.addActionListener(e -> controller.goToClienteAccess());
-        btnRistorante.addActionListener(e -> {
-            System.out.println("Cliccato Ristorante!"); // DEBUG
-            try {
-                controller.goToRistoranteAccess();
-            } catch (Exception ex) {
-                System.out.println("Errore nel goToRistoranteAccess: " + ex.getMessage()); // DEBUG
-                ex.printStackTrace();
-            }
-        });
+        btnRistorante.addActionListener(e -> controller.goToRistoranteAccess());
         btnRider.addActionListener(e -> controller.goToRiderAccess());
         btnAmministratore.addActionListener(e -> controller.goToAmministratore());
 

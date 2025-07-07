@@ -41,7 +41,6 @@ public final class Controller {
     }
 
     public void goToRistoranteAccess() {
-        System.out.println("Vado a RISTORANTE_ACCESS");
         view.show(CardName.RISTORANTE_ACCESS);
     }
 

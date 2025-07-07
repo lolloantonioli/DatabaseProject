@@ -41,7 +41,7 @@ class RistoranteOrdiniPanel extends JPanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
         add(btnDettaglio, BorderLayout.SOUTH);
     }
-    private void refreshTable() {
+    public void refreshTable() {
         model.setRowCount(0);
         List<Ordine> ordini = controller.getModel().loadOrdiniByRistorante(controller.getCurrentPiva());
         for (Ordine o : ordini)

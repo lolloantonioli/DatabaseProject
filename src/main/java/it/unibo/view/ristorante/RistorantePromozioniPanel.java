@@ -72,7 +72,7 @@ class RistorantePromozioniPanel extends JPanel {
             }
         });
     }
-    private void refreshTable() {
+    public void refreshTable() {
         model.setRowCount(0);
         List<Promozione> promos = controller.getModel().loadPromozioniByRistorante(controller.getCurrentPiva());
         for(Promozione p : promos)

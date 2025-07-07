@@ -61,7 +61,7 @@ class RistorantePiattiPanel extends JPanel {
             }
         });
     }
-    private void refreshTable() {
+    public void refreshTable() {
         model.setRowCount(0);
         List<Piatto> piatti = controller.getModel().loadPiattiByRistorante(controller.getCurrentPiva());
         for(Piatto p : piatti)
