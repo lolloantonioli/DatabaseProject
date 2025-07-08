@@ -1,6 +1,7 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -135,7 +136,10 @@ public class Ordine {
         }
 
         public static int insertOrdine(Connection conn, int codicePagamento, double prezzoTotale, String piva) {
-            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_ORDINE, codicePagamento, prezzoTotale, piva)) {
+            try (var ps = conn.prepareStatement(Queries.INSERT_ORDINE, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setInt(1, codicePagamento);
+                ps.setDouble(2, prezzoTotale);
+                ps.setString(3, piva);
                 ps.executeUpdate();
                 try (var rs = ps.getGeneratedKeys()) {
                     if (!rs.next()) throw new DAOException("Nessun ID ordine");

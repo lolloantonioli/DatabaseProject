@@ -76,17 +76,28 @@ public class StatoOrdine {
          * Inserisce un nuovo stato ordine
          */
         public static void insertState(Connection conn, StatoOrdine s) {
-            try (var ps = DAOUtils.prepare(conn,
-                                           Queries.INSERT_STATO_ORDINE,
-                                           s.codiceOrdine,
-                                           Timestamp.valueOf(s.data),
-                                           s.inPreparazione,
-                                           Timestamp.valueOf(s.oraInPreparazione),
-                                           s.inConsegna,
-                                           Timestamp.valueOf(s.oraInConsegna),
-                                           s.consegnato,
-                                           Timestamp.valueOf(s.oraConsegnato),
-                                           s.codiceRider)) {
+            try (var ps = conn.prepareStatement(Queries.INSERT_STATO_ORDINE)) {
+                ps.setInt(1, s.codiceOrdine);
+                ps.setTimestamp(2, s.data != null ? Timestamp.valueOf(s.data) : null);
+                ps.setBoolean(3, s.inPreparazione);
+                if (s.oraInPreparazione != null) {
+                    ps.setTimestamp(4, Timestamp.valueOf(s.oraInPreparazione));
+                } else {
+                    ps.setNull(4, java.sql.Types.TIMESTAMP);
+                }
+                ps.setBoolean(5, s.inConsegna);
+                if (s.oraInConsegna != null) {
+                    ps.setTimestamp(6, Timestamp.valueOf(s.oraInConsegna));
+                } else {
+                    ps.setNull(6, java.sql.Types.TIMESTAMP);
+                }
+                ps.setBoolean(7, s.consegnato);
+                if (s.oraConsegnato != null) {
+                    ps.setTimestamp(8, Timestamp.valueOf(s.oraConsegnato));
+                } else {
+                    ps.setNull(8, java.sql.Types.TIMESTAMP);
+                }
+                ps.setInt(9, s.codiceRider);
                 ps.executeUpdate();
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento stato ordine " + s.codiceOrdine, e);
