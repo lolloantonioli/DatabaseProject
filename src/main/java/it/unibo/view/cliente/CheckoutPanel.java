@@ -105,24 +105,24 @@ public class CheckoutPanel extends JPanel {
 
             
             int codPagamento = controller.getModel().insertPagamento(
-                new Pagamento(Date.valueOf(LocalDate.now()), carrello.totaleFinale, codCliente, metodo.toString()));
-                int codOrdine = controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, controller.getOrderPiva());
-                
-                var piatti = controller.getModel().loadPiattiByRistorante(controller.getOrderPiva());
-                
-                for (var dettaglio : carrello.dettagli) {
-                    String nomePiatto = dettaglio.nomePiatto;
-                    var piattoOpt = piatti.stream()
-                    .filter(p -> p.nome.equals(nomePiatto))
-                    .findFirst();
-                    if (piattoOpt.isPresent()) {
-                        int codicePiatto = piattoOpt.get().codicePiatto;
-                    int quantita = dettaglio.quantita;
-                    double prezzo = dettaglio.prezzoUnitario;
-                    controller.getModel().insertDettaglioOrdine(codOrdine, codicePiatto, quantita, prezzo);
-                } else {
-                    System.out.println("Piatto non trovato: " + nomePiatto);
-                }
+                new Pagamento(Date.valueOf(LocalDate.now()), carrello.totaleFinale, codCliente, metodo.nome));
+            int codOrdine = controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, controller.getOrderPiva());
+            
+            var piatti = controller.getModel().loadPiattiByRistorante(controller.getOrderPiva());
+            
+            for (var dettaglio : carrello.dettagli) {
+                String nomePiatto = dettaglio.nomePiatto;
+                var piattoOpt = piatti.stream()
+                .filter(p -> p.nome.equals(nomePiatto))
+                .findFirst();
+                if (piattoOpt.isPresent()) {
+                    int codicePiatto = piattoOpt.get().codicePiatto;
+                int quantita = dettaglio.quantita;
+                double prezzo = dettaglio.prezzoUnitario;
+                controller.getModel().insertDettaglioOrdine(codOrdine, codicePiatto, quantita, prezzo);
+            } else {
+                System.out.println("Piatto non trovato: " + nomePiatto);
+            }
             }
             
             controller.getModel().insertState(new StatoOrdine(codOrdine, LocalDateTime.now(), true, LocalDateTime.now(),

@@ -32,8 +32,8 @@ class RistoranteOrdiniPanel extends JPanel {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Codice Ordine: ").append(ordine.codiceOrdine).append("\n");
                 sb.append("Totale: ").append(ordine.prezzoTotale).append("\n");
-                for (DettaglioOrdine d : ordine.dettagli) {
-                    sb.append("- ").append(d.nomePiatto).append(" x").append(d.quantita).append("\n");
+                for (DettaglioOrdine d : controller.getModel().loadDettagliByOrdine(ordine.codiceOrdine)) {
+                    sb.append("- ").append(d.codicePiatto).append(" x").append(d.quantita).append("\n");
                 }
                 JOptionPane.showMessageDialog(this, sb.toString(), "Dettaglio Ordine", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -45,6 +45,6 @@ class RistoranteOrdiniPanel extends JPanel {
         model.setRowCount(0);
         List<Ordine> ordini = controller.getModel().loadOrdiniByRistorante(controller.getCurrentPiva());
         for (Ordine o : ordini)
-            model.addRow(new Object[]{o.codiceOrdine, o.prezzoTotale, /* puoi mostrare info cliente se vuoi */ o.codiceStato});
+            model.addRow(new Object[]{o.codiceOrdine, o.prezzoTotale});
     }
 }

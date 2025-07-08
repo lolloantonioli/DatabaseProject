@@ -395,9 +395,8 @@ public class ProfiloPanel extends JPanel {
                 tableModel.addRow(new Object[]{
                     ordine.codiceOrdine,
                     ordine.piva,
-                    "€ " + ordine.prezzoTotale.toString(),
-                    statoDescrizione,
-                    ordine.dettagli.size() + " piatti"
+                    "€ " + ordine.prezzoTotale,
+                    statoDescrizione
                 });
             });
 
@@ -517,7 +516,7 @@ public class ProfiloPanel extends JPanel {
                 tableModel.addRow(new Object[]{
                     pag.codicePagamento,
                     pag.nomeMetodo,
-                    "€ " + pag.importo.toString(),
+                    "€ " + pag.importo,
                     pag.data,
                 });
             });
@@ -589,12 +588,12 @@ public class ProfiloPanel extends JPanel {
             return "Non disponibile";
         }
         StatoOrdine stato = statoOpt.get();
-        if (stato.consegnato != null) {
-            return "Consegnato il " + stato.consegnato.toLocalDate().toString();
-        } else if (stato.inConsegna != null) {
-            return "In consegna dal " + stato.inConsegna.toLocalDate().toString();
-        } else if (stato.inPreparazione != null) {
-            return "In preparazione dal " + stato.inPreparazione.toLocalDate().toString();
+        if (stato.consegnato == true) {
+            return "Consegnato il " + stato.oraConsegnato.toString();
+        } else if (stato.inConsegna == true) {
+            return "In consegna dal " + stato.oraInConsegna.toString();
+        } else if (stato.inPreparazione == true) {
+            return "In preparazione dal " + stato.oraInPreparazione.toString();
         } else if (stato.data != null) {
             return "Creato il " + stato.data.toLocalDate().toString();
         } else {

@@ -70,8 +70,11 @@ public class Pagamento {
         }
         
         public static int insertPagamento(Connection conn, Pagamento p) {
-            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_PAGAMENTO,
-                                           p.data, p.importo, p.codiceCliente, p.nomeMetodo)) {
+            try (var ps = conn.prepareStatement(Queries.INSERT_PAGAMENTO, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                ps.setDate(1, p.data);
+                ps.setDouble(2, p.importo);
+                ps.setInt(3, p.codiceCliente);
+                ps.setString(4, p.nomeMetodo);
                 ps.executeUpdate();
                 try (var rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
