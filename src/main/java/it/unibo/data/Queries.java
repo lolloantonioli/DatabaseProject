@@ -106,12 +106,20 @@ public static final String DELETE_MEZZO = """
     DELETE FROM Mezzi WHERE Codice_Rider = ? AND Codice_Mezzo = ?
 """;
 
+public static final String SOTTRAI_PUNTI = """
+        UPDATE raccolte_punti SET punti_totali = punti_totali - ? WHERE codice_cliente = ?
+        """;
+
+public static final String AGGIUNGI_PUNTI = """
+    UPDATE raccolta_punti SET punti_totali = punti_totali + ? WHERE codice_cliente = ?
+""";
+
 public static final String ORDINI_PREPARAZIONE_ZONA =
     "SELECT o.Codice_Ordine, o.P_IVA, o.Prezzo_Totale, s.Data " +
     "FROM ORDINI o " +
     "JOIN STATI_ORDINI s ON o.Codice_Ordine = s.Codice_Ordine " +
     "JOIN RISTORANTI r ON o.P_IVA = r.P_IVA " +
-    "WHERE s.In_Preparazione = TRUE AND r.Codice_Zona = ?";
+    "WHERE s.In_Preparazione = TRUE AND s.In_Consegna = FALSE AND s.Conseganto = FALSE AND s.codice_rider = -1 AND r.Codice_Zona = ?";
 
 public static final String PRENDI_IN_CARICO_ORDINE =
     "UPDATE STATI_ORDINI SET In_Preparazione = FALSE, In_Consegna = TRUE, Ora_In_Consegna = NOW(), Codice_Rider = ? WHERE Codice_Ordine = ?";
@@ -550,18 +558,18 @@ public static final String AVAILABLE_RIDERS_BY_ZONA = """
 
 public static final String INSERT_STATO_ORDINE = """
     INSERT INTO stati_ordini
-        (codice_ordine, data, in_preparazione, in_consegna, consegnato, codice_rider)
-    VALUES (?, ?, ?, ?, ?, ?)
+        (codice_ordine, data, in_preparazione, ora_in_preparazione, in_consegna, ora_in_consegna, consegnato, ora_consegnato, codice_rider)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
 public static final String UPDATE_STATO_ORDINE = """
     UPDATE stati_ordini
-    SET in_preparazione = ?, in_consegna = ?, consegnato = ?
+    SET in_preparazione = ?, ora_in_preparazione = ?, in_consegna = ?, ora_in_consegna = ?, consegnato = ?, ora_consegnato = ?
     WHERE codice_ordine = ? AND codice_rider = ?
     """;
 
 public static final String SELECT_STATO_BY_ORDINE = """
-    SELECT codice_ordine, data, in_preparazione, in_consegna, consegnato, codice_rider
+    SELECT codice_ordine, data, in_preparazione, ora_in_preparazione, in_consegna, ora_in_consegna, consegnato, ora_consegnato, codice_rider
     FROM stati_ordini
     WHERE codice_ordine = ?
     ORDER BY data DESC

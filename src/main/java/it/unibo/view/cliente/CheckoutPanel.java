@@ -3,12 +3,11 @@ package it.unibo.view.cliente;
 import java.awt.*;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.swing.*;
 
 import it.unibo.controller.Controller;
-import it.unibo.data.DettaglioOrdine;
 import it.unibo.data.MetodoPagamento;
 import it.unibo.data.Pagamento;
 import it.unibo.data.StatoOrdine;
@@ -100,19 +99,24 @@ public class CheckoutPanel extends JPanel {
             int codCliente = controller.getCurrentClienteId();
             CarrelloInfo carrello = controller.getModel().calcolaTotaleCheckout(codCliente);
 
+            if(carrello.puntiUsati > 0) {
+                controller.getModel().sottraiPunti(codCliente, carrello.puntiUsati);
+            }
+
+            
             int codPagamento = controller.getModel().insertPagamento(
                 new Pagamento(Date.valueOf(LocalDate.now()), carrello.totaleFinale, codCliente, metodo.toString()));
-            int codOrdine = controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, controller.getOrderPiva());
-
-            var piatti = controller.getModel().loadPiattiByRistorante(controller.getOrderPiva());
-
-            for (var dettaglio : carrello.dettagli) {
-                String nomePiatto = dettaglio.nomePiatto;
-                var piattoOpt = piatti.stream()
+                int codOrdine = controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, controller.getOrderPiva());
+                
+                var piatti = controller.getModel().loadPiattiByRistorante(controller.getOrderPiva());
+                
+                for (var dettaglio : carrello.dettagli) {
+                    String nomePiatto = dettaglio.nomePiatto;
+                    var piattoOpt = piatti.stream()
                     .filter(p -> p.nome.equals(nomePiatto))
                     .findFirst();
-                if (piattoOpt.isPresent()) {
-                    int codicePiatto = piattoOpt.get().codicePiatto;
+                    if (piattoOpt.isPresent()) {
+                        int codicePiatto = piattoOpt.get().codicePiatto;
                     int quantita = dettaglio.quantita;
                     double prezzo = dettaglio.prezzoUnitario;
                     controller.getModel().insertDettaglioOrdine(codOrdine, codicePiatto, quantita, prezzo);
@@ -120,12 +124,17 @@ public class CheckoutPanel extends JPanel {
                     System.out.println("Piatto non trovato: " + nomePiatto);
                 }
             }
+            
+            controller.getModel().insertState(new StatoOrdine(codOrdine, LocalDateTime.now(), true, LocalDateTime.now(),
+            false, null, false, null, -1));
 
-            controller.getModel().insertState(new StatoOrdine(codCliente, null, null, null, null, codCliente));
+            // Calcola i punti da generare (1 punto ogni euro speso, arrotondato per difetto)
+            int puntiDaAggiungere = (int) Math.floor(carrello.totaleFinale);
+            controller.getModel().aggiungiPunti(codCliente, puntiDaAggiungere);
 
             JOptionPane.showMessageDialog(this, "Ordine effettuato!");
-            controller.goToMenu();
-
+            controller.goToCliente(controller.getCurrentClienteId());
+            
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,

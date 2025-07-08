@@ -80,6 +80,22 @@ public class RaccoltaPunti {
             }
             return Optional.empty();
         }
+
+        public static void sottraiPunti(Connection connection, int codiceCliente, int puntiUsati) {
+            try (var ps = DAOUtils.prepare(connection, Queries.SOTTRAI_PUNTI, puntiUsati, codiceCliente)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore nella sottrazione dei punti", e);
+            }
+        }
+
+        public static void aggiungiPunti(Connection connection, int codiceCliente, int puntiDaAggiungere) {
+            try (var ps = DAOUtils.prepare(connection, Queries.AGGIUNGI_PUNTI, puntiDaAggiungere, codiceCliente)) {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                throw new DAOException("Errore nell'aggiunta dei punti", e);
+            }
+        }
     }
 
 }

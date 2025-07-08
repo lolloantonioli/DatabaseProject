@@ -12,7 +12,6 @@ import java.util.List;
 
 public class TrovaRistorantiPanel extends JPanel {
     private final Controller controller;
-    private final CarrelloPanel carrelloPanel;
     private final CardLayout cardLayout;
     private final JPanel cards;
 
@@ -29,7 +28,6 @@ public class TrovaRistorantiPanel extends JPanel {
 
     public TrovaRistorantiPanel(Controller controller, CarrelloPanel carrelloPanel) {
         this.controller = controller;
-        this.carrelloPanel = carrelloPanel;
         this.cardLayout = new CardLayout();
         this.cards = new JPanel(cardLayout);
 

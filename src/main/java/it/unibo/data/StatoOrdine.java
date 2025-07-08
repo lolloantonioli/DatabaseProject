@@ -12,19 +12,26 @@ public class StatoOrdine {
 
     public final int codiceOrdine;
     public final LocalDateTime data;
-    public final LocalDateTime inPreparazione;
-    public final LocalDateTime inConsegna;
-    public final LocalDateTime consegnato;
-    public final int codiceRider;
+    public boolean inPreparazione;
+    public LocalDateTime oraInPreparazione;
+    public boolean inConsegna;
+    public LocalDateTime oraInConsegna;
+    public boolean consegnato;
+    public LocalDateTime oraConsegnato;
+    public int codiceRider;
 
-    public StatoOrdine(int codiceOrdine, LocalDateTime data, LocalDateTime inPreparazione,
-                       LocalDateTime inConsegna, LocalDateTime consegnato, int codiceRider) {
+    public StatoOrdine(int codiceOrdine, LocalDateTime data, boolean inPreparazione,
+                       LocalDateTime oraInPreparazione, boolean inConsegna, LocalDateTime oraInConsegna,
+                       boolean consegnato, LocalDateTime oraConsegnato, int codiceRider) {
         this.codiceOrdine = codiceOrdine;
         this.data = data;
         this.inPreparazione = inPreparazione;
         this.inConsegna = inConsegna;
         this.consegnato = consegnato;
         this.codiceRider = codiceRider;
+        this.oraInPreparazione = oraInPreparazione;
+        this.oraInConsegna = oraInConsegna;
+        this.oraConsegnato = oraConsegnato;
     }
 
     @Override
@@ -37,12 +44,16 @@ public class StatoOrdine {
             && Objects.equals(s.inPreparazione, this.inPreparazione)
             && Objects.equals(s.inConsegna, this.inConsegna)
             && Objects.equals(s.consegnato, this.consegnato)
+            && s.oraInPreparazione.equals(this.oraInPreparazione)
+            && s.oraInConsegna.equals(this.oraInConsegna)
+            && s.oraConsegnato.equals(this.oraConsegnato)
             && s.codiceRider == this.codiceRider;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codiceOrdine, data, inPreparazione, inConsegna, consegnato, codiceRider);
+        return Objects.hash(codiceOrdine, data, inPreparazione, inConsegna, consegnato,
+        oraInPreparazione, oraInConsegna, oraConsegnato, codiceRider);
     }
 
     @Override
@@ -51,14 +62,17 @@ public class StatoOrdine {
             Printer.field("codice ordine", codiceOrdine),
             Printer.field("data", data),
             Printer.field("in preparazione", inPreparazione),
+            Printer.field("ora in preparazione", oraInPreparazione),
             Printer.field("in consegna", inConsegna),
+            Printer.field("ora in consegna", oraInConsegna),
             Printer.field("consegnato", consegnato),
+            Printer.field("ora consegnato", oraConsegnato),
             Printer.field("codice rider", codiceRider)
         ));
     }
 
     public static final class DAO {
-            /**
+        /**
          * Inserisce un nuovo stato ordine
          */
         public static void insertState(Connection conn, StatoOrdine s) {
@@ -66,9 +80,12 @@ public class StatoOrdine {
                                            Queries.INSERT_STATO_ORDINE,
                                            s.codiceOrdine,
                                            Timestamp.valueOf(s.data),
-                                           Timestamp.valueOf(s.inPreparazione),
-                                           Timestamp.valueOf(s.inConsegna),
-                                           Timestamp.valueOf(s.consegnato),
+                                           s.inPreparazione,
+                                           Timestamp.valueOf(s.oraInPreparazione),
+                                           s.inConsegna,
+                                           Timestamp.valueOf(s.oraInConsegna),
+                                           s.consegnato,
+                                           Timestamp.valueOf(s.oraConsegnato),
                                            s.codiceRider)) {
                 ps.executeUpdate();
             } catch (Exception e) {
@@ -82,9 +99,12 @@ public class StatoOrdine {
         public static void updateState(Connection conn, StatoOrdine s) {
             try (var ps = DAOUtils.prepare(conn,
                                            Queries.UPDATE_STATO_ORDINE,
-                                           Timestamp.valueOf(s.inPreparazione),
-                                           Timestamp.valueOf(s.inConsegna),
-                                           Timestamp.valueOf(s.consegnato),
+                                           s.inPreparazione,
+                                           Timestamp.valueOf(s.oraInPreparazione),
+                                           s.inConsegna,
+                                           Timestamp.valueOf(s.oraInConsegna),
+                                           s.consegnato,
+                                           Timestamp.valueOf(s.oraConsegnato),
                                            s.codiceOrdine,
                                            s.codiceRider)) {
                 ps.executeUpdate();
@@ -100,12 +120,16 @@ public class StatoOrdine {
             try (var ps = DAOUtils.prepare(conn, Queries.SELECT_STATO_BY_ORDINE, codiceOrdine);
                  var rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    var data    = rs.getTimestamp("data").toLocalDateTime();
-                    var prep    = rs.getTimestamp("in_preparazione").toLocalDateTime();
-                    var conseg  = rs.getTimestamp("in_consegna").toLocalDateTime();
-                    var cons    = rs.getTimestamp("consegnato").toLocalDateTime();
-                    int rider   = rs.getInt("codice_rider");
-                    return Optional.of(new StatoOrdine(codiceOrdine, data, prep, conseg, cons, rider));
+                    var data = rs.getTimestamp("data").toLocalDateTime();
+                    var prep = rs.getBoolean("in_preparazione");
+                    var oraPrep = rs.getTimestamp("ora_in_preparazione").toLocalDateTime();
+                    var conseg = rs.getBoolean("ora_in_consegna");
+                    var oraConseg = rs.getTimestamp("ora_in_consegna").toLocalDateTime();
+                    var cons = rs.getBoolean("ora_consegnato");
+                    var oraCons = rs.getTimestamp("ora_consegnato").toLocalDateTime();
+                    int rider = rs.getInt("codice_rider");
+                    StatoOrdine so = new StatoOrdine(codiceOrdine, data, prep, oraPrep, conseg, oraConseg, cons, oraCons, rider);
+                    return Optional.of(so);
                 }
                 return Optional.empty();
             } catch (Exception e) {
@@ -119,16 +143,13 @@ public class StatoOrdine {
             try (var ps = DAOUtils.prepare(conn, Queries.ORDINI_PREPARAZIONE_ZONA, codiceZona);
                 var rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    int codOrd = rs.getInt("codice_ordine");
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(conn, codOrd);
-                    ordini.add(new Ordine(
-                        codOrd,
+                    Ordine o = new Ordine(
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getDouble("prezzo_totale"),
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");
+                    ordini.add(o);
                 }
             } catch (Exception e) {
                 throw new DAOException("Errore caricamento ordini in preparazione", e);

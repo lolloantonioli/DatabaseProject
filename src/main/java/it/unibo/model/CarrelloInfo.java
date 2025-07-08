@@ -10,6 +10,7 @@ public class CarrelloInfo {
     public final double scontoPunti;
     public final String descScontoPunti;
     public final double totaleFinale;
+    public final int puntiUsati;
 
     public CarrelloInfo(List<DettaglioInfo> dettagli,
                         double totaleParziale,
@@ -17,7 +18,8 @@ public class CarrelloInfo {
                         String descScontoPromozioni,
                         double scontoPunti,
                         String descScontoPunti,
-                        double totaleFinale) {
+                        double totaleFinale,
+                        int puntiUsati) {
         this.dettagli = dettagli;
         this.totaleParziale = totaleParziale;
         this.scontoPromozioni = scontoPromozioni;
@@ -25,5 +27,6 @@ public class CarrelloInfo {
         this.scontoPunti = scontoPunti;
         this.descScontoPunti = descScontoPunti;
         this.totaleFinale = totaleFinale;
+        this.puntiUsati = puntiUsati;
     }
 }

@@ -68,6 +68,8 @@ public interface Model {
     
     // Gestione Utilizzo punti
     List<Integer> loadOrdersWithPoints();
+    void sottraiPunti(int codiceCliente, int puntiUsati);
+    void aggiungiPunti(int codiceCliente, int puntiDaAggiungere);
     
     // Gestione stato ordine
     void insertState(StatoOrdine statoOrdine);
@@ -157,5 +159,4 @@ public interface Model {
 
     CarrelloInfo calcolaTotaleCheckout(int codiceCliente);
     List<Pagamento> getPagamentiCliente(int codiceCliente);
-    int creaOrdineCompleto(int codiceCliente, Pagamento metodoSelezionato);
 }
