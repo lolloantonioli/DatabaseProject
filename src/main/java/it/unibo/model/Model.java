@@ -1,7 +1,5 @@
 package it.unibo.model;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -54,11 +52,12 @@ public interface Model {
     void deletePiatto(int codicePiatto);
     
     // Gestione ordini
-    void insertOrdine(int codicePagamento, double prezzoTotale, String piva, List<DettaglioOrdine> dettagli);
+    int insertOrdine(int codicePagamento, double prezzoTotale, String piva);
     Optional<Ordine> findOrdine(int codiceOrdine);
     List<Ordine> loadOrdiniByCliente(int codiceCliente);
     List<Ordine> loadOrdiniDaConsegnareByRider(int codiceRider);
     List<Ordine> loadOrdiniConsegnatiByRider(int codiceRider);
+    void insertDettaglioOrdine(int codiceOrdine, int codicePiatto, int quantita, double prezzoUnitario);
     
     // Gestione zona geografica
     void insertZona(ZonaGeografica zonaGeografica);

@@ -9,15 +9,11 @@ import java.awt.*;
 import java.util.List;
 
 public class ViewPiattiPanel extends JPanel {
-    private final Controller controller;
-    private final CarrelloPanel carrelloPanel;
     private final JTable piattiTable;
     private final JButton btnAggiungiAlCarrello;
     private List<Piatto> piattiList;
 
     public ViewPiattiPanel(Controller controller, CarrelloPanel carrelloPanel) {
-        this.controller = controller;
-        this.carrelloPanel = carrelloPanel;
 
         setLayout(new BorderLayout());
 

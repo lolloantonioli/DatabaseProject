@@ -235,16 +235,13 @@ public class Rider {
             try (var ps = DAOUtils.prepare(conn, Queries.ORDINE_IN_CARICO_RIDER, codiceRider);
                 var rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    int codOrd = rs.getInt("codice_ordine");
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(conn, codOrd);
-                    return Optional.of(new Ordine(
-                        codOrd,
+                    var o = new Ordine(
                         rs.getInt("codice_pagamento"),
-                        rs.getInt("codice_stato"),
-                        rs.getBigDecimal("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getDouble("prezzo_totale"),
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");
+                    return Optional.of(o); 
                 }
             } catch (Exception e) {
                 throw new DAOException("Errore ordine in carico", e);

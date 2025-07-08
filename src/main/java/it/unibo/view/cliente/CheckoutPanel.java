@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.*;
 
 import it.unibo.controller.Controller;
+import it.unibo.data.DettaglioOrdine;
 import it.unibo.data.MetodoPagamento;
 import it.unibo.data.Pagamento;
 import it.unibo.data.StatoOrdine;
@@ -99,20 +100,30 @@ public class CheckoutPanel extends JPanel {
             int codCliente = controller.getCurrentClienteId();
             CarrelloInfo carrello = controller.getModel().calcolaTotaleCheckout(codCliente);
 
-            // chiama il model che esegue tutta la transaction
-            controller.getModel().creaOrdineCompleto(
-                codCliente,
-                metodo,
-                carrello
-            );
-            
             int codPagamento = controller.getModel().insertPagamento(
                 new Pagamento(Date.valueOf(LocalDate.now()), carrello.totaleFinale, codCliente, metodo.toString()));
-            controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, null, null);
+            int codOrdine = controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, controller.getOrderPiva());
+
+            var piatti = controller.getModel().loadPiattiByRistorante(controller.getOrderPiva());
+
+            for (var dettaglio : carrello.dettagli) {
+                String nomePiatto = dettaglio.nomePiatto;
+                var piattoOpt = piatti.stream()
+                    .filter(p -> p.nome.equals(nomePiatto))
+                    .findFirst();
+                if (piattoOpt.isPresent()) {
+                    int codicePiatto = piattoOpt.get().codicePiatto;
+                    int quantita = dettaglio.quantita;
+                    double prezzo = dettaglio.prezzoUnitario;
+                    controller.getModel().insertDettaglioOrdine(codOrdine, codicePiatto, quantita, prezzo);
+                } else {
+                    System.out.println("Piatto non trovato: " + nomePiatto);
+                }
+            }
+
             controller.getModel().insertState(new StatoOrdine(codCliente, null, null, null, null, codCliente));
 
-            JOptionPane.showMessageDialog(this,
-                "Ordine effettuato! Riceverai una conferma a breve.");
+            JOptionPane.showMessageDialog(this, "Ordine effettuato!");
             controller.goToMenu();
 
         } catch (Exception ex) {

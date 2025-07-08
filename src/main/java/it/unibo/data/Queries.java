@@ -250,14 +250,13 @@ public static final String INSERT_OFFRE = """
 
     // Ordini
     public static final String FIND_ORDINE = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, 
-               o.prezzo_totale, o.p_iva
+        SELECT o.codice_ordine, o.codice_pagamento, o.prezzo_totale, o.p_iva
         FROM ordini o
         WHERE o.codice_ordine = ?
         """;
 
     public static final String ORDINI_BY_CLIENTE = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, 
+        SELECT o.codice_ordine, o.codice_pagamento, 
                o.prezzo_totale, o.p_iva, p.data as data_pagamento
         FROM ordini o
         JOIN pagamenti p ON o.codice_pagamento = p.codice_pagamento
@@ -273,7 +272,7 @@ public static final String INSERT_OFFRE = """
         """;
 
     public static final String ORDINI_BY_RISTORANTE = """
-        SELECT codice_ordine, codice_pagamento, codice_stato, prezzo_totale, p_iva
+        SELECT codice_ordine, codice_pagamento, prezzo_totale, p_iva
         FROM ordini
         WHERE p_iva = ?
         ORDER BY codice_ordine
@@ -281,7 +280,7 @@ public static final String INSERT_OFFRE = """
     
     // Ordini che un rider deve consegnare
     public static final String ORDINI_DA_CONSEGNARE_BY_RIDER = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
+        SELECT o.codice_ordine, o.codice_pagamento, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN stati_ordini s ON o.codice_stato = s.codice_stato
         WHERE s.codice_rider = ? AND s.consegnato = FALSE
@@ -317,15 +316,32 @@ public static final String INSERT_OFFRE = """
         VALUES (?, ?, ?, ?)
         """;
 
+    public static final String SELECT_DETTAGLI_BY_ORDINE =
+        """
+        SELECT codice_piatto, codice_ordine, numero_linea, quantita, prezzo_unitario
+        FROM Dettagli_Ordini
+        WHERE codice_ordine = ?
+        ORDER BY numero_linea
+        """;
+
     // Inserimento ordine
     public static final String INSERT_ORDINE = """
         INSERT INTO ordini (codice_pagamento, prezzo_totale, p_iva)
         VALUES (?, ?, ?)
         """;
+    
+    /** Restituisce il prossimo numero_linea per un dato ordine */
+    public static final String NEXT_NUMERO_LINEA_BY_ORDINE =
+        """
+        SELECT COALESCE(MAX(numero_linea), 0) + 1 AS next_line
+        FROM Dettagli_Ordini
+        WHERE codice_ordine = ?
+        """;
+
 
     // Inserimento dettaglio ordine
     public static final String INSERT_DETTAGLIO_ORDINE = """
-        INSERT INTO dettagli_ordini (codice_ordine, codice_piatto, numero_linea, quantita, prezzo_unitario)
+        INSERT INTO dettagli_ordini (codice_piatto, codice_ordine, numero_linea, quantita, prezzo_unitario)
         VALUES (?, ?, ?, ?, ?)
         """;
 
@@ -340,22 +356,11 @@ public static final String INSERT_OFFRE = """
 
         // Ordini già consegnati da un rider
     public static final String ORDINI_CONSEGNATI_BY_RIDER = """
-        SELECT o.codice_ordine, o.codice_pagamento, o.codice_stato, o.prezzo_totale, o.p_iva
+        SELECT o.codice_ordine, o.codice_pagamento, o.prezzo_totale, o.p_iva
         FROM ordini o
         JOIN stati_ordini s ON o.codice_ordine = s.codice_ordine
         WHERE s.codice_rider = ? AND s.consegnato = TRUE
         ORDER BY o.codice_ordine
-        """;
-
-
-    // Dettagli ordini
-    public static final String DETTAGLI_ORDINE = """
-        SELECT do.codice_piatto, do.numero_linea, do.quantita, do.prezzo_unitario,
-               p.nome as nome_piatto, p.descrizione as descrizione_piatto
-        FROM dettagli_ordini do
-        JOIN piatti p ON do.codice_piatto = p.codice_piatto
-        WHERE do.codice_ordine = ?
-        ORDER BY do.numero_linea
         """;
 
     // Zone geografiche

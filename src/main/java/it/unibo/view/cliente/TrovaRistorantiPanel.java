@@ -3,6 +3,7 @@ package it.unibo.view.cliente;
 import it.unibo.controller.Controller;
 import it.unibo.data.Indirizzo;
 import it.unibo.data.Piatto;
+import it.unibo.data.Ristorante;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -57,7 +58,6 @@ public class TrovaRistorantiPanel extends JPanel {
 
         // ====== Ricerca Panel ======
         ricercaPanel = new JPanel(new BorderLayout());
-        // Qui aggiungerai tabella ristoranti e bottone per visualizzare piatti (da riempire dopo)
         viewPiattiPanel = new ViewPiattiPanel(controller, carrelloPanel);
         cards.add(indirizzoPanel, "indirizzo");
         cards.add(ricercaPanel, "ricerca");
@@ -106,13 +106,13 @@ public class TrovaRistorantiPanel extends JPanel {
     private void caricaRistorantiZona() {
         ricercaPanel.removeAll();
 
-        List<it.unibo.data.Ristorante> ristoranti = controller.getModel().loadRistorantiByZona(indirizzoSelezionato.codiceZona);
+        List<Ristorante> ristoranti = controller.getModel().loadRistorantiByZona(indirizzoSelezionato.codiceZona);
         DefaultTableModel modelRist = new DefaultTableModel(
             new Object[]{"P.IVA", "Nome", "Indirizzo"}, 0);
         JTable tabellaRist = new JTable(modelRist);
         tabellaRist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        for (it.unibo.data.Ristorante r : ristoranti) {
+        for (Ristorante r : ristoranti) {
             modelRist.addRow(new Object[]{r.piva, r.nome, r.indirizzo});
         }
 
@@ -124,6 +124,7 @@ public class TrovaRistorantiPanel extends JPanel {
                 return;
             }
             String pivaRistorante = modelRist.getValueAt(row, 0).toString();
+            controller.setOrderPiva(pivaRistorante);
             mostraTabellaPiatti(pivaRistorante);
         });
 

@@ -2,7 +2,6 @@ package it.unibo.data;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

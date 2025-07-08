@@ -127,8 +127,8 @@ public class DBModel implements Model {
     }
 
     @Override
-    public void insertOrdine(int codicePagamento, double prezzoTotale, String piva, List<DettaglioOrdine> dettagli) {
-        Ordine.DAO.insertFullOrder(connection, codicePagamento, prezzoTotale, piva, dettagli);
+    public int insertOrdine(int codicePagamento, double prezzoTotale, String piva) {
+        return Ordine.DAO.insertOrdine(connection, codicePagamento, prezzoTotale, piva);
     }
 
     @Override
@@ -598,6 +598,11 @@ public class DBModel implements Model {
         } catch (SQLException|RuntimeException ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public void insertDettaglioOrdine(int codiceOrdine, int codicePiatto, int quantita, double prezzoUnitario) {
+        DettaglioOrdine.DAO.insertDettaglio(connection, codiceOrdine, codicePiatto, quantita, prezzoUnitario);
     }
 
 

@@ -17,11 +17,13 @@ public final class Controller {
     private Optional<Integer> currentClienteId;
     private Optional<Integer> currentRiderId;
     private Optional<String> currentRistorantePiva;
+    private Optional<String> orderPiva;
 
     public Controller() {
         this.currentClienteId = Optional.empty();
         this.currentRiderId = Optional.empty();
         this.currentRistorantePiva = Optional.empty();
+        this.orderPiva = Optional.empty();
         this.model = new DBModel(DAOUtils.localMySQLConnection(), this);
         this.view = new MainFrame(this);
     }
@@ -123,6 +125,17 @@ public final class Controller {
             return "";
         }
         return this.currentRistorantePiva.get();
+    }
+
+    public String getOrderPiva() {
+        if (orderPiva.isEmpty()) {
+            return "";
+        }
+        return this.orderPiva.get(); 
+    }
+
+    public void setOrderPiva(final String piva) {
+        this.orderPiva = Optional.of(piva);
     }
 
 }

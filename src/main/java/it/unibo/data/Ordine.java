@@ -7,19 +7,16 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Ordine {
-    public final int codiceOrdine;
+    public int codiceOrdine;
     public final int codicePagamento;
     public final double prezzoTotale;
     public final String piva;
-    public final List<DettaglioOrdine> dettagli;
 
-    public Ordine(int codiceOrdine, int codicePagamento, 
-                  double prezzoTotale, String piva, List<DettaglioOrdine> dettagli) {
-        this.codiceOrdine = codiceOrdine;
+    public Ordine(int codicePagamento, 
+                  double prezzoTotale, String piva) {
         this.codicePagamento = codicePagamento;
         this.prezzoTotale = prezzoTotale;
         this.piva = piva;
-        this.dettagli = dettagli;
     }
 
     @Override
@@ -30,13 +27,12 @@ public class Ordine {
         return o.codiceOrdine == this.codiceOrdine &&
                o.codicePagamento == this.codicePagamento &&
                o.prezzoTotale == this.prezzoTotale &&
-               o.piva.equals(this.piva) &&
-               o.dettagli.equals(this.dettagli);
+               o.piva.equals(this.piva);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codiceOrdine, codicePagamento, prezzoTotale, piva, dettagli);
+        return Objects.hash(codiceOrdine, codicePagamento, prezzoTotale, piva);
     }
 
     @Override
@@ -45,8 +41,7 @@ public class Ordine {
             Printer.field("codiceOrdine", codiceOrdine),
             Printer.field("codicePagamento", codicePagamento),
             Printer.field("prezzoTotale", prezzoTotale),
-            Printer.field("piva", piva),
-            Printer.field("dettagli", dettagli)
+            Printer.field("piva", piva)
         ));
     }
 
@@ -57,14 +52,13 @@ public class Ordine {
                  var rs = stmt.executeQuery()) {
                 
                 if (rs.next()) {
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
-                    return Optional.of(new Ordine(
-                        rs.getInt("codice_ordine"),
+                    var o = new Ordine(
                         rs.getInt("codice_pagamento"),
                         rs.getDouble("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");
+                    return Optional.of(o); 
                 }
                 return Optional.empty();
                 
@@ -78,17 +72,14 @@ public class Ordine {
                  var rs = stmt.executeQuery()) {
                 
                 var ordini = new ArrayList<Ordine>();
-                while (rs.next()) {
-                    var codiceOrdine = rs.getInt("codice_ordine");
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
-                    
-                    ordini.add(new Ordine(
-                        codiceOrdine,
+                while (rs.next()) {    
+                    Ordine o = new Ordine(
                         rs.getInt("codice_pagamento"),
                         rs.getDouble("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");    
+                    ordini.add(o);
                 }
                 return ordini;
                 
@@ -106,15 +97,13 @@ public class Ordine {
                 
                 var ordini = new ArrayList<Ordine>();
                 while (rs.next()) {
-                    var codiceOrdine = rs.getInt("codice_ordine");
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
-                    ordini.add(new Ordine(
-                        codiceOrdine,
+                    Ordine o = new Ordine(
                         rs.getInt("codice_pagamento"),
                         rs.getDouble("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");    
+                    ordini.add(o);
                 }
                 return ordini;
             } catch (Exception e) {
@@ -131,15 +120,13 @@ public class Ordine {
                 
                 var ordini = new ArrayList<Ordine>();
                 while (rs.next()) {
-                    var codiceOrdine = rs.getInt("codice_ordine");
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
-                    ordini.add(new Ordine(
-                        codiceOrdine,
+                    Ordine o = new Ordine(
                         rs.getInt("codice_pagamento"),
                         rs.getDouble("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");    
+                    ordini.add(o);
                 }
                 return ordini;
             } catch (Exception e) {
@@ -147,43 +134,15 @@ public class Ordine {
             }
         }
 
-        public static int insertFullOrder(Connection conn,
-                                   int codicePagamento,
-                                   double prezzoTotale,
-                                   String piva,
-                                   List<DettaglioOrdine> cart) {
-            try {
-                conn.setAutoCommit(false);
-                // 1) crea ordine con stato=1 (In preparazione)
-                int orderId;
-                try (var ps = DAOUtils.prepare(conn, Queries.INSERT_ORDINE,
-                                               codicePagamento, prezzoTotale, piva)) {
-                    ps.executeUpdate();
-                    try (var rs = ps.getGeneratedKeys()) {
-                        if (!rs.next()) throw new DAOException("Nessun ID ordine");
-                        orderId = rs.getInt(1);
-                    }
+        public static int insertOrdine(Connection conn, int codicePagamento, double prezzoTotale, String piva) {
+            try (var ps = DAOUtils.prepare(conn, Queries.INSERT_ORDINE, codicePagamento, prezzoTotale, piva)) {
+                ps.executeUpdate();
+                try (var rs = ps.getGeneratedKeys()) {
+                    if (!rs.next()) throw new DAOException("Nessun ID ordine");
+                    return rs.getInt(1);
                 }
-                // 2) inserisci dettagli
-                try (var psDet = DAOUtils.prepare(conn, Queries.INSERT_DETTAGLIO_ORDINE)) {
-                    int line = 1;
-                    for (var d : cart) {
-                        psDet.setInt(1, orderId);
-                        psDet.setInt(2, d.codicePiatto);
-                        psDet.setInt(3, line++);
-                        psDet.setInt(4, d.quantita);
-                        psDet.setBigDecimal(5, d.prezzoUnitario);
-                        psDet.addBatch();
-                    }
-                    psDet.executeBatch();
-                }
-                conn.commit();
-                return orderId;
             } catch (Exception e) {
-                try { conn.rollback(); } catch (Exception ign) {}
-                throw new DAOException("Errore creazione ordine completo", e);
-            } finally {
-                try { conn.setAutoCommit(true); } catch (Exception ign) {}
+                throw new DAOException("Errore inserimento ordine", e);
             }
         }
 
@@ -196,16 +155,13 @@ public class Ordine {
 
                 var ordini = new ArrayList<Ordine>();
                 while (rs.next()) {
-                    var codiceOrdine = rs.getInt("codice_ordine");
-                    var dettagli = DettaglioOrdine.DAO.byOrdine(connection, codiceOrdine);
-
-                    ordini.add(new Ordine(
-                        codiceOrdine,
+                    Ordine o = new Ordine(
                         rs.getInt("codice_pagamento"),
                         rs.getDouble("prezzo_totale"),
-                        rs.getString("p_iva"),
-                        dettagli
-                    ));
+                        rs.getString("p_iva")
+                    );
+                    o.codiceOrdine = rs.getInt("codice_ordine");    
+                    ordini.add(o);
                 }
                 return ordini;
 
