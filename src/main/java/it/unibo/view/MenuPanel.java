@@ -1,13 +1,9 @@
 package it.unibo.view;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 import it.unibo.controller.Controller;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
 public class MenuPanel extends JPanel {
 
@@ -17,32 +13,56 @@ public class MenuPanel extends JPanel {
     private static final String AMMINISTRATORE = "Amministratore";
 
     public MenuPanel(Controller controller) {
-        setLayout(new GridBagLayout());
-        final GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10, 40, 10, 40);
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        setLayout(new BorderLayout());
+        setBackground(new Color(245, 245, 245));
 
-        final JButton btnCliente = new JButton(CLIENTE);
-        final JButton btnRistorante = new JButton(RISTORANTE);
-        final JButton btnRider = new JButton(RIDER);
-        final JButton btnAmministratore = new JButton(AMMINISTRATORE);
+        // Header
+        JLabel title = new JLabel("PL8");
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 48));
+        title.setForeground(new Color(30, 144, 255));
+        title.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+        add(title, BorderLayout.NORTH);
 
-        btnCliente.addActionListener(e -> controller.goToClienteAccess());
-        btnRistorante.addActionListener(e -> controller.goToRistoranteAccess());
-        btnRider.addActionListener(e -> controller.goToRiderAccess());
-        btnAmministratore.addActionListener(e -> controller.goToAmministratore());
+        // Bottone factory
+        JButton[] buttons = {
+            makeButton(CLIENTE, e -> controller.goToClienteAccess()),
+            makeButton(RISTORANTE, e -> controller.goToRistoranteAccess()),
+            makeButton(RIDER, e -> controller.goToRiderAccess()),
+            makeButton(AMMINISTRATORE, e -> controller.goToAmministratore())
+        };
 
-        final JPanel buttonsPanel = new JPanel(new GridLayout(4, 1, 0, 20));
-        buttonsPanel.add(btnCliente);
-        buttonsPanel.add(btnRistorante);
-        buttonsPanel.add(btnRider);
-        buttonsPanel.add(btnAmministratore);
-        buttonsPanel.setOpaque(false);
-
-        add(buttonsPanel, gbc);
+        // Container bottoni
+        JPanel center = new JPanel();
+        center.setOpaque(false);
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setBorder(BorderFactory.createEmptyBorder(0, 200, 0, 200));
+        for (JButton btn : buttons) {
+            center.add(btn);
+            center.add(Box.createVerticalStrut(20));
+        }
+        add(center, BorderLayout.CENTER);
     }
 
+    private JButton makeButton(String text, ActionListener listener) {
+        JButton btn = new JButton(text);
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(30, 144, 255));
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btn.addActionListener(listener);
+        // Hover effect
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn.setBackground(new Color(65, 105, 225)); // RoyalBlue
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn.setBackground(new Color(30, 144, 255)); // DodgerBlue
+            }
+        });
+        return btn;
+    }
 }
