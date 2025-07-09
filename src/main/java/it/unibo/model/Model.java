@@ -58,6 +58,7 @@ public interface Model {
     List<Ordine> loadOrdiniDaConsegnareByRider(int codiceRider);
     List<Ordine> loadOrdiniConsegnatiByRider(int codiceRider);
     void insertDettaglioOrdine(int codiceOrdine, int codicePiatto, int quantita, double prezzoUnitario);
+    Optional<Cliente> findClienteByOrder(int codiceOrdine);
     
     // Gestione zona geografica
     void insertZona(ZonaGeografica zonaGeografica);

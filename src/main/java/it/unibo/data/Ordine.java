@@ -150,7 +150,36 @@ public class Ordine {
             }
         }
 
-          /**
+        /**
+         * Recupera il Cliente che ha effettuato questo ordine.
+         * 
+         * @param conn         la connessione al DB
+         * @param codiceOrdine l'ID dell'ordine
+         * @return Optional con il Cliente, vuoto se non trovato
+         */
+        public static Optional<Cliente> findClienteByOrder(Connection conn, int codiceOrdine) {
+            try (var ps = DAOUtils.prepare(conn, Queries.SELECT_CLIENTE_BY_ORDINE, codiceOrdine);
+                 var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Cliente cliente = new Cliente(
+                        rs.getString("Nome"),
+                        rs.getString("Cognome"),
+                        rs.getString("E_mail"),
+                        rs.getString("Telefono"),
+                        rs.getDate("Data_di_Nascita"),
+                        rs.getString("Username")
+                    );
+                    cliente.codiceCliente = rs.getInt("codice_cliente");
+                    return Optional.of(cliente);
+                }
+                return Optional.empty();
+            } catch (Exception e) {
+                throw new DAOException(
+                  "Errore recupero cliente per ordine " + codiceOrdine, e);
+            }
+        }
+
+        /**
          * Restituisce tutti gli ordini ricevuti da un ristorante.
          */
         public static List<Ordine> byRistorante(Connection connection, String piva) {

@@ -111,7 +111,7 @@ public static final String SOTTRAI_PUNTI = """
         """;
 
 public static final String AGGIUNGI_PUNTI = """
-    UPDATE raccolta_punti SET punti_totali = punti_totali + ? WHERE codice_cliente = ?
+    UPDATE raccolte_punti SET punti_totali = punti_totali + ? WHERE codice_cliente = ?
 """;
 
 public static final String ORDINI_PREPARAZIONE_ZONA =
@@ -346,6 +346,16 @@ public static final String INSERT_OFFRE = """
         WHERE codice_ordine = ?
         """;
 
+    /**
+     * Restituisce i dati del cliente che ha effettuato l'ordine
+     */
+    public static final String SELECT_CLIENTE_BY_ORDINE = """
+        SELECT c.Codice_Cliente, c.Nome, c.Cognome, c.E_mail, c.Telefono, c.Data_di_Nascita, c.Username
+        FROM Clienti c
+        JOIN Pagamenti p ON c.Codice_Cliente = p.Codice_Cliente
+        JOIN Ordini o     ON p.Codice_Pagamento = o.Codice_Pagamento
+        WHERE o.Codice_Ordine = ?
+        """;
 
     // Inserimento dettaglio ordine
     public static final String INSERT_DETTAGLIO_ORDINE = """

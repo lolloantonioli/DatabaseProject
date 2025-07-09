@@ -1,7 +1,9 @@
 package it.unibo.data;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +20,11 @@ public class StatoOrdine {
     public LocalDateTime oraInConsegna;
     public boolean consegnato;
     public LocalDateTime oraConsegnato;
-    public int codiceRider;
+    public Integer codiceRider;
 
     public StatoOrdine(int codiceOrdine, LocalDateTime data, boolean inPreparazione,
                        LocalDateTime oraInPreparazione, boolean inConsegna, LocalDateTime oraInConsegna,
-                       boolean consegnato, LocalDateTime oraConsegnato, int codiceRider) {
+                       boolean consegnato, LocalDateTime oraConsegnato, Integer codiceRider) {
         this.codiceOrdine = codiceOrdine;
         this.data = data;
         this.inPreparazione = inPreparazione;
@@ -76,33 +78,49 @@ public class StatoOrdine {
          * Inserisce un nuovo stato ordine
          */
         public static void insertState(Connection conn, StatoOrdine s) {
-            try (var ps = conn.prepareStatement(Queries.INSERT_STATO_ORDINE)) {
+            String sql = Queries.INSERT_STATO_ORDINE; 
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                // 1) Codice_Ordine
                 ps.setInt(1, s.codiceOrdine);
-                ps.setTimestamp(2, s.data != null ? Timestamp.valueOf(s.data) : null);
+                // 2) Data
+                ps.setTimestamp(2, Timestamp.valueOf(s.data));
+                // 3) In_Preparazione boolean
                 ps.setBoolean(3, s.inPreparazione);
+                // 4) Ora_In_Preparazione (può essere null)
                 if (s.oraInPreparazione != null) {
                     ps.setTimestamp(4, Timestamp.valueOf(s.oraInPreparazione));
                 } else {
-                    ps.setNull(4, java.sql.Types.TIMESTAMP);
+                    ps.setNull(4, Types.TIMESTAMP);
                 }
+                // 5) In_Consegna boolean
                 ps.setBoolean(5, s.inConsegna);
+                // 6) Ora_In_Consegna (può essere null)
                 if (s.oraInConsegna != null) {
                     ps.setTimestamp(6, Timestamp.valueOf(s.oraInConsegna));
                 } else {
-                    ps.setNull(6, java.sql.Types.TIMESTAMP);
+                    ps.setNull(6, Types.TIMESTAMP);
                 }
+                // 7) Consegnato boolean
                 ps.setBoolean(7, s.consegnato);
+                // 8) Ora_Consegnato (può essere null)
                 if (s.oraConsegnato != null) {
                     ps.setTimestamp(8, Timestamp.valueOf(s.oraConsegnato));
                 } else {
-                    ps.setNull(8, java.sql.Types.TIMESTAMP);
+                    ps.setNull(8, Types.TIMESTAMP);
                 }
-                ps.setInt(9, s.codiceRider);
+                // 9) Codice_Rider: può restare NULL fino all’assegnazione
+                if (s.codiceRider != null) {
+                    ps.setInt(9, s.codiceRider);
+                } else {
+                    ps.setNull(9, Types.INTEGER);
+                }
+
                 ps.executeUpdate();
             } catch (Exception e) {
                 throw new DAOException("Errore inserimento stato ordine " + s.codiceOrdine, e);
             }
         }
+
 
         /**
          * Aggiorna uno stato ordine esistente (modifica timestamp campi)
@@ -133,12 +151,13 @@ public class StatoOrdine {
                 if (rs.next()) {
                     var data = rs.getTimestamp("data").toLocalDateTime();
                     var prep = rs.getBoolean("in_preparazione");
-                    var oraPrep = rs.getTimestamp("ora_in_preparazione").toLocalDateTime();
-                    var conseg = rs.getBoolean("ora_in_consegna");
-                    var oraConseg = rs.getTimestamp("ora_in_consegna").toLocalDateTime();
-                    var cons = rs.getBoolean("ora_consegnato");
-                    var oraCons = rs.getTimestamp("ora_consegnato").toLocalDateTime();
-                    int rider = rs.getInt("codice_rider");
+                    var oraPrep = rs.getTimestamp("ora_in_preparazione") == null ? null : rs.getTimestamp("ora_in_preparazione").toLocalDateTime();
+                    var conseg = rs.getBoolean("in_consegna");
+                    var oraConseg = rs.getTimestamp("ora_in_consegna") == null ? null : rs.getTimestamp("ora_in_consegna").toLocalDateTime();
+                    var cons = rs.getBoolean("consegnato");
+                    var oraCons = rs.getTimestamp("ora_consegnato") == null ? null : rs.getTimestamp("ora_consegnato").toLocalDateTime();
+                    int riderValue = rs.getInt("codice_rider");
+                    Integer rider = rs.wasNull() ? null : riderValue;
                     StatoOrdine so = new StatoOrdine(codiceOrdine, data, prep, oraPrep, conseg, oraConseg, cons, oraCons, rider);
                     return Optional.of(so);
                 }

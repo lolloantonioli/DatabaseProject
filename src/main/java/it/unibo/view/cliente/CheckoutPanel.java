@@ -46,9 +46,7 @@ public class CheckoutPanel extends JPanel {
         btns.add(btnConferma);
         add(btns);
 
-        btnIndietro.addActionListener(e ->
-            controller.goToCliente(controller.getCurrentClienteId()));
-
+        btnIndietro.addActionListener(e -> controller.goToCliente(controller.getCurrentClienteId()));
         btnConferma.addActionListener(e -> effettuaOrdine());
     }
 
@@ -103,7 +101,6 @@ public class CheckoutPanel extends JPanel {
                 controller.getModel().sottraiPunti(codCliente, carrello.puntiUsati);
             }
 
-            
             int codPagamento = controller.getModel().insertPagamento(
                 new Pagamento(Date.valueOf(LocalDate.now()), carrello.totaleFinale, codCliente, metodo.nome));
             int codOrdine = controller.getModel().insertOrdine(codPagamento, carrello.totaleFinale, controller.getOrderPiva());
@@ -117,16 +114,16 @@ public class CheckoutPanel extends JPanel {
                 .findFirst();
                 if (piattoOpt.isPresent()) {
                     int codicePiatto = piattoOpt.get().codicePiatto;
-                int quantita = dettaglio.quantita;
-                double prezzo = dettaglio.prezzoUnitario;
-                controller.getModel().insertDettaglioOrdine(codOrdine, codicePiatto, quantita, prezzo);
-            } else {
-                System.out.println("Piatto non trovato: " + nomePiatto);
-            }
+                    int quantita = dettaglio.quantita;
+                    double prezzo = dettaglio.prezzoUnitario;
+                    controller.getModel().insertDettaglioOrdine(codOrdine, codicePiatto, quantita, prezzo);
+                } else {
+                    System.out.println("Piatto non trovato: " + nomePiatto);
+                }
             }
             
             controller.getModel().insertState(new StatoOrdine(codOrdine, LocalDateTime.now(), true, LocalDateTime.now(),
-            false, null, false, null, -1));
+            false, null, false, null, null));
 
             // Calcola i punti da generare (1 punto ogni euro speso, arrotondato per difetto)
             int puntiDaAggiungere = (int) Math.floor(carrello.totaleFinale);

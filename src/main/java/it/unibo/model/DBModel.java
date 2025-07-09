@@ -495,4 +495,9 @@ public class DBModel implements Model {
         RaccoltaPunti.DAO.aggiungiPunti(connection, codiceCliente, puntiDaAggiungere);
     }
 
+    @Override
+    public Optional<Cliente> findClienteByOrder(int codiceOrdine) {
+        return Ordine.DAO.findClienteByOrder(connection, codiceOrdine);
+    }
+
 }

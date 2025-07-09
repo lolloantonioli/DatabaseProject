@@ -44,7 +44,24 @@ class RistoranteOrdiniPanel extends JPanel {
     public void refreshTable() {
         model.setRowCount(0);
         List<Ordine> ordini = controller.getModel().loadOrdiniByRistorante(controller.getCurrentPiva());
-        for (Ordine o : ordini)
-            model.addRow(new Object[]{o.codiceOrdine, o.prezzoTotale});
+        for (Ordine o : ordini) {
+            var cliente = controller.getModel().findClienteByOrder(o.codiceOrdine);
+            var stato = controller.getModel().findStateByOrder(o.codiceOrdine);
+            String lblstate;
+            if (cliente.isPresent() && stato.isPresent()) {
+                if (stato.get().consegnato == true) {
+                    lblstate = "Consegnato il " + stato.get().oraConsegnato.toString();
+                } else if (stato.get().inConsegna == true) {
+                    lblstate = "In consegna dal " + stato.get().oraInConsegna.toString();
+                } else if (stato.get().inPreparazione == true) {
+                    lblstate = "In preparazione dal " + stato.get().oraInPreparazione.toString();
+                } else if (stato.get().data != null) {
+                    lblstate = "Creato il " + stato.get().data.toLocalDate().toString();
+                } else {
+                    lblstate = "Stato sconosciuto";
+                }
+                model.addRow(new Object[]{o.codiceOrdine, o.prezzoTotale, cliente.get().codiceCliente, lblstate});
+            }
+        }
     }
 }
