@@ -1,4 +1,5 @@
-Per avviare l'applicativo aprire semplicemente il file 'pl8-all.jar' presente nella root del progetto.
+Per avviare l'applicativo aprire un terminale e posizionarsi nella root del progetto.
+Per avviare l'app scrivere './gradlew build' e al termine './gradlew run'.
 Per accedere alla schermata di Amministratore dell'applicativo la password è 'amministratore'
 Per acccedere come cliente è necessario inserire l'username di un cliente presente nel database
 Per accedere come ristorante è necessario inserire la partita iva di un ristorante presente nel database
