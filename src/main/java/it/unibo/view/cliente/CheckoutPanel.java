@@ -130,6 +130,7 @@ public class CheckoutPanel extends JPanel {
             controller.getModel().aggiungiPunti(codCliente, puntiDaAggiungere);
 
             JOptionPane.showMessageDialog(this, "Ordine effettuato!");
+            controller.resetClienteView();
             controller.goToCliente(controller.getCurrentClienteId());
             
         } catch (Exception ex) {

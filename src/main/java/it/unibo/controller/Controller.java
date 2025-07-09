@@ -140,4 +140,9 @@ public final class Controller {
         this.orderPiva = Optional.of(piva);
     }
 
+    public void resetClienteView() {
+        model.clearCarrello();
+        view.getClientePanel().resetAll();
+    }
+
 }

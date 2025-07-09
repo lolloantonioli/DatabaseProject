@@ -139,4 +139,9 @@ public class TrovaRistorantiPanel extends JPanel {
         viewPiattiPanel.mostraPiatti(piatti);
         cardLayout.show(cards, "piatti");
     }
+
+    public void reset() {
+        aggiornaIndirizzi();
+        cardLayout.show(cards, "indirizzo");
+    }
 }

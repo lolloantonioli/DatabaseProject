@@ -500,4 +500,9 @@ public class DBModel implements Model {
         return Ordine.DAO.findClienteByOrder(connection, codiceOrdine);
     }
 
+    @Override
+    public void clearCarrello() {
+        carrello.clear();
+    }
+
 }

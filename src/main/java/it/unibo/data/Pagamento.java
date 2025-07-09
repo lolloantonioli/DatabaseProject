@@ -58,10 +58,12 @@ public class Pagamento {
             try (var stmt = DAOUtils.prepare(connection, Queries.PAGAMENTI_BY_CLIENTE, codiceCliente);
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    var date = rs.getDate("data");
-                    double imp = rs.getDouble("importo");
-                    String metodo = rs.getString("nome");
-                    result.add(new Pagamento(date, imp, codiceCliente, metodo));
+                    Pagamento p = new Pagamento(rs.getDate("data"),
+                                                rs.getDouble("importo"),
+                                                codiceCliente,
+                                                rs.getString("nome"));
+                    p.codicePagamento = rs.getInt("codice_pagamento");
+                    result.add(p);
                 }
             } catch (Exception e) {
                 throw new DAOException("Error while retrieving payments for client " + codiceCliente, e);

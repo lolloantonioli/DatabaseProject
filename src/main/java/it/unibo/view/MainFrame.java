@@ -67,6 +67,16 @@ public class MainFrame extends JFrame {
         this.add(root);
         this.pack();
         this.setLocationRelativeTo(null);
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke("control M"), "goMenu");
+        getRootPane().getActionMap()
+            .put("goMenu", new AbstractAction() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    controller.goToMenu();
+                }
+            });
+
         this.setVisible(true);
     }
 

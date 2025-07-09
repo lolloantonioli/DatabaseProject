@@ -24,7 +24,13 @@ public class ClientePanel extends JPanel {
         tabbedPane.addTab("Profilo", profiloPanel);
         add(tabbedPane, BorderLayout.CENTER);
     }
+
     public void aggiornaIndirizzi() {
         trovaRistorantiPanel.aggiornaIndirizzi();
+    }
+
+    public void resetAll() {
+        trovaRistorantiPanel.reset();
+        carrelloPanel.aggiornaCarrello();
     }
 }
