@@ -180,6 +180,7 @@ public class StatoOrdine {
                     );
                     o.codiceOrdine = rs.getInt("codice_ordine");
                     ordini.add(o);
+                    System.out.println("ordini trovati:" + ordini);
                 }
             } catch (Exception e) {
                 throw new DAOException("Errore caricamento ordini in preparazione", e);

@@ -5,12 +5,10 @@ import java.awt.*;
 import it.unibo.controller.Controller;
 
 public class AmministratorePanel extends JPanel {
-    private final Controller controller;
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
 
     public AmministratorePanel(Controller controller) {
-        this.controller = controller;
         this.cardLayout = new CardLayout();
         this.mainPanel = new JPanel(cardLayout);
 

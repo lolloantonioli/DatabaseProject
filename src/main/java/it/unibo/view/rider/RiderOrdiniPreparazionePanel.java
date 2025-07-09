@@ -23,7 +23,7 @@ public class RiderOrdiniPreparazionePanel extends JPanel {
             public boolean isCellEditable(int r, int c) { return false; }
         };
         table = new JTable(tableModel);
-
+        
         btnPrendi = new JButton("Prendi in carico");
 
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -37,7 +37,7 @@ public class RiderOrdiniPreparazionePanel extends JPanel {
         int zona = controller.getModel().findRider(controller.getCurrentRiderId()).get().codiceZona;
         List<Ordine> ordini = controller.getModel().inPreparazioneByZona(zona);
         for (Ordine o : ordini) {
-            tableModel.addRow(new Object[]{o.codiceOrdine, o.piva, o.prezzoTotale});
+            tableModel.addRow(new Object[]{o.codiceOrdine, o.piva, o.prezzoTotale + "€"});
         }
     }
 

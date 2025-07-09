@@ -115,17 +115,17 @@ public static final String AGGIUNGI_PUNTI = """
 """;
 
 public static final String ORDINI_PREPARAZIONE_ZONA =
-    "SELECT o.Codice_Ordine, o.P_IVA, o.Prezzo_Totale, s.Data " +
+    "SELECT o.Codice_Ordine, o.codice_pagamento, o.P_IVA, o.Prezzo_Totale, s.Data " +
     "FROM ORDINI o " +
     "JOIN STATI_ORDINI s ON o.Codice_Ordine = s.Codice_Ordine " +
     "JOIN RISTORANTI r ON o.P_IVA = r.P_IVA " +
-    "WHERE s.In_Preparazione = TRUE AND s.In_Consegna = FALSE AND s.Conseganto = FALSE AND s.codice_rider = -1 AND r.Codice_Zona = ?";
+    "WHERE s.In_Preparazione = TRUE AND s.In_Consegna = FALSE AND s.Consegnato = FALSE AND s.codice_rider IS NULL AND r.Codice_Zona = ?";
 
 public static final String PRENDI_IN_CARICO_ORDINE =
     "UPDATE STATI_ORDINI SET In_Preparazione = FALSE, In_Consegna = TRUE, Ora_In_Consegna = NOW(), Codice_Rider = ? WHERE Codice_Ordine = ?";
 
 public static final String ORDINE_IN_CARICO_RIDER =
-    "SELECT o.Codice_Ordine, o.P_IVA, o.Prezzo_Totale, s.Data " +
+    "SELECT o.Codice_Ordine, o.codice_pagamento, o.P_IVA, o.Prezzo_Totale, s.Data " +
     "FROM ORDINI o " +
     "JOIN STATI_ORDINI s ON o.Codice_Ordine = s.Codice_Ordine " +
     "WHERE s.In_Consegna = TRUE AND s.Codice_Rider = ?";

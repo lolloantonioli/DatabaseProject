@@ -466,7 +466,7 @@ public class DBModel implements Model {
         // raccolta punti
         var rp = RaccoltaPunti.DAO.findByCliente(connection, codiceCliente);
         double scontoPunti = 0; String descPunti = "Nessuna"; int puntiUsati = 0;
-        if (rp.isPresent() && totaleParziale >= rp.get().sogliaPunti) {
+        if (rp.isPresent() && rp.get().puntiTotali >= rp.get().sogliaPunti) {
             scontoPunti = totaleParziale * rp.get().percentualeSconto / 100.0;
             descPunti = rp.get().percentualeSconto + "%";
             puntiUsati = rp.get().sogliaPunti;

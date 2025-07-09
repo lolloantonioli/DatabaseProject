@@ -48,6 +48,7 @@ public final class Controller {
 
     public void goToRider(final int codiceRider) {
         this.currentRiderId = Optional.of(codiceRider);
+        view.getRiderPanel().getRiderOrdiniPanel().aggiorna();
         view.show(CardName.RIDER);
     }
 

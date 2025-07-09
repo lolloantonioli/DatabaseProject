@@ -384,7 +384,7 @@ public class ProfiloPanel extends JPanel {
             int clienteId = controller.getCurrentClienteId();
             List<Ordine> ordini = controller.getModel().loadOrdiniByCliente(clienteId);
 
-            List<String> colonne = List.of("Codice Ordine", "Ristorante", "Prezzo Totale", "Stato", "Numero Piatti");
+            List<String> colonne = List.of("Codice Ordine", "Ristorante", "Prezzo Totale", "Stato");
             tableModel.setColumnCount(0);
             tableModel.setRowCount(0);
 
@@ -401,7 +401,7 @@ public class ProfiloPanel extends JPanel {
             });
 
             if (ordini.isEmpty()) {
-                tableModel.addRow(new Object[]{"Nessun ordine trovato", "", "", "", ""});
+                tableModel.addRow(new Object[]{"Nessun ordine trovato", "", "", ""});
             }
 
         } catch (Exception e) {

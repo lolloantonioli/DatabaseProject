@@ -149,7 +149,7 @@ public class Ristorante {
                  var rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     list.add(new Object[] {
-                        rs.getString("P_IVA"),
+                        rs.getString("Ristorante"),
                         rs.getDouble("SpesaMedia")
                     });
                 }
