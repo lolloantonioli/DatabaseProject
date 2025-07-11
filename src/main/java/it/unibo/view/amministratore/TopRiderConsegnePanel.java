@@ -1,7 +1,8 @@
 package it.unibo.view.amministratore;
 
 import java.awt.BorderLayout;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -34,12 +35,16 @@ class TopRiderConsegnePanel extends JPanel {
         searchBtn.addActionListener(e -> {
             model.setRowCount(0);
             try {
-                var from = Date.valueOf(fromField.getText());
-                var to = Date.valueOf(toField.getText());
-                List<Object[]> results = controller.getModel().topRiderPerConsegneInPeriodo(from, to);
+                var from = LocalDate.parse(fromField.getText());
+                var to = LocalDate.parse(toField.getText());
+
+                var fromTimestamp = Timestamp.valueOf(from.atStartOfDay());
+                var toTimestamp = Timestamp.valueOf(to.atTime(23, 59, 59));
+                List<Object[]> results = controller.getModel().topRiderPerConsegneInPeriodo(fromTimestamp, toTimestamp);
                 for (Object[] row : results)
                     model.addRow(row);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Formato data non valido!", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         });

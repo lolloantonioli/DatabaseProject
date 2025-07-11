@@ -3,6 +3,7 @@ package it.unibo.data;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -257,17 +258,15 @@ public class Rider {
             }
         }
 
-        public static List<Object[]> topRiderConsegne(Connection connection, Date from, Date to) {
+        public static List<Object[]> topRiderConsegne(Connection connection, Timestamp from, Timestamp to) {
             List<Object[]> list = new ArrayList<>();
             try (var ps = DAOUtils.prepare(connection, Queries.TOP_RIDER_PER_CONSEGNE_PERIODO, from, to)) {
-                ps.setDate(1, from);
-                ps.setDate(2, to);
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
                         list.add(new Object[] {
                             rs.getInt("Codice_Rider"),
-                            rs.getString("Nome"),
-                            rs.getString("Cognome"),
+                            rs.getString("NomeRider"),
+                            rs.getString("CognomeRider"),
                             rs.getInt("ConsegneCompletate")
                         });
                     }

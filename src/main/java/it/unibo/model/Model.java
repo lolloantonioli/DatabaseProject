@@ -1,6 +1,7 @@
 package it.unibo.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -87,7 +88,7 @@ public interface Model {
     void prendiInCaricoOrdine(int codiceOrdine, int codiceRider);
     Optional<Ordine> ordineInCaricoByRider(int codiceRider);
     void consegnaOrdine(int codiceOrdine, int codiceRider);
-    List<Object[]> topRiderPerConsegneInPeriodo(Date from, Date to);
+    List<Object[]> topRiderPerConsegneInPeriodo(Timestamp from, Timestamp to);
 
     // Gestione residenze
     List<Residenza> loadResidenzeByCliente(int codiceCliente);

@@ -2,6 +2,7 @@ package it.unibo.model;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -429,7 +430,7 @@ public class DBModel implements Model {
     }
 
     @Override
-    public List<Object[]> topRiderPerConsegneInPeriodo(Date from, Date to) {
+    public List<Object[]> topRiderPerConsegneInPeriodo(Timestamp from, Timestamp to) {
         return Rider.DAO.topRiderConsegne(connection, from, to);
     }
 
